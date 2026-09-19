@@ -12,10 +12,12 @@ def test_models():
     client = genai.Client(vertexai=True, project=project, location=location)
     
     models = [
+        "gemini-3.8-flash-001",
+        "gemini-3.8-pro-001",
+        "gemini-3.8-flash",
+        "gemini-3.8-pro",
         "gemini-2.5-flash",
         "gemini-2.5-pro",
-        "gemini-2.0-flash",
-        "gemini-2.0-flash-lite",
     ]
     
     results = {}

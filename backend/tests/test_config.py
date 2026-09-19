@@ -8,9 +8,9 @@ def test_settings_defaults() -> None:
     settings = get_settings()
     assert settings.app_name == "ClausaFractalAI"
     assert settings.app_version == "1.0.0"
-    assert settings.router_model == "gemini-2.5-flash"
-    assert settings.analyst_model == "gemini-2.5-flash"
-    assert settings.synthesis_model == "gemini-2.5-pro"
+    assert settings.router_model == "gemini-3.8-flash-001"
+    assert settings.analyst_model == "gemini-3.8-flash-001"
+    assert settings.synthesis_model == "gemini-3.8-pro-001"
     assert settings.agent_framework == "google-adk"
     assert settings.gcp_project_id == "genai-apac-2026-491004"
     assert settings.context_caching_threshold == 32768

@@ -37,10 +37,10 @@ class Settings(BaseSettings):
     gcp_location: str = Field(default="us-central1", alias="GOOGLE_CLOUD_LOCATION")
     google_genai_use_vertexai: bool = Field(default=True, alias="GOOGLE_GENAI_USE_VERTEXAI")
 
-    # Vertex AI Model Topology (Verified Active on genai-apac-2026-491004)
-    router_model: str = "gemini-2.5-flash"
-    analyst_model: str = "gemini-2.5-flash"
-    synthesis_model: str = "gemini-2.5-pro"
+    # Vertex AI Model Topology (Gemini 3.8 Generation)
+    router_model: str = "gemini-3.8-flash-001"
+    analyst_model: str = "gemini-3.8-flash-001"
+    synthesis_model: str = "gemini-3.8-pro-001"
     agent_framework: str = "google-adk"
     context_caching_threshold: int = 32768
 
