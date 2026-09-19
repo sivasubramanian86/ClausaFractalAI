@@ -1,18 +1,29 @@
 """Main FastAPI application entry point for ClausaFractalAI.
 
 Exposes REST and SSE endpoints with dynamic security headers, CORS protection,
-multimodal document ingestion, voice dictation transcription, and hybrid RAG querying.
+multimodal document ingestion, multi-agent legal reasoning, and Model Context Protocol tools.
 """
 
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, Dict, Optional
+from typing import AsyncIterator, Dict, List, Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
+from agents.blindspot import BlindspotDetectorAgent, BlindspotReport
+from agents.copilot_actions import (
+    ActionableCopilotAgent,
+    AttorneyPrepSheet,
+    CounterClauseProposal,
+)
+from agents.critic_reflection import CriticReflectionAgent
+from agents.policy_collider import PolicyColliderAgent, PolicyCollisionReport
+from agents.qa_analyst import LegalQAAnalystAgent, QAResponse
+from agents.router import RouterAgent, RouterResult
 from config import get_settings
+from mcp.server import MCPToolDefinition, ModelContextProtocolServer
 from services.audio_processor import AudioProcessor, AudioTranscriptionResult
 from services.document_processor import DocumentProcessor, ProcessedDocument
 from services.rag_engine import QueryResult, RAGEngine
@@ -64,6 +75,57 @@ class QueryRequest(BaseModel):
     top_k: int = Field(default=5, ge=1, le=20)
 
 
+class RouteRequest(BaseModel):
+    """Request payload for user intent classification."""
+
+    query: str
+
+
+class QARequest(BaseModel):
+    """Request payload for deep legal question answering."""
+
+    query: str
+    complexity_level: str = "STANDARD"
+
+
+class BlindspotRequest(BaseModel):
+    """Request payload for contract blindspot auditing."""
+
+    text: str
+    template_name: str = "mutual_nda"
+    document_id: str = "doc_audit"
+
+
+class PolicyDiffRequest(BaseModel):
+    """Request payload for comparing two policy or contract drafts."""
+
+    doc_a_text: str
+    doc_b_text: str
+    doc_a_id: str = "v1"
+    doc_b_id: str = "v2"
+
+
+class AttorneyPrepRequest(BaseModel):
+    """Request payload for generating attorney consultation materials."""
+
+    document_id: str = "doc_prep"
+    key_risks: List[str] = Field(default_factory=list)
+
+
+class RewriteRequest(BaseModel):
+    """Request payload for drafting a favorable counter-clause."""
+
+    clause_text: str
+    clause_type: str = "liability"
+
+
+class MCPCallRequest(BaseModel):
+    """Request payload for executing a Model Context Protocol tool."""
+
+    name: str
+    arguments: Dict[str, object] = Field(default_factory=dict)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Manage application startup and graceful shutdown lifecycles.
@@ -92,14 +154,31 @@ def create_application() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Initialize shared in-memory RAG and ingestion components
+    # Initialize shared in-memory RAG, ingestion, and agent components
     rag_engine = RAGEngine()
     doc_processor = DocumentProcessor(rag_engine=rag_engine)
     audio_processor = AudioProcessor()
 
+    router_agent = RouterAgent()
+    qa_agent = LegalQAAnalystAgent(rag_engine=rag_engine)
+    critic_agent = CriticReflectionAgent()
+    blindspot_agent = BlindspotDetectorAgent()
+    collider_agent = PolicyColliderAgent()
+    copilot_agent = ActionableCopilotAgent()
+    mcp_server = ModelContextProtocolServer(
+        blindspot_agent=blindspot_agent, copilot_agent=copilot_agent
+    )
+
     app.state.rag_engine = rag_engine
     app.state.doc_processor = doc_processor
     app.state.audio_processor = audio_processor
+    app.state.router_agent = router_agent
+    app.state.qa_agent = qa_agent
+    app.state.critic_agent = critic_agent
+    app.state.blindspot_agent = blindspot_agent
+    app.state.collider_agent = collider_agent
+    app.state.copilot_agent = copilot_agent
+    app.state.mcp_server = mcp_server
 
     # Security Headers Middleware
     app.add_middleware(SecurityHeadersMiddleware)
@@ -215,6 +294,112 @@ def create_application() -> FastAPI:
             QueryResult containing top chunks, legal triples, and uncertainty status.
         """
         return rag_engine.query(query_text=request.query, top_k=request.top_k)
+
+    # ========================================================================
+    # Multi-Agent State Graph REST Endpoints
+    # ========================================================================
+
+    @app.post(
+        "/api/v1/agents/route",
+        response_model=RouterResult,
+        tags=["Agent Graph"],
+    )
+    async def route_intent(request: RouteRequest) -> RouterResult:
+        """Classify user query intent into the appropriate legal agent workflow."""
+        return router_agent.classify(query=request.query)
+
+    @app.post(
+        "/api/v1/agents/qa",
+        response_model=QAResponse,
+        tags=["Agent Graph"],
+    )
+    async def legal_qa(request: QARequest) -> QAResponse:
+        """Perform deep legal question answering with citation grounding and reflection review."""
+        qa_resp = qa_agent.answer_query(
+            query=request.query, complexity_level=request.complexity_level
+        )
+        # Execute critic reflection review
+        if qa_resp.is_grounded and qa_resp.citations:
+            review_res = critic_agent.review(
+                query=request.query,
+                answer=qa_resp.answer,
+                citations=qa_resp.citations,
+                retrieved_chunks=rag_engine.chunks,
+            )
+            qa_resp.answer = review_res.improved_answer
+        return qa_resp
+
+    @app.post(
+        "/api/v1/agents/blindspots",
+        response_model=BlindspotReport,
+        tags=["Agent Graph"],
+    )
+    async def detect_blindspots(request: BlindspotRequest) -> BlindspotReport:
+        """Audit contract text against baseline enterprise schemas to uncover omitted terms."""
+        return blindspot_agent.audit(
+            document_text=request.text,
+            document_id=request.document_id,
+            template_name=request.template_name,
+        )
+
+    @app.post(
+        "/api/v1/agents/policy-diff",
+        response_model=PolicyCollisionReport,
+        tags=["Agent Graph"],
+    )
+    async def policy_diff(request: PolicyDiffRequest) -> PolicyCollisionReport:
+        """Compare two contract or policy drafts to construct the Practical Impact Matrix."""
+        return collider_agent.compare(
+            doc_a_text=request.doc_a_text,
+            doc_b_text=request.doc_b_text,
+            doc_a_id=request.doc_a_id,
+            doc_b_id=request.doc_b_id,
+        )
+
+    @app.post(
+        "/api/v1/agents/attorney-prep",
+        response_model=AttorneyPrepSheet,
+        tags=["Agent Copilot"],
+    )
+    async def attorney_prep(request: AttorneyPrepRequest) -> AttorneyPrepSheet:
+        """Generate a strategic consultation prep sheet and prioritized attorney questions."""
+        return copilot_agent.generate_attorney_prep_sheet(
+            document_id=request.document_id,
+            key_risks=request.key_risks,
+        )
+
+    @app.post(
+        "/api/v1/agents/rewrite-clause",
+        response_model=CounterClauseProposal,
+        tags=["Agent Copilot"],
+    )
+    async def rewrite_clause(request: RewriteRequest) -> CounterClauseProposal:
+        """Draft a favorable, balanced counter-clause proposal with strategic negotiation tips."""
+        return copilot_agent.rewrite_clause(
+            clause_text=request.clause_text,
+            clause_type=request.clause_type,
+        )
+
+    # ========================================================================
+    # Model Context Protocol (MCP) Endpoints
+    # ========================================================================
+
+    @app.get(
+        "/api/v1/mcp/tools",
+        response_model=List[MCPToolDefinition],
+        tags=["Model Context Protocol"],
+    )
+    async def list_mcp_tools() -> List[MCPToolDefinition]:
+        """List all registered MCP tools and JSON schemas."""
+        return mcp_server.list_tools()
+
+    @app.post(
+        "/api/v1/mcp/call",
+        tags=["Model Context Protocol"],
+    )
+    async def call_mcp_tool(request: MCPCallRequest) -> Dict[str, object]:
+        """Execute a declared Model Context Protocol tool."""
+        return mcp_server.call_tool(name=request.name, arguments=request.arguments)
 
     return app
 

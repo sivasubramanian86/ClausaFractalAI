@@ -129,3 +129,133 @@ async def test_rag_query_endpoint() -> None:
         data = response.json()
         assert "query" in data
         assert "is_uncertain" in data
+
+
+@pytest.mark.asyncio
+async def test_agents_route_endpoint() -> None:
+    """Verify intent routing endpoint classifies user query."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/route", json={"query": "Audit blindspots in NDA"}
+        )
+        assert response.status_code == 200
+        assert response.json()["intent"] == "BLINDSPOT_AUDIT"
+
+
+@pytest.mark.asyncio
+async def test_agents_qa_endpoint_unindexed() -> None:
+    """Verify QA endpoint returns unknown message on ungrounded query."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/qa", json={"query": "What is the penalty?", "complexity_level": "ELI5"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert "cannot determine" in data["answer"]
+
+
+@pytest.mark.asyncio
+async def test_agents_qa_endpoint_grounded_with_reflection() -> None:
+    """Verify QA endpoint with grounded context triggers critic reflection review."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        # 1. Ingest document so RAG engine has chunks
+        await client.post(
+            "/api/v1/documents/upload",
+            data={
+                "text": "The Vendor agrees to deliver quarterly audit reports within 30 days.",
+                "filename": "audit_agreement.txt",
+            },
+        )
+        # 2. Query QA endpoint
+        response = await client.post(
+            "/api/v1/agents/qa",
+            json={"query": "quarterly audit reports", "complexity_level": "STANDARD"},
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["is_grounded"] is True
+        assert len(data["citations"]) >= 1
+
+
+@pytest.mark.asyncio
+async def test_agents_blindspots_endpoint() -> None:
+    """Verify contract blindspot detection endpoint."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/blindspots",
+            json={
+                "text": "Short NDA without liability cap.",
+                "template_name": "mutual_nda",
+                "document_id": "doc_101",
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert "compliance_score" in data
+        assert len(data["omitted_findings"]) >= 1
+
+
+@pytest.mark.asyncio
+async def test_agents_policy_diff_endpoint() -> None:
+    """Verify policy collision diff endpoint."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/policy-diff",
+            json={
+                "doc_a_text": "Data retention 30 days.",
+                "doc_b_text": "Data retention indefinite with waiver.",
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_shifts_detected"] >= 1
+        assert "impact_matrix" in data
+
+
+@pytest.mark.asyncio
+async def test_agents_attorney_prep_endpoint() -> None:
+    """Verify attorney preparation sheet generation endpoint."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/attorney-prep",
+            json={"document_id": "doc_202", "key_risks": ["Uncapped damages"]},
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["attorney_questions"]) == 5
+        assert len(data["negotiation_leverage_points"]) >= 3
+
+
+@pytest.mark.asyncio
+async def test_agents_rewrite_clause_endpoint() -> None:
+    """Verify counter-clause proposal rewriting endpoint."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/v1/agents/rewrite-clause",
+            json={"clause_text": "Customer assumes all risks.", "clause_type": "liability"},
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert "twelve (12) months" in data["counter_clause"]
+
+
+@pytest.mark.asyncio
+async def test_mcp_endpoints() -> None:
+    """Verify MCP list tools and tool invocation endpoints."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        # GET tools
+        tools_resp = await client.get("/api/v1/mcp/tools")
+        assert tools_resp.status_code == 200
+        tools = tools_resp.json()
+        assert len(tools) == 3
+
+        # POST call
+        call_resp = await client.post(
+            "/api/v1/mcp/call",
+            json={
+                "name": "generate_attorney_checklist",
+                "arguments": {"document_id": "mcp_test_doc"},
+            },
+        )
+        assert call_resp.status_code == 200
+        assert call_resp.json()["status"] == "success"
