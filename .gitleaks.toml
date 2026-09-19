@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[rules]
+description = "Gitleaks configuration for ClausaFractalAI"
+
+[[rules.regex]]
+description = "Google Cloud API Key"
+regex = '''AIza[0-9A-Za-z\\-_]{35}'''
+tags = ["key", "Google"]

@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Coverage reports & virtual environments
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+.venv/
+env/
+venv/
+ENV/
+.uv/
+
+# Node & Frontend build artifacts
+node_modules/
+dist/
+.dist/
+build/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Environment & Secrets (MANDATORY - Zero API Keys in git)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+service_account.json
+
+# Local scratch, uploads, logs & large binaries (< 10MB limit defense)
+scratch/
+uploads/
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.zip
+*.tar.gz
+*.log
+
+# Prompt files and session memories (internal collateral)
+phase-*.md
+docs/prompts/
