@@ -1,17 +1,21 @@
 """Main FastAPI application entry point for ClausaFractalAI.
 
 Exposes REST and SSE endpoints with dynamic security headers, CORS protection,
-and liveness health probes.
+multimodal document ingestion, voice dictation transcription, and hybrid RAG querying.
 """
 
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, Dict
+from typing import AsyncIterator, Dict, Optional
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
 from config import get_settings
+from services.audio_processor import AudioProcessor, AudioTranscriptionResult
+from services.document_processor import DocumentProcessor, ProcessedDocument
+from services.rag_engine import QueryResult, RAGEngine
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -46,6 +50,20 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
+class TextUploadRequest(BaseModel):
+    """Request payload for raw contract text ingestion."""
+
+    text: str
+    filename: str = "contract.txt"
+
+
+class QueryRequest(BaseModel):
+    """Request payload for RAG semantic search and graph triple reasoning."""
+
+    query: str
+    top_k: int = Field(default=5, ge=1, le=20)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Manage application startup and graceful shutdown lifecycles.
@@ -73,6 +91,15 @@ def create_application() -> FastAPI:
         description="Autonomous Legal Document Intelligence & Action Platform",
         lifespan=lifespan,
     )
+
+    # Initialize shared in-memory RAG and ingestion components
+    rag_engine = RAGEngine()
+    doc_processor = DocumentProcessor(rag_engine=rag_engine)
+    audio_processor = AudioProcessor()
+
+    app.state.rag_engine = rag_engine
+    app.state.doc_processor = doc_processor
+    app.state.audio_processor = audio_processor
 
     # Security Headers Middleware
     app.add_middleware(SecurityHeadersMiddleware)
@@ -111,6 +138,83 @@ def create_application() -> FastAPI:
             "message": f"Welcome to {settings.app_name} API",
             "docs": "/docs",
         }
+
+    @app.post(
+        "/api/v1/documents/upload",
+        response_model=ProcessedDocument,
+        tags=["Document Ingestion"],
+    )
+    async def upload_document(
+        file: Optional[UploadFile] = File(None),
+        text: Optional[str] = Form(None),
+        filename: Optional[str] = Form(None),
+    ) -> ProcessedDocument:
+        """Ingest and process a contract document (PDF binary or plain text).
+
+        Args:
+            file: Optional uploaded file (PDF).
+            text: Optional plain text content.
+            filename: Optional document filename.
+
+        Returns:
+            ProcessedDocument containing chunks, redactions, and graph triples.
+
+        Raises:
+            HTTPException: If neither file nor text is provided.
+        """
+        if file is not None:
+            content = await file.read()
+            fname = file.filename or "uploaded.pdf"
+            if fname.lower().endswith(".pdf"):
+                return doc_processor.process_pdf(pdf_bytes=content, filename=fname)
+            # Process non-pdf text files
+            text_content = content.decode("utf-8", errors="replace")
+            return doc_processor.process_text(raw_text=text_content, filename=fname)
+
+        if text is not None and text.strip():
+            fname = filename or "pasted_contract.txt"
+            return doc_processor.process_text(raw_text=text, filename=fname)
+
+        raise HTTPException(
+            status_code=400,
+            detail="Must provide either a file upload or text content.",
+        )
+
+    @app.post(
+        "/api/v1/audio/transcribe",
+        response_model=AudioTranscriptionResult,
+        tags=["Multimodal Audio"],
+    )
+    async def transcribe_audio(
+        file: UploadFile = File(...),
+    ) -> AudioTranscriptionResult:
+        """Transcribe a spoken audio clip from the microphone.
+
+        Args:
+            file: Uploaded audio file (WebM, WAV, MP3).
+
+        Returns:
+            AudioTranscriptionResult containing verbatim transcript.
+        """
+        content = await file.read()
+        mime_type = file.content_type or "audio/webm"
+        return audio_processor.transcribe(audio_bytes=content, mime_type=mime_type)
+
+    @app.post(
+        "/api/v1/rag/query",
+        response_model=QueryResult,
+        tags=["Multi-Agentic RAG"],
+    )
+    async def rag_query(request: QueryRequest) -> QueryResult:
+        """Execute hybrid semantic vector search and legal knowledge graph retrieval.
+
+        Args:
+            request: Search query and top_k parameter.
+
+        Returns:
+            QueryResult containing top chunks, legal triples, and uncertainty status.
+        """
+        return rag_engine.query(query_text=request.query, top_k=request.top_k)
 
     return app
 
