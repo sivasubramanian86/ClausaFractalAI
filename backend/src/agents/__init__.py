@@ -13,6 +13,7 @@ from agents.copilot_actions import (
     CounterClauseProposal,
 )
 from agents.critic_reflection import CriticReflectionAgent, CriticReviewResult
+from agents.orchestrator import LegalOrchestrator, OrchestratedResponse
 from agents.policy_collider import ImpactItem, PolicyColliderAgent, PolicyCollisionReport
 from agents.qa_analyst import LegalQAAnalystAgent, QAResponse
 from agents.router import RouterAgent, RouterResult
@@ -31,7 +32,9 @@ __all__ = [
     "CriticReflectionAgent",
     "CriticReviewResult",
     "ImpactItem",
+    "LegalOrchestrator",
     "LegalQAAnalystAgent",
+    "OrchestratedResponse",
     "PolicyColliderAgent",
     "PolicyCollisionReport",
     "QAResponse",

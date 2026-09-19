@@ -335,8 +335,23 @@ class RAGEngine:
 
         return contradictions
 
+    def get_document_chunks(self, document_id: str) -> List[DocumentChunk]:
+        """Retrieve all indexed chunks associated with a given document identifier.
+
+        Args:
+            document_id: Identifier of the parent document.
+
+        Returns:
+            List[DocumentChunk]: All chunks matching the document ID.
+        """
+        return [c for c in self.chunks if c.document_id == document_id]
+
     def query(
-        self, query_text: str, top_k: int = 5, similarity_threshold: float = 0.15
+        self,
+        query_text: Optional[str] = None,
+        top_k: int = 5,
+        similarity_threshold: float = 0.15,
+        query: Optional[str] = None,
     ) -> QueryResult:
         """Execute hybrid search combining FAISS vector similarity and graph triples.
 
@@ -344,20 +359,22 @@ class RAGEngine:
             query_text: User question or search clause.
             top_k: Maximum number of chunks to return.
             similarity_threshold: Minimum cosine similarity score required for grounding.
+            query: Alternative alias for query_text.
 
         Returns:
             QueryResult containing top chunks, related graph triples, and uncertainty flags.
         """
-        if not query_text or not self.chunks or self.index.ntotal == 0:
+        target_query = query if query is not None else (query_text or "")
+        if not target_query or not self.chunks or self.index.ntotal == 0:
             return QueryResult(
-                query=query_text,
+                query=target_query,
                 chunks=[],
                 triples=[],
                 is_uncertain=True,
                 uncertainty_message="I cannot determine this based on the provided document.",
             )
 
-        query_emb = self.compute_embedding(query_text).reshape(1, -1)
+        query_emb = self.compute_embedding(target_query).reshape(1, -1)
         k = min(top_k, self.index.ntotal)
         scores, indices = self.index.search(query_emb, k)
 
@@ -369,7 +386,7 @@ class RAGEngine:
                 matched_chunks.append(chunk)
 
         # Retrieve related triples
-        query_words = set(re.findall(r"\w+", query_text.lower()))
+        query_words = set(re.findall(r"\w+", target_query.lower()))
         matched_triples: List[LegalTriple] = []
         for triple in self.graph_triples:
             sub_words = set(re.findall(r"\w+", triple.subject.lower()))
@@ -379,7 +396,7 @@ class RAGEngine:
 
         if not matched_chunks:
             return QueryResult(
-                query=query_text,
+                query=target_query,
                 chunks=[],
                 triples=matched_triples,
                 is_uncertain=True,
@@ -387,7 +404,7 @@ class RAGEngine:
             )
 
         return QueryResult(
-            query=query_text,
+            query=target_query,
             chunks=matched_chunks,
             triples=matched_triples,
             is_uncertain=False,

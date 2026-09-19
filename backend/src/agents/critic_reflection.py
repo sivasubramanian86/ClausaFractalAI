@@ -22,6 +22,8 @@ class CriticReviewResult(BaseModel):
         critique: Detailed diagnostic feedback highlighting weaknesses or omissions.
         improved_answer: The refined response after autonomous reflection repair.
         iterations_count: Number of reflection and self-repair cycles completed.
+        verified_citations: List of validated citation coordinates.
+        critique_notes: Granular diagnostic reflection notes.
     """
 
     score: float = Field(ge=0.0, le=10.0)
@@ -29,6 +31,13 @@ class CriticReviewResult(BaseModel):
     critique: str
     improved_answer: str
     iterations_count: int = 1
+    verified_citations: List[Citation] = Field(default_factory=list)
+    critique_notes: List[str] = Field(default_factory=list)
+
+    @property
+    def fidelity_score(self) -> float:
+        """Return quantitative quality score."""
+        return self.score
 
 
 class CriticReflectionAgent:
@@ -45,12 +54,12 @@ class CriticReflectionAgent:
         """Calculate quantitative quality score (0.0 to 10.0) based on grounding metrics.
 
         Args:
-            answer: Candidate answer text.
-            citations: Accompanying source citation list.
-            retrieved_chunks: Ground truth context chunks from document.
+            answer: Generated candidate legal response.
+            citations: Extracted citation coordinates.
+            retrieved_chunks: Ground truth context segments retrieved from RAG.
 
         Returns:
-            Float score between 0.0 and 10.0.
+            Computed numerical fidelity score on 0.0 to 10.0 scale.
         """
         if not answer or not answer.strip():
             return 0.0
@@ -88,10 +97,10 @@ class CriticReflectionAgent:
         """Run self-improving reflection loop, repairing answers scoring below 8.0.
 
         Args:
-            query: Original user question.
-            answer: Initial generated answer.
-            citations: Accompanying citation list.
-            retrieved_chunks: Grounding document chunks.
+            query: User's original legal question.
+            answer: Initial draft answer produced by LegalQAAnalystAgent.
+            citations: Associated citation coordinates.
+            retrieved_chunks: Ground truth context chunks.
             max_iterations: Maximum allowed self-repair cycles.
 
         Returns:
@@ -108,6 +117,8 @@ class CriticReflectionAgent:
                 critique="Quality meets production standard. Citations verified against document.",
                 improved_answer=current_answer,
                 iterations_count=iterations,
+                verified_citations=citations,
+                critique_notes=["Quality meets production standard."],
             )
 
         # Execute autonomous repair cycle
@@ -117,11 +128,13 @@ class CriticReflectionAgent:
             "Insufficient citation grounding or unverified statements detected."
         )
 
+        repaired_citations: List[Citation] = []
         while iterations < max_iterations and initial_score < self.QUALITY_THRESHOLD:
             iterations += 1
             if not retrieved_chunks:
                 current_answer = VerificationGuard.DETERMINISTIC_UNKNOWN_MESSAGE
                 initial_score = 10.0
+                repaired_citations = []
                 break
 
             # Synthesize grounded answer anchored on top retrieved chunk
@@ -129,17 +142,18 @@ class CriticReflectionAgent:
             current_answer = (
                 f"According to Page {top_chunk.page_number} of the contract: {top_chunk.text}"
             )
+            repaired_citations = [
+                Citation(
+                    clause=f"Page {top_chunk.page_number}",
+                    page=top_chunk.page_number,
+                    snippet=top_chunk.text[:50],
+                    is_grounded=True,
+                )
+            ]
             # Re-evaluate
             initial_score = self.evaluate_quality(
                 current_answer,
-                [
-                    Citation(
-                        clause=f"Page {top_chunk.page_number}",
-                        page=top_chunk.page_number,
-                        snippet=top_chunk.text[:50],
-                        is_grounded=True,
-                    )
-                ],
+                repaired_citations,
                 retrieved_chunks,
             )
 
@@ -150,4 +164,6 @@ class CriticReflectionAgent:
             critique=critique,
             improved_answer=current_answer,
             iterations_count=iterations,
+            verified_citations=repaired_citations,
+            critique_notes=[critique],
         )

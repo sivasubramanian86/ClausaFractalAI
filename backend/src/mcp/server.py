@@ -198,5 +198,23 @@ class ModelContextProtocolServer:
 
         return {
             "status": "error",
-            "error": f"Unknown tool: '{name}'. Use list_tools() to inspect supported tools.",
+            "error": f"Unknown MCP tool: '{name}'. Use list_tools() to inspect supported tools.",
         }
+
+    def execute_tool(self, name: str, arguments: Dict[str, object]) -> Dict[str, object]:
+        """Execute a declared MCP tool or raise ValueError if unrecognized.
+
+        Args:
+            name: Tool name to execute.
+            arguments: Dictionary of arguments.
+
+        Returns:
+            Dict[str, object]: Tool output payload.
+
+        Raises:
+            ValueError: If tool name is unrecognized.
+        """
+        res = self.call_tool(name=name, arguments=arguments)
+        if res.get("status") == "error":
+            raise ValueError(str(res.get("error", f"Unknown tool: {name}")))
+        return res

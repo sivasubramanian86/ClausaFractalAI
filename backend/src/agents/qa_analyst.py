@@ -30,6 +30,7 @@ class QAResponse(BaseModel):
     complexity_level: str = "STANDARD"
     is_grounded: bool = True
     cached_tokens: int = 0
+    retrieved_chunks: List[DocumentChunk] = Field(default_factory=list)
 
 
 class LegalQAAnalystAgent:
@@ -81,6 +82,7 @@ class LegalQAAnalystAgent:
                 complexity_level=valid_level,
                 is_grounded=False,
                 cached_tokens=0,
+                retrieved_chunks=[],
             )
 
         # 2. Check Context Caching activation threshold (> 32,000 estimated tokens)
@@ -105,6 +107,7 @@ class LegalQAAnalystAgent:
                 complexity_level=valid_level,
                 is_grounded=verification.is_grounded,
                 cached_tokens=cached_tokens,
+                retrieved_chunks=query_result.chunks,
             )
 
         # 4. Generate with Gemini Client if configured
@@ -160,6 +163,7 @@ class LegalQAAnalystAgent:
                     complexity_level=valid_level,
                     is_grounded=verification.is_grounded,
                     cached_tokens=cached_tokens,
+                    retrieved_chunks=query_result.chunks,
                 )
             except Exception as err:
                 _ = err
@@ -181,4 +185,5 @@ class LegalQAAnalystAgent:
             complexity_level=valid_level,
             is_grounded=True,
             cached_tokens=cached_tokens,
+            retrieved_chunks=query_result.chunks,
         )
