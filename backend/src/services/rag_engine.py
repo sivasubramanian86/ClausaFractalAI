@@ -394,11 +394,80 @@ class RAGEngine:
             if query_words.intersection(sub_words) or query_words.intersection(rel_words):
                 matched_triples.append(triple)
 
-        if not matched_chunks:
+        # Check content keyword grounding against chunks and graph triples
+        stopwords = {
+            "what",
+            "where",
+            "when",
+            "which",
+            "does",
+            "have",
+            "with",
+            "this",
+            "that",
+            "from",
+            "they",
+            "will",
+            "would",
+            "could",
+            "should",
+            "party",
+            "parties",
+            "agreement",
+            "contract",
+            "clause",
+            "section",
+            "about",
+            "under",
+            "shall",
+            "must",
+            "terms",
+            "conditions",
+            "other",
+            "into",
+            "their",
+            "there",
+            "then",
+            "been",
+            "being",
+            "more",
+            "how",
+            "much",
+            "many",
+            "such",
+            "and",
+            "the",
+            "for",
+            "are",
+            "causes",
+            "rate",
+        }
+        content_words = [w for w in query_words if len(w) >= 3 and w not in stopwords]
+        corpus_text = " ".join(c.text.lower() for c in self.chunks)
+        triples_text = " ".join(
+            f"{t.subject} {t.relation} {t.object}".lower() for t in self.graph_triples
+        )
+        combined_knowledge = f"{corpus_text} {triples_text}"
+
+        def _is_word_grounded(w: str) -> bool:
+            clean_w = w.lower()
+            if clean_w in combined_knowledge:
+                return True
+            stem = clean_w.rstrip("s").rstrip("ed").rstrip("ing").rstrip("tion").rstrip("ment")
+            return len(stem) >= 3 and stem in combined_knowledge
+
+        unmatched_content = [w for w in content_words if not _is_word_grounded(w)]
+        is_ungrounded = bool(
+            content_words and (len(unmatched_content) / len(content_words) >= 0.35)
+        )
+
+        has_grounding = bool(matched_chunks or matched_triples)
+
+        if not has_grounding or is_ungrounded:
             return QueryResult(
                 query=target_query,
                 chunks=[],
-                triples=matched_triples,
+                triples=matched_triples if (matched_triples and not is_ungrounded) else [],
                 is_uncertain=True,
                 uncertainty_message="I cannot determine this based on the provided document.",
             )

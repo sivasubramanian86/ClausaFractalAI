@@ -457,6 +457,4 @@ async def call_mcp_tool(request: Request, call_req: MCPCallRequest) -> Dict[str,
     except ValueError as val_err:
         raise HTTPException(status_code=404, detail=str(val_err)) from val_err
     except Exception as err:
-        raise HTTPException(
-            status_code=500, detail=f"MCP tool execution failed: {err}"
-        ) from err
+        raise HTTPException(status_code=500, detail=f"MCP tool execution failed: {err}") from err
