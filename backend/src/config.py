@@ -33,13 +33,15 @@ class Settings(BaseSettings):
     app_version: str = "1.0.0"
     environment: str = Field(default="development", alias="ENVIRONMENT")
     port: int = Field(default=8000, alias="PORT")
-    gcp_project_id: str = Field(default="clausa-fractal-ai-dev", alias="GCP_PROJECT_ID")
-    gcp_location: str = Field(default="us-central1", alias="GCP_LOCATION")
+    gcp_project_id: str = Field(default="genai-apac-2026-491004", alias="GOOGLE_CLOUD_PROJECT")
+    gcp_location: str = Field(default="us-central1", alias="GOOGLE_CLOUD_LOCATION")
+    google_genai_use_vertexai: bool = Field(default=True, alias="GOOGLE_GENAI_USE_VERTEXAI")
 
-    # Vertex AI Model Topology (Standard 2026 Models)
-    router_model: str = "gemini-2.0-flash-lite-preview"
-    analyst_model: str = "gemini-3.8-flash-001"
-    synthesis_model: str = "gemini-3.8-pro-001"
+    # Vertex AI Model Topology (Verified Active on genai-apac-2026-491004)
+    router_model: str = "gemini-2.5-flash"
+    analyst_model: str = "gemini-2.5-flash"
+    synthesis_model: str = "gemini-2.5-pro"
+    agent_framework: str = "google-adk"
     context_caching_threshold: int = 32768
 
     # Security & CORS Whitelist
