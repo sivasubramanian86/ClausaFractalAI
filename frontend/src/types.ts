@@ -4,7 +4,29 @@
 
 export type ComplexityLevel = "eli5" | "standard" | "counsel" | "paranoid";
 
-export type LanguageCode = "en" | "es" | "fr" | "de" | "ja" | "hi";
+export type LanguageCode =
+  | "en"
+  | "fr"
+  | "ja"
+  | "ko"
+  | "es"
+  | "de"
+  | "it"
+  | "zh"
+  | "zh-HK"
+  | "ar"
+  | "pt"
+  | "ru"
+  | "sv"
+  | "tr"
+  | "ta"
+  | "hi"
+  | "te"
+  | "ml"
+  | "kn"
+  | "bn"
+  | "mr"
+  | "pa";
 
 export interface Citation {
   clause: string;

@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const tr: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "Otonom Hukuki Belge İstihbaratı ve Eylem Platformu",
+  uploadPrompt: "Hukuki PDF veya sözleşme taramasını buraya sürükleyip bırakın",
+  uploadButton: "Sözleşmeyi Yükle",
+  activeDoc: "Aktif Belge",
+  tabChat: "Doğrulanabilir Sohbet",
+  tabBlindspots: "Kör Nokta Matrisi",
+  tabPolicyCollider: "Politika Çarpıştırıcısı",
+  tabAttorneyPrep: "Avukat Danışma Hazırlık Sayfası",
+  tabCounterClauses: "Karşı Madde Yeniden Yazıcı",
+  sliderLabel: "Açıklama Derinliği",
+  eli5: "ELI5 (Basit)",
+  standard: "Standart",
+  counsel: "Hukuk Müşaviri",
+  paranoid: "Titiz Risk Denetimi",
+  askPlaceholder: "Bu sözleşmeyle ilgili bir soru sorun...",
+  voiceButtonAria: "Mikrofon ile hukuki sorunuzu seslendirin",
+  sendButton: "Analiz Et",
+  zeroHallucinationBadge: "Sıfır Halüsinasyon Doğrulaması Aktif",
+  citationBadge: "Madde Alıntısı Doğrulandı",
+  attorneyExportButton: "Hazırlık Sayfasını İndir",
+};

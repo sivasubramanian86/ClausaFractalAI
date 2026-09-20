@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const bn: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "স্বায়ত্তশাসিত আইনি নথি বুদ্ধিমত্তা এবং পদক্ষেপ প্ল্যাটফর্ম",
+  uploadPrompt: "আইনি PDF বা চুক্তির স্ক্যান এখানে টেনে আনুন",
+  uploadButton: "চুক্তি আপলোড করুন",
+  activeDoc: "সক্রিয় নথি",
+  tabChat: "যাচাইযোগ্য চ্যাট",
+  tabBlindspots: "অদৃশ্য ঝুঁকি ও ফাঁকফোকর ম্যাট্রিক্স",
+  tabPolicyCollider: "নীতিমালা দ্বন্দ্ব তুলনাকারী",
+  tabAttorneyPrep: "আইনজীবী পরামর্শ প্রস্তুতি পত্র",
+  tabCounterClauses: "চুক্তি ধারা সংশোধন সহায়ক",
+  sliderLabel: "ব্যাখ্যার গভীরতা",
+  eli5: "সহজ ভাষা (ELI5)",
+  standard: "মানক",
+  counsel: "আইন বিশেষজ্ঞ",
+  paranoid: "কঠোর ঝুঁকি নিরীক্ষা",
+  askPlaceholder: "এই চুক্তি সম্পর্কে কোনো প্রশ্ন জিজ্ঞাসা করুন...",
+  voiceButtonAria: "মাইক্রোফোনের মাধ্যমে আইনি প্রশ্ন বলুন",
+  sendButton: "বিশ্লেষণ করুন",
+  zeroHallucinationBadge: "নির্ভুল তথ্য যাচাইকরণ সক্রিয়",
+  citationBadge: "উদ্ধৃতি যাচাইকৃত",
+  attorneyExportButton: "প্রস্তুতি পত্র ডাউনলোড করুন",
+};

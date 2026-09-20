@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ru: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "Автономная платформа юридического анализа документов",
+  uploadPrompt: "Перетащите юридический PDF или скан договора сюда",
+  uploadButton: "Загрузить договор",
+  activeDoc: "Активный документ",
+  tabChat: "Проверяемый чат",
+  tabBlindspots: "Матрица слепых зон",
+  tabPolicyCollider: "Анализатор коллизий условий",
+  tabAttorneyPrep: "Памятка для консультации с юристом",
+  tabCounterClauses: "Генератор встречных формулировок",
+  sliderLabel: "Глубина пояснений",
+  eli5: "Простыми словами (ELI5)",
+  standard: "Стандартный",
+  counsel: "Юрисконсульт",
+  paranoid: "Параноидальный аудит рисков",
+  askPlaceholder: "Задайте вопрос по этому договору...",
+  voiceButtonAria: "Продиктовать юридический вопрос через микрофон",
+  sendButton: "Анализировать",
+  zeroHallucinationBadge: "Защита от галлюцинаций активна",
+  citationBadge: "Цитата подтверждена",
+  attorneyExportButton: "Экспортировать памятку",
+};

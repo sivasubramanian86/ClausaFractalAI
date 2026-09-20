@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { act } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
@@ -11,10 +12,19 @@ import { AttorneyPrepView } from "../components/AttorneyPrepView";
 import { CounterClauseView } from "../components/CounterClauseView";
 import { App } from "../App";
 
+import { ThemeProvider } from "../context/ThemeContext";
+import { AuthProvider } from "../context/AuthContext";
+
 describe("Frontend Components Test Suite", () => {
   it("renders Header with language selector and branding", () => {
     const handleLang = vi.fn();
-    render(<Header currentLanguage="en" onLanguageChange={handleLang} />);
+    render(
+      <ThemeProvider>
+        <AuthProvider>
+          <Header currentLanguage="en" onLanguageChange={handleLang} />
+        </AuthProvider>
+      </ThemeProvider>
+    );
 
     expect(screen.getByRole("heading", { level: 1, name: /ClausaFractalAI/i })).toBeInTheDocument();
 
@@ -227,14 +237,35 @@ describe("Frontend Components Test Suite", () => {
     expect(handleRewrite).toHaveBeenCalled();
   });
 
-  it("renders full App studio and switches tabs smoothly", () => {
+  it("renders full App studio and switches tabs smoothly", async () => {
+    // Stub governance endpoints so GovernanceView useEffect fetch doesn't warn
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("/api/governance/audit-trail")) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+      }
+      if (url.includes("/api/governance/vpc-status")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              status: "ENFORCED",
+              perimeter_name: "accessPolicies/p/servicePerimeters/clausa_perim",
+              protected_services: ["aiplatform.googleapis.com"],
+              ingress_policies_count: 1,
+              egress_policies_count: 0,
+            }),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    }) as any;
+
     render(<App />);
 
     expect(screen.getAllByText(/ClausaFractalAI/i).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Q&A Chat/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verifiable Chat/i)).toBeInTheDocument();
 
     // Switch to Blindspots tab
-    const blindspotsTab = screen.getByRole("button", { name: /Blindspots/i });
+    const blindspotsTab = screen.getByRole("button", { name: /Blindspot Matrix/i });
     fireEvent.click(blindspotsTab);
     expect(screen.getByText(/Blindspot Risk Matrix/i)).toBeInTheDocument();
 
@@ -244,13 +275,36 @@ describe("Frontend Components Test Suite", () => {
     expect(screen.getByText(/Policy Collider: Practical Impact Matrix/i)).toBeInTheDocument();
 
     // Switch to Attorney Prep tab
-    const prepTab = screen.getByRole("button", { name: /Attorney Prep/i });
+    const prepTab = screen.getByRole("button", { name: /Attorney Prep Sheet/i });
     fireEvent.click(prepTab);
     expect(screen.getByText(/Attorney Consultation Prep Sheet/i)).toBeInTheDocument();
 
     // Switch to Counter-Clauses tab
-    const counterTab = screen.getByRole("button", { name: /Counter-Clauses/i });
+    const counterTab = screen.getByRole("button", { name: /Clause Rewriter/i });
     fireEvent.click(counterTab);
     expect(screen.getByText(/Counter-Clause Negotiation Rewriter/i)).toBeInTheDocument();
-  });
+
+    // Test Navigation View switching: Analytics
+    const analyticsNav = screen.getByRole("button", { name: /Analytics & Telemetry/i });
+    fireEvent.click(analyticsNav);
+    expect(screen.getByText(/BigQuery Enterprise Legal Telemetry/i)).toBeInTheDocument();
+
+    // Test Navigation View switching: FAQ
+    const faqNav = screen.getByRole("button", { name: /Legal AI FAQ/i });
+    fireEvent.click(faqNav);
+    expect(screen.getByText(/Frequently Asked Questions/i)).toBeInTheDocument();
+
+    // Test Navigation View switching: About
+    const aboutNav = screen.getByRole("button", { name: /Agentic Architecture/i });
+    fireEvent.click(aboutNav);
+    expect(screen.getByText(/Agentic System Architecture/i)).toBeInTheDocument();
+
+    // Test Navigation View switching: Governance — wrap in act() to flush useEffect fetch
+    await act(async () => {
+      const govNav = screen.getByRole("button", { name: /Governance & VPC-SC/i });
+      fireEvent.click(govNav);
+    });
+    expect(screen.getByText(/Zero-Trust Security & Google Cloud Governance/i)).toBeInTheDocument();
+  }, 20000);
 });
+

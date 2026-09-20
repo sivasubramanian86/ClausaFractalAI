@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ml: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "സ്വയംഭരണ നിയമ രേഖ ബുദ്ധിശക്തിയും പ്രവർത്തന പ്ലാറ്റ്‌ഫോമും",
+  uploadPrompt: "നിയമപരമായ PDF അല്ലെങ്കിൽ കരാർ സ്കാൻ ഇവിടെ വലിച്ചിടുക",
+  uploadButton: "കരാർ അപ്‌ലോഡ് ചെയ്യുക",
+  activeDoc: "സജീവ പ്രമാണം",
+  tabChat: "പരിശോധിക്കാവുന്ന ചാറ്റ്",
+  tabBlindspots: "അവ്യക്തതകളും മറഞ്ഞിരിക്കുന്ന അപകടസാധ്യതകളും",
+  tabPolicyCollider: "നയ വ്യത്യാസ താരതമ്യം",
+  tabAttorneyPrep: "അഭിഭാഷക കൂടിയാലോചന തയ്യാറെടുപ്പ് ഷീറ്റ്",
+  tabCounterClauses: "കരാർ വ്യവസ്ഥ ഭേദഗതി ഉപകരണം",
+  sliderLabel: "വിശദീകരണത്തിന്റെ ആഴം",
+  eli5: "ലളിതമായ ഭാഷ (ELI5)",
+  standard: "സാധാരണ നിലവാരം",
+  counsel: "നിയമ വിദഗ്ധൻ",
+  paranoid: "കർശന റിസ്ക് ഓഡിറ്റ്",
+  askPlaceholder: "ഈ കരാറിനെക്കുറിച്ച് എന്തെങ്കിലും ചോദിക്കൂ...",
+  voiceButtonAria: "മൈക്രോഫോൺ ഉപയോഗിച്ച് നിയമപരമായ ചോദ്യം ചോദിക്കുക",
+  sendButton: "വിശകലനം ചെയ്യുക",
+  zeroHallucinationBadge: "തെറ്റില്ലാത്ത ഉറവിട പരിശോധന സജീവം",
+  citationBadge: "ഉദ്ധരണി സ്ഥിരീകരിച്ചു",
+  attorneyExportButton: "തയ്യാറെടുപ്പ് ഷീറ്റ് ഡൗൺലോഡ് ചെയ്യുക",
+};

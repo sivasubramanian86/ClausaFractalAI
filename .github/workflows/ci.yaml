@@ -1,4 +1,4 @@
-name: ClausaFractalAI CI/CD Quality Pipeline
+name: ClausaFractalAI Enterprise CI/CD Pipeline
 
 on:
   push:
@@ -10,8 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  secret-scan:
-    name: Gitleaks Secret & Credential Audit
+  # ── Gate 0: Secret Leak Prevention ──────────────────────────────────────────
+  security-audit:
+    name: Gitleaks & Secret Credential Audit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -19,15 +20,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Gitleaks Security Scan
+      - name: Run Gitleaks Scan
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: false
 
-  backend-quality-gates:
-    name: Python Lint, Bandit Security & 100% Coverage Gate
+  # ── Gate 1: Backend Quality ──────────────────────────────────────────────────
+  backend-verification-gates:
+    name: Backend Lint, Security & 100% Coverage Gate
     runs-on: ubuntu-latest
+    needs: security-audit
     defaults:
       run:
         working-directory: ./backend
@@ -44,7 +47,9 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff bandit pytest pytest-asyncio pytest-cov httpx pydantic pydantic-settings fastapi sse-starlette
+          pip install ruff bandit pytest pytest-asyncio pytest-cov httpx \
+            pydantic pydantic-settings fastapi sse-starlette google-cloud-bigquery \
+            google-cloud-firestore firebase-admin
 
       - name: Ruff Linter Check
         run: ruff check src/ tests/ scripts/
@@ -61,9 +66,11 @@ jobs:
       - name: Execute 10-Case Golden Hallucination Benchmark
         run: python scripts/evaluate_hallucinations.py
 
-  frontend-quality-gates:
-    name: Frontend TypeScript, Vitest & Production Build Gate
+  # ── Gate 2: Frontend Quality ─────────────────────────────────────────────────
+  frontend-verification-gates:
+    name: Frontend TypeScript, 100% Coverage & Production Build Gate
     runs-on: ubuntu-latest
+    needs: security-audit
     defaults:
       run:
         working-directory: ./frontend
@@ -84,8 +91,46 @@ jobs:
       - name: TypeScript Typecheck
         run: npm run type-check
 
-      - name: Run Vitest Component Tests
-        run: npm test
+      - name: Run Vitest Suite with 100% Coverage Enforcement
+        run: npx vitest run --coverage --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100
 
       - name: Verify Production Bundle Build
         run: npm run build
+
+  # ── Gate 3: Playwright E2E + WCAG Accessibility ──────────────────────────────
+  e2e-accessibility-gates:
+    name: Playwright E2E GUI & WCAG Accessibility Audit
+    runs-on: ubuntu-latest
+    needs: [backend-verification-gates, frontend-verification-gates]
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: ./frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E Tests (including WCAG ARIA checks)
+        run: npx playwright test
+        env:
+          CI: true
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7

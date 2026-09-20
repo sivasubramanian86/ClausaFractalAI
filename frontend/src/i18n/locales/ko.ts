@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ko: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "자율형 법률 문서 인텔리전스 및 액션 플랫폼",
+  uploadPrompt: "법률 PDF 또는 계약서 사진 스캔을 여기에 드래그 앤 드롭",
+  uploadButton: "계약서 업로드",
+  activeDoc: "활성 문서",
+  tabChat: "검증 가능 챗",
+  tabBlindspots: "사각지대 위험 매트릭스",
+  tabPolicyCollider: "정책 충돌 분석기",
+  tabAttorneyPrep: "변호사 자문 준비서",
+  tabCounterClauses: "조항 재협상 리라이터",
+  sliderLabel: "설명 상세 수준",
+  eli5: "쉬운 설명 (ELI5)",
+  standard: "표준",
+  counsel: "전문 법률",
+  paranoid: "엄격 리스크 감사",
+  askPlaceholder: "이 계약서에 대해 질문하세요...",
+  voiceButtonAria: "마이크로 법률 질문 음성 입력",
+  sendButton: "분석 실행",
+  zeroHallucinationBadge: "환각 제로 검증 가동 중",
+  citationBadge: "인용 근거 검증 완료",
+  attorneyExportButton: "자문 준비서 내보내기",
+};

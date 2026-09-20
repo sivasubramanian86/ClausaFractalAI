@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const mr: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "स्वायत्त कायदेशीर दस्तऐवज विश्लेषण आणि कृती मंच",
+  uploadPrompt: "कायदेशीर PDF किंवा कराराचे स्कॅन येथे ड्रॅग आणि ड्रॉप करा",
+  uploadButton: "करार अपलोड करा",
+  activeDoc: "सक्रिय दस्तऐवज",
+  tabChat: "सत्यापनीय चॅट",
+  tabBlindspots: "गुप्त धोके आणि त्रुटी मॅट्रिक्स",
+  tabPolicyCollider: "धोरण संघर्ष तुलना",
+  tabAttorneyPrep: "वकील सल्लामसलत तयारी पत्रक",
+  tabCounterClauses: "कलम पुनर्लेखन सहाय्यक",
+  sliderLabel: "स्पष्टीकरणाची खोली",
+  eli5: "सोपी भाषा (ELI5)",
+  standard: "प्रमाणित",
+  counsel: "कायदेशीर सल्लागार",
+  paranoid: "कठोर जोखीम तपासणी",
+  askPlaceholder: "या कराराबद्दल कोणताही कायदेशीर प्रश्न विचारा...",
+  voiceButtonAria: "मायक्रोफोनद्वारे कायदेशीर प्रश्न बोला",
+  sendButton: "विश्लेषण करा",
+  zeroHallucinationBadge: "शून्य भ्रम सत्यता पडताळणी सक्रिय",
+  citationBadge: "संदर्भ प्रमाणित",
+  attorneyExportButton: "तयारी पत्रक डाउनलोड करा",
+};

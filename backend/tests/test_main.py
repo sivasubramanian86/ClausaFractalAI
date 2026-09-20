@@ -16,6 +16,21 @@ async def test_lifespan() -> None:
         pass
 
 
+def test_main_sys_path_injection(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify that main.py ensures src is in sys.path when missing."""
+    import sys
+    from pathlib import Path
+
+    import main
+    from main import ensure_src_in_path
+
+    _src = str(Path(main.__file__).resolve().parent)
+    monkeypatch.setattr(sys, "path", [p for p in sys.path if p != _src])
+    assert _src not in sys.path
+    ensure_src_in_path()
+    assert _src in sys.path
+
+
 @pytest.mark.asyncio
 async def test_health_check_endpoint() -> None:
     """Verify that the /health endpoint returns 200 OK with correct payload."""

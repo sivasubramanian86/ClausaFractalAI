@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const zh_hk: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "自主法律文件智能分析與行動領航平台",
+  uploadPrompt: "將法律 PDF 或合約掃描檔拖放至此處",
+  uploadButton: "上傳合約文件",
+  activeDoc: "當前合約",
+  tabChat: "可驗證問答",
+  tabBlindspots: "合約盲點矩陣",
+  tabPolicyCollider: "政策衝突碰撞機",
+  tabAttorneyPrep: "律師諮詢準備清單",
+  tabCounterClauses: "條款談判修訂對案",
+  sliderLabel: "解釋深度",
+  eli5: "通俗易懂 (ELI5)",
+  standard: "標準分析",
+  counsel: "資深法務",
+  paranoid: "極限合規審查",
+  askPlaceholder: "輸入關於本合約的法律疑問...",
+  voiceButtonAria: "點擊麥克風語音錄入法律問題",
+  sendButton: "執行分析",
+  zeroHallucinationBadge: "零幻覺交叉溯源已啟動",
+  citationBadge: "條文依據核實",
+  attorneyExportButton: "匯出諮詢清單",
+};

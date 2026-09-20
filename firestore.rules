@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ClausaFractalAI Enterprise Security Rules
+    // Enforces Least-Privilege Role-Based Access Control (RBAC)
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+    
+    function isCounselOrAuditor() {
+      return isAuthenticated() && (getUserRole() in ['counsel', 'arbitrator', 'auditor', 'founder']);
+    }
+
+    // Contracts collection: readable by authenticated counsel/auditor, writeable by counsel/founder
+    match /contracts/{contractId} {
+      allow read: if isCounselOrAuditor();
+      allow create, update: if isAuthenticated() && (getUserRole() in ['counsel', 'founder']);
+      allow delete: if false; // Immutable contract repository
+    }
+
+    // Audit logs: Append-only immutable compliance records
+    match /audit_logs/{logId} {
+      allow read: if isAuthenticated() && (getUserRole() in ['auditor', 'counsel', 'founder']);
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Zero tampering allowed
+    }
+
+    // Attorney prep sheets & counter-clauses
+    match /prep_sheets/{sheetId} {
+      allow read, write: if isCounselOrAuditor();
+    }
+    
+    // Default deny for all other resources
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

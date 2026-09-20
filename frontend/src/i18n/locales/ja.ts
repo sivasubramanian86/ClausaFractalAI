@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ja: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "自律型法的文書インテリジェンス＆アクションプラットフォーム",
+  uploadPrompt: "法的文書PDFまたは契約書の写真スキャンをここにドラッグ",
+  uploadButton: "契約書をアップロード",
+  activeDoc: "アクティブな文書",
+  tabChat: "検証可能チャット",
+  tabBlindspots: "死角リスクマトリックス",
+  tabPolicyCollider: "規約コリジョン分析",
+  tabAttorneyPrep: "弁護士相談準備シート",
+  tabCounterClauses: "条項交渉リライター",
+  sliderLabel: "説明の深度",
+  eli5: "ELI5（平易）",
+  standard: "標準",
+  counsel: "法務プロフェッショナル",
+  paranoid: "リスク監査",
+  askPlaceholder: "この契約書について質問してください...",
+  voiceButtonAria: "マイクで法的質問を音声入力",
+  sendButton: "分析実行",
+  zeroHallucinationBadge: "ゼロ・ハルシネーション検証作動中",
+  citationBadge: "引用根拠検証済",
+  attorneyExportButton: "準備シート出力",
+};

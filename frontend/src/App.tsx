@@ -7,6 +7,13 @@ import { PolicyCollider, PolicyCollisionReportData } from "./components/PolicyCo
 import { AttorneyPrepView, AttorneyPrepSheetData } from "./components/AttorneyPrepView";
 import { CounterClauseView, CounterClauseData } from "./components/CounterClauseView";
 import { ComplexityLevel, LanguageCode, Citation } from "./types";
+import { getTranslation, isRTL } from "./i18n";
+import { Navigation, NavView } from "./components/Navigation";
+import { AnalyticsDashboard } from "./components/AnalyticsDashboard";
+import { FAQSection } from "./components/FAQSection";
+import { AboutSection } from "./components/AboutSection";
+import { GovernanceView } from "./components/GovernanceView";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import {
   MessageSquare,
   ShieldAlert,
@@ -15,8 +22,13 @@ import {
   FileEdit,
 } from "lucide-react";
 
-export const App: React.FC = () => {
+import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
+
+export const AppContent: React.FC = () => {
   const [language, setLanguage] = useState<LanguageCode>("en");
+  const t = getTranslation(language);
+  const [activeView, setActiveView] = useState<NavView>("studio");
   const [activeTab, setActiveTab] = useState<
     "chat" | "blindspots" | "policyCollider" | "attorneyPrep" | "counterClauses"
   >("chat");
@@ -412,151 +424,189 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-slate-100 flex flex-col font-sans selection:bg-legal-emerald selection:text-obsidian-950">
+    <div
+      dir={isRTL(language) ? "rtl" : "ltr"}
+      className="min-h-screen bg-obsidian-950 dark:bg-obsidian-950 light:bg-slate-50 text-slate-100 dark:text-slate-100 light:text-slate-900 flex flex-col font-sans selection:bg-legal-emerald selection:text-obsidian-950 transition-colors duration-200"
+    >
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
+      <Navigation activeView={activeView} onViewChange={setActiveView} t={t} />
 
       <main role="main" className="mx-auto flex w-full max-w-7xl flex-1 flex-col p-4 md:p-6 gap-6">
-        {/* Studio Workspace Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[680px]">
-          {/* Left Column: Document Viewer & Ingestion Stage (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col h-full">
-            <DocumentViewer
-              documentId={documentId}
-              filename={filename}
-              pages={pages}
-              activeHighlight={activeHighlight}
-              onFileUpload={handleFileUpload}
-              onAudioUpload={handleAudioUpload}
-              isUploading={isUploading}
-            />
-          </div>
-
-          {/* Right Column: Multi-Agent Intelligence Studio (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col h-full rounded-xl glass-panel border border-slate-800 overflow-hidden">
-            {/* Top Navigation Tabs */}
-            <nav
-              role="navigation"
-              aria-label="Studio Modes"
-              className="flex border-b border-slate-800/80 bg-slate-900/70 overflow-x-auto"
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTab("chat")}
-                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === "chat"
-                    ? "border-legal-emerald text-legal-emerald bg-slate-900/50"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <MessageSquare className="h-3.5 w-3.5" />
-                <span>Q&A Chat</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("blindspots")}
-                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === "blindspots"
-                    ? "border-legal-emerald text-legal-emerald bg-slate-900/50"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <ShieldAlert className="h-3.5 w-3.5" />
-                <span>Blindspots</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("policyCollider")}
-                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === "policyCollider"
-                    ? "border-legal-emerald text-legal-emerald bg-slate-900/50"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <GitCompare className="h-3.5 w-3.5" />
-                <span>Policy Collider</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("attorneyPrep")}
-                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === "attorneyPrep"
-                    ? "border-legal-emerald text-legal-emerald bg-slate-900/50"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <FileCheck2 className="h-3.5 w-3.5" />
-                <span>Attorney Prep</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("counterClauses")}
-                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === "counterClauses"
-                    ? "border-legal-emerald text-legal-emerald bg-slate-900/50"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <FileEdit className="h-3.5 w-3.5" />
-                <span>Counter-Clauses</span>
-              </button>
-            </nav>
-
-            {/* Tab Workspace Body */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {activeTab === "chat" && (
-                <ChatInterface
+        {activeView === "studio" && (
+          <ErrorBoundary fallbackTitle="Studio Workspace Disrupted">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[680px]">
+              {/* Left Column: Document Viewer & Ingestion Stage (6 cols) */}
+              <div className="lg:col-span-6 flex flex-col h-full">
+                <DocumentViewer
                   documentId={documentId}
-                  documentFilename={filename}
-                  complexity={complexity}
-                  onComplexityChange={setComplexity}
-                  onCitationClick={handleCitationClick}
-                  messages={messages}
-                  onSendMessage={handleSendMessage}
-                  isGenerating={isGenerating}
+                  filename={filename}
+                  pages={pages}
+                  activeHighlight={activeHighlight}
+                  onFileUpload={handleFileUpload}
+                  onAudioUpload={handleAudioUpload}
+                  isUploading={isUploading}
                 />
-              )}
+              </div>
 
-              {activeTab === "blindspots" && (
-                <BlindspotMatrix
-                  documentId={documentId}
-                  report={blindspotReport}
-                  isLoading={isTabLoading}
-                  onAudit={handleAuditBlindspots}
-                />
-              )}
+              {/* Right Column: Multi-Agent Intelligence Studio (6 cols) */}
+              <div className="lg:col-span-6 flex flex-col h-full rounded-xl glass-panel border border-slate-800 dark:border-slate-800 light:border-slate-300 overflow-hidden">
+                {/* Top Navigation Tabs */}
+                <nav
+                  role="navigation"
+                  aria-label="Studio Modes"
+                  className="flex border-b border-slate-800/80 dark:border-slate-800/80 light:border-slate-300 bg-slate-900/70 dark:bg-slate-900/70 light:bg-slate-100 overflow-x-auto"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("chat")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "chat"
+                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <MessageSquare className="h-3.5 w-3.5" />
+                    <span>{t.tabChat}</span>
+                  </button>
 
-              {activeTab === "policyCollider" && (
-                <PolicyCollider
-                  report={collisionReport}
-                  isLoading={isTabLoading}
-                  onCompare={handlePolicyCompare}
-                />
-              )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("blindspots")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "blindspots"
+                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    <span>{t.tabBlindspots}</span>
+                  </button>
 
-              {activeTab === "attorneyPrep" && (
-                <AttorneyPrepView
-                  sheet={prepSheet}
-                  isLoading={isTabLoading}
-                  onGenerate={handleGeneratePrep}
-                />
-              )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("policyCollider")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "policyCollider"
+                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <GitCompare className="h-3.5 w-3.5" />
+                    <span>{t.tabPolicyCollider}</span>
+                  </button>
 
-              {activeTab === "counterClauses" && (
-                <CounterClauseView
-                  proposal={counterProposal}
-                  isLoading={isTabLoading}
-                  onRewrite={handleRewriteClause}
-                />
-              )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("attorneyPrep")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "attorneyPrep"
+                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <FileCheck2 className="h-3.5 w-3.5" />
+                    <span>{t.tabAttorneyPrep}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("counterClauses")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "counterClauses"
+                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <FileEdit className="h-3.5 w-3.5" />
+                    <span>{t.tabCounterClauses}</span>
+                  </button>
+                </nav>
+
+                {/* Tab Workspace Body */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                  {activeTab === "chat" && (
+                    <ChatInterface
+                      documentId={documentId}
+                      documentFilename={filename}
+                      complexity={complexity}
+                      onComplexityChange={setComplexity}
+                      onCitationClick={handleCitationClick}
+                      messages={messages}
+                      onSendMessage={handleSendMessage}
+                      isGenerating={isGenerating}
+                    />
+                  )}
+
+                  {activeTab === "blindspots" && (
+                    <BlindspotMatrix
+                      documentId={documentId}
+                      report={blindspotReport}
+                      isLoading={isTabLoading}
+                      onAudit={handleAuditBlindspots}
+                    />
+                  )}
+
+                  {activeTab === "policyCollider" && (
+                    <PolicyCollider
+                      report={collisionReport}
+                      isLoading={isTabLoading}
+                      onCompare={handlePolicyCompare}
+                    />
+                  )}
+
+                  {activeTab === "attorneyPrep" && (
+                    <AttorneyPrepView
+                      sheet={prepSheet}
+                      isLoading={isTabLoading}
+                      onGenerate={handleGeneratePrep}
+                    />
+                  )}
+
+                  {activeTab === "counterClauses" && (
+                    <CounterClauseView
+                      proposal={counterProposal}
+                      isLoading={isTabLoading}
+                      onRewrite={handleRewriteClause}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </ErrorBoundary>
+        )}
+
+        {activeView === "analytics" && (
+          <ErrorBoundary fallbackTitle="Analytics Dashboard Disrupted">
+            <AnalyticsDashboard t={t} />
+          </ErrorBoundary>
+        )}
+        {activeView === "faq" && (
+          <ErrorBoundary fallbackTitle="Legal FAQ Disrupted">
+            <FAQSection t={t} />
+          </ErrorBoundary>
+        )}
+        {activeView === "about" && (
+          <ErrorBoundary fallbackTitle="Architecture Section Disrupted">
+            <AboutSection t={t} />
+          </ErrorBoundary>
+        )}
+        {activeView === "governance" && (
+          <ErrorBoundary fallbackTitle="Governance Console Disrupted">
+            <GovernanceView t={t} />
+          </ErrorBoundary>
+        )}
       </main>
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

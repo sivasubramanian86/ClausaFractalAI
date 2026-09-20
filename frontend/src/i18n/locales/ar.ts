@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ar: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "منصة ذكاء المستندات القانونية وإجراءات العقود المؤتمتة",
+  uploadPrompt: "اسحب وأفلت مستند PDF القانوني أو صورة العقد هنا",
+  uploadButton: "تحميل العقد",
+  activeDoc: "المستند النشط",
+  tabChat: "محادثة قابلة للتحقق",
+  tabBlindspots: "مصفوفة الثغرات التعاقدية",
+  tabPolicyCollider: "مقارن السياسات والشروط",
+  tabAttorneyPrep: "ورقة إعداد استشارة المحامي",
+  tabCounterClauses: "إعادة صياغة البنود التفاوضية",
+  sliderLabel: "عمق الشرح والتفصيل",
+  eli5: "مبسط للغاية (ELI5)",
+  standard: "قياسي",
+  counsel: "مستشار قانوني",
+  paranoid: "فحص مخاطر صارم",
+  askPlaceholder: "اطرح أي سؤال حول هذا العقد...",
+  voiceButtonAria: "إملاء السؤال القانوني صوتياً عبر الميكروفون",
+  sendButton: "تحليل",
+  zeroHallucinationBadge: "نظام التحقق ضد الهلوسة نشط",
+  citationBadge: "اقتباس موثق",
+  attorneyExportButton: "تصدير ورقة الاستشارة",
+};

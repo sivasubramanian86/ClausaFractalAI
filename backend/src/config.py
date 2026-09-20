@@ -27,7 +27,9 @@ class Settings(BaseSettings):
         allowed_origins: CORS origin whitelist.
     """
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True
+    )
 
     app_name: str = "ClausaFractalAI"
     app_version: str = "1.0.0"
@@ -36,6 +38,7 @@ class Settings(BaseSettings):
     gcp_project_id: str = Field(default="genai-apac-2026-491004", alias="GOOGLE_CLOUD_PROJECT")
     gcp_location: str = Field(default="us-central1", alias="GOOGLE_CLOUD_LOCATION")
     google_genai_use_vertexai: bool = Field(default=True, alias="GOOGLE_GENAI_USE_VERTEXAI")
+    auth_enforced: bool = Field(default=False, alias="AUTH_ENFORCED")
 
     # Vertex AI Model Topology (Primary 3.8 with Verified 2.5 Fallback)
     router_model: str = "gemini-3.8-flash-001"

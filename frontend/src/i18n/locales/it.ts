@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const it: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "Piattaforma Autonoma di Intelligence Documentale Giuridica",
+  uploadPrompt: "Trascina qui il PDF legale o la scansione del contratto",
+  uploadButton: "Carica Contratto",
+  activeDoc: "Documento Attivo",
+  tabChat: "Chat Verificabile",
+  tabBlindspots: "Matrice Zone D'Ombra",
+  tabPolicyCollider: "Analizzatore di Collisione Clausole",
+  tabAttorneyPrep: "Scheda Preparazione Avvocato",
+  tabCounterClauses: "Riscrizione Clausole",
+  sliderLabel: "Profondità di Spiegazione",
+  eli5: "ELI5 (Semplice)",
+  standard: "Standard",
+  counsel: "Legale",
+  paranoid: "Rischio Paranoico",
+  askPlaceholder: "Fai una domanda su questo contratto...",
+  voiceButtonAria: "Detta la domanda legale al microfono",
+  sendButton: "Analizza",
+  zeroHallucinationBadge: "Zero Allucinazioni Attivo",
+  citationBadge: "Citazione Verificata",
+  attorneyExportButton: "Esporta Scheda Legale",
+};

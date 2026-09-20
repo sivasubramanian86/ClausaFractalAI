@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const pa: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "ਖੁਦਮੁਖਤਿਆਰ ਕਾਨੂੰਨੀ ਦਸਤਾਵੇਜ਼ ਬੁੱਧੀ ਅਤੇ ਕਾਰਵਾਈ ਪਲੇਟਫਾਰਮ",
+  uploadPrompt: "ਕਾਨੂੰਨੀ PDF ਜਾਂ ਇਕਰਾਰਨਾਮੇ ਦੀ ਸਕੈਨ ਇੱਥੇ ਖਿੱਚੋ ਅਤੇ ਛੱਡੋ",
+  uploadButton: "ਇਕਰਾਰਨਾਮਾ ਅੱਪਲੋਡ ਕਰੋ",
+  activeDoc: "ਸਰਗਰਮ ਦਸਤਾਵੇਜ਼",
+  tabChat: "ਪੜਤਾਲਯੋਗ ਗੱਲਬਾਤ",
+  tabBlindspots: "ਅਣਦੇਖੇ ਖਤਰੇ ਅਤੇ ਕਮੀਆਂ ਮੈਟ੍ਰਿਕਸ",
+  tabPolicyCollider: "ਨੀਤੀ ਟਕਰਾਅ ਤੁਲਨਾਕਾਰ",
+  tabAttorneyPrep: "ਵਕੀਲ ਸਲਾਹ-ਮਸ਼ਵਰਾ ਤਿਆਰੀ ਸ਼ੀਟ",
+  tabCounterClauses: "ਧਾਰਾ ਮੁੜ-ਲਿਖਤ ਸਹਾਇਕ",
+  sliderLabel: "ਵਿਆਖਿਆ ਦੀ ਡੂੰਘਾਈ",
+  eli5: "ਸਰਲ ਭਾਸ਼ਾ (ELI5)",
+  standard: "ਮਿਆਰੀ",
+  counsel: "ਕਾਨੂੰਨੀ ਮਾਹਰ",
+  paranoid: "ਸਖ਼ਤ ਖਤਰਾ ਜਾਂਚ",
+  askPlaceholder: "ਇਸ ਇਕਰਾਰਨਾਮੇ ਬਾਰੇ ਕੋਈ ਸਵਾਲ ਪੁੱਛੋ...",
+  voiceButtonAria: "ਮਾਈਕ੍ਰੋਫੋਨ ਰਾਹੀਂ ਕਾਨੂੰਨੀ ਸਵਾਲ ਬੋਲੋ",
+  sendButton: "ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ",
+  zeroHallucinationBadge: "ਸੱਚਾਈ ਪੜਤਾਲ ਸਰਗਰਮ",
+  citationBadge: "ਹਵਾਲਾ ਪ੍ਰਮਾਣਿਤ",
+  attorneyExportButton: "ਤਿਆਰੀ ਸ਼ੀਟ ਡਾਊਨਲੋਡ ਕਰੋ",
+};

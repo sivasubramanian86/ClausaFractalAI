@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const kn: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "ಸ್ವಾಯತ್ತ ಕಾನೂನು ದಾಖಲೆಗಳ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಕ್ರಿಯಾ ವೇದಿಕೆ",
+  uploadPrompt: "ಕಾನೂನು PDF ಅಥವಾ ಒಪ್ಪಂದದ ಸ್ಕ್ಯಾನ್ ಅನ್ನು ಇಲ್ಲಿ ಎಳೆಯಿರಿ",
+  uploadButton: "ಒಪ್ಪಂದವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+  activeDoc: "ಸಕ್ರಿಯ ದಾಖಲೆ",
+  tabChat: "ಪರಿಶೀಲಿಸಬಹುದಾದ ಚಾಟ್",
+  tabBlindspots: "ಅಪಾಯಗಳ ಮತ್ತು ದೋಷಗಳ ಮ್ಯಾಟ್ರಿಕ್ಸ್",
+  tabPolicyCollider: "ನೀತಿ ಘರ್ಷಣೆಗಳ ಹೋಲಿಕೆ",
+  tabAttorneyPrep: "ವಕೀಲರ ಸಮಾಲೋಚನೆ ಸಿದ್ಧತಾ ಹಾಳೆ",
+  tabCounterClauses: "ಷರತ್ತುಗಳ ತಿದ್ದುಪಡಿ ರಿರೈಟರ್",
+  sliderLabel: "ವಿವರಣೆಯ ಆಳ",
+  eli5: "ಸುಲಭ ವಿವರಣೆ (ELI5)",
+  standard: "ಪ್ರಮಾಣಿತ",
+  counsel: "ಕಾನೂನು ಸಲಹೆಗಾರ",
+  paranoid: "ಕಟ್ಟುನಿಟ್ಟಾದ ಅಪಾಯ ಪರಿಶೀಲನೆ",
+  askPlaceholder: "ಈ ಒಪ್ಪಂದದ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ ಕೇಳಿ...",
+  voiceButtonAria: "ಮೈಕ್ರೊಫೋನ್ ಮೂಲಕ ಕಾನೂನು ಪ್ರಶ್ನೆ ಮಾತನಾಡಿ",
+  sendButton: "ವಿಶ್ಲೇಷಿಸಿ",
+  zeroHallucinationBadge: "ನಿಖರ ಮೂಲ ದೃಢೀಕರಣ ಸಕ್ರಿಯವಾಗಿದೆ",
+  citationBadge: "ಆಧಾರ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+  attorneyExportButton: "ಸಿದ್ಧತಾ ಹಾಳೆಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+};

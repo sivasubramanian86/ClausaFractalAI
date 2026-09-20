@@ -4,8 +4,20 @@ Exposes REST and SSE endpoints with dynamic security headers, CORS protection,
 multimodal document ingestion, multi-agent legal reasoning, and Model Context Protocol tools.
 """
 
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncIterator, Dict
+
+
+def ensure_src_in_path() -> None:
+    """Ensure backend src directory is on sys.path for direct module resolution."""
+    _src_dir = str(Path(__file__).resolve().parent)
+    if _src_dir not in sys.path:
+        sys.path.insert(0, _src_dir)
+
+
+ensure_src_in_path()
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware

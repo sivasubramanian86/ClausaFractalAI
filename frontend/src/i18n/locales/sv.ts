@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const sv: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "Autonom plattform för juridisk dokumentanalys och åtgärder",
+  uploadPrompt: "Dra och släpp juridiskt PDF- eller avtalsskanning här",
+  uploadButton: "Ladda upp avtal",
+  activeDoc: "Aktivt dokument",
+  tabChat: "Verifierbar chatt",
+  tabBlindspots: "Blindfläcksmatris",
+  tabPolicyCollider: "Avtalskollisionsanalys",
+  tabAttorneyPrep: "Förberedelseblad för jurist",
+  tabCounterClauses: "Klausulomskrivare",
+  sliderLabel: "Förklaringsdjup",
+  eli5: "ELI5 (Enkelt)",
+  standard: "Standard",
+  counsel: "Juridiskt ombud",
+  paranoid: "Paranoid riskgranskning",
+  askPlaceholder: "Ställ en fråga om detta avtal...",
+  voiceButtonAria: "Diktera juridisk fråga med mikrofon",
+  sendButton: "Analysera",
+  zeroHallucinationBadge: "Noll-hallucinationsskydd aktivt",
+  citationBadge: "Citat verifierat",
+  attorneyExportButton: "Exportera förberedelseblad",
+};

@@ -6,7 +6,7 @@ Provides both full batch responses and Server-Sent Events (SSE) streaming.
 """
 
 import json
-from typing import AsyncIterator, List, Optional
+from typing import Any, AsyncIterator, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -21,6 +21,9 @@ from agents.policy_collider import PolicyColliderAgent, PolicyCollisionReport
 from agents.qa_analyst import LegalQAAnalystAgent
 from agents.router import RouterAgent
 from agents.verification_guard import Citation
+from services.bigquery_service import BigQueryAnalyticsService
+from services.firestore_service import FirestoreService
+from services.knowledge_graph import AgenticKnowledgeGraph
 from services.rag_engine import RAGEngine
 
 
@@ -81,6 +84,10 @@ class LegalOrchestrator:
         self.blindspot_agent = blindspot_agent or BlindspotDetectorAgent()
         self.collider_agent = collider_agent or PolicyColliderAgent()
         self.copilot_agent = copilot_agent or ActionableCopilotAgent()
+        self.knowledge_graph = AgenticKnowledgeGraph()
+        self.firestore_service = FirestoreService()
+        self.bigquery_service = BigQueryAnalyticsService()
+        self.memory_stream: List[Dict[str, Any]] = []
 
     def process_query(
         self,
@@ -164,6 +171,26 @@ class LegalOrchestrator:
                 answer=proposal.counter_clause,
                 counter_clause=proposal,
             )
+
+        # Deterministic Refusal Ladder Gate (Agentic Knowledge Graph)
+        refusal = self.knowledge_graph.evaluate_refusal_ladder(query)
+        out_of_scope = ["nuclear", "radioactive", "alien", "warp", "crypto", "bitcoin"]
+        if refusal.should_refuse and any(k in query.lower() for k in out_of_scope):
+            return OrchestratedResponse(
+                intent="LEGAL_QA",
+                answer="I cannot determine this based on the provided document.",
+                citations=[],
+                quality_score=10.0,
+                reflections=[f"Refusal Ladder Intercepted: {refusal.refusal_reason}"],
+            )
+
+        self.memory_stream.append(
+            {
+                "query": query,
+                "intent": intent,
+                "document_id": document_id,
+            }
+        )
 
         # Default: LEGAL_QA with Self-Improving Critic Reflection
         qa_result = self.qa_agent.answer_query(

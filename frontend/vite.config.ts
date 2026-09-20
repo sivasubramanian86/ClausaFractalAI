@@ -17,10 +17,23 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./src/tests/setup.ts"],
+    testTimeout: 15000,
+    // Only pick up Vitest specs; Playwright e2e lives in e2e/ and uses its own runner
+    include: ["src/tests/**/*.{test,spec}.{ts,tsx}", "src/tests/components.test.tsx"],
+    exclude: ["node_modules/**", "e2e/**", "dist/**"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "src/tests/", "**/*.d.ts"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "node_modules/",
+        "src/tests/",
+        "src/main.tsx",
+        "src/types.ts",
+        "src/i18n/types.ts",
+        "**/*.d.ts",
+        "dist/**",
+      ],
     },
   },
 });

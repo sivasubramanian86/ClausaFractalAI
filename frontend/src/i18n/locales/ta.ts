@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const ta: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "தன்னாட்சி சட்ட ஆவண நுண்ணறிவு மற்றும் ஒப்பந்த செயல் தளம்",
+  uploadPrompt: "சட்ட ஒப்பந்த PDF அல்லது ஆவணப் புகைப்படத்தை இங்கே இழுத்து விடவும்",
+  uploadButton: "ஒப்பந்தத்தை பதிவேற்றவும்",
+  activeDoc: "தற்போதைய ஆவணம்",
+  tabChat: "சரிபார்க்கக்கூடிய உரையாடல்",
+  tabBlindspots: "ஒப்பந்த குறைபாடுகள் & மறைக்கப்பட்ட இடர்கள்",
+  tabPolicyCollider: "விதிமுறைகள் மோதல் ஒப்பீடு",
+  tabAttorneyPrep: "வழக்கறிஞர் கலந்தாய்வு தயாரிப்புத்தாள்",
+  tabCounterClauses: "மறுஒப்பந்த வரைவு சீரமைப்பாளர்",
+  sliderLabel: "விளக்க ஆழம்",
+  eli5: "எளிய விளக்கம் (ELI5)",
+  standard: "நிலையானது",
+  counsel: "சட்ட ஆலோசகர்",
+  paranoid: "கடுமையான இடர் தணிக்கை",
+  askPlaceholder: "இந்த ஒப்பந்தம் குறித்த உங்கள் சட்டக் கேள்வியை கேட்கவும்...",
+  voiceButtonAria: "மைக்ரோஃபோன் மூலம் சட்டக் கேள்வியைப் பேசவும்",
+  sendButton: "பகுப்பாய்வு செய்",
+  zeroHallucinationBadge: "பொய்யற்ற சான்று சரிபார்ப்பு இயங்குகிறது",
+  citationBadge: "மேற்கோள் உறுதிப்படுத்தப்பட்டது",
+  attorneyExportButton: "தயாரிப்புத்தாளைப் பதிவிறக்கு",
+};

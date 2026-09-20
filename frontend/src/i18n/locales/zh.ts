@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const zh: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "自主法律合同智能洞察与行动领航平台",
+  uploadPrompt: "将法律 PDF 或合同扫描件拖放到此处",
+  uploadButton: "上传合同文件",
+  activeDoc: "当前文档",
+  tabChat: "可验证问答",
+  tabBlindspots: "合同盲点矩阵",
+  tabPolicyCollider: "政策冲突碰撞机",
+  tabAttorneyPrep: "律师咨询准备单",
+  tabCounterClauses: "条款谈判对案改写",
+  sliderLabel: "解释深度",
+  eli5: "通俗易懂 (ELI5)",
+  standard: "标准分析",
+  counsel: "资深法务",
+  paranoid: "极限合规审查",
+  askPlaceholder: "输入关于本合同的法律疑问...",
+  voiceButtonAria: "点击麦克风语音录入法律问题",
+  sendButton: "执行分析",
+  zeroHallucinationBadge: "零幻觉交叉溯源已激活",
+  citationBadge: "条文依据核实",
+  attorneyExportButton: "导出咨询准备单",
+};

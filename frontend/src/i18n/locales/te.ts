@@ -1,0 +1,25 @@
+import { LocaleDictionary } from "../types";
+
+export const te: LocaleDictionary = {
+  appTitle: "ClausaFractalAI",
+  subtitle: "స్వయంప్రతిపత్తి చట్టపరమైన పత్రాల ఇంటెలిజెన్స్ ప్లాట్‌ఫామ్",
+  uploadPrompt: "లీగల్ PDF లేదా కాంట్రాక్ట్ స్కాన్‌ను ఇక్కడ డ్రాగ్ చేయండి",
+  uploadButton: "కాంట్రాక్ట్ అప్‌లోడ్ చేయండి",
+  activeDoc: "ప్రస్తుత పత్రం",
+  tabChat: "ధృవీకరించదగిన చాట్",
+  tabBlindspots: "బ్లైండ్‌స్పాట్స్ రిస్క్ మ్యాట్రిక్స్",
+  tabPolicyCollider: "విధానాల వైరుధ్య పోలిక",
+  tabAttorneyPrep: "న్యాయవాది సంప్రదింపు సన్నాహక పత్రం",
+  tabCounterClauses: "నిబంధనల సవరణ రీరైటర్",
+  sliderLabel: "వివరణ లోతు",
+  eli5: "సరళమైన భాష (ELI5)",
+  standard: "ప్రామాణికం",
+  counsel: "న్యాయ నిపుణుడు",
+  paranoid: "తీవ్ర రిస్క్ తనిఖీ",
+  askPlaceholder: "ఈ కాంట్రాక్ట్ గురించి ఏదైనా ప్రశ్న అడగండి...",
+  voiceButtonAria: "మైక్రోఫోన్ ద్వారా ప్రశ్నను మాట్లాడండి",
+  sendButton: "విశ్లేషించండి",
+  zeroHallucinationBadge: "ఖచ్చితమైన ఆధార ధృవీకరణ యాక్టివ్‌లో ఉంది",
+  citationBadge: "ఆధారం ధృవీకరించబడింది",
+  attorneyExportButton: "సన్నాహక పత్రాన్ని డౌన్‌లోడ్ చేయండి",
+};
