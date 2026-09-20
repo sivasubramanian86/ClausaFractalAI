@@ -50,3 +50,6 @@ uploads/
 # Prompt files and session memories (internal collateral)
 phase-*.md
 docs/prompts/
+*session_memory*.md
+clausafractal*.md
+clausafracta*.md
