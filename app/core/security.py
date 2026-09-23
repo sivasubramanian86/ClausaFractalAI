@@ -25,14 +25,16 @@ class CapabilityToken:
         allowed_tools: List[str],
         expires_at: int,
         max_executions: int = 10,
+        audience: str = "agent://clausafractalai",
         metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
-        """Initialize capability token claims."""
+        """Initialize capability token claims with RFC 7519 audience boundary."""
         self.tenant_id = tenant_id
         self.agent_id = agent_id
         self.allowed_tools = allowed_tools
         self.expires_at = expires_at
         self.max_executions = max_executions
+        self.audience = audience
         self.metadata = metadata or {}
 
     def to_dict(self) -> Dict[str, Any]:
@@ -43,6 +45,7 @@ class CapabilityToken:
             "allowed_tools": self.allowed_tools,
             "expires_at": self.expires_at,
             "max_executions": self.max_executions,
+            "audience": self.audience,
             "metadata": self.metadata,
         }
 
@@ -75,12 +78,17 @@ class CapabilityToken:
         if int(time.time()) > claims.get("expires_at", 0):
             raise SecurityGovernanceError("Capability token has expired.")
 
+        audience = claims.get("audience", "agent://clausafractalai")
+        if audience != "agent://clausafractalai":
+            raise SecurityGovernanceError(f"Invalid capability token audience: '{audience}'.")
+
         return cls(
             tenant_id=claims["tenant_id"],
             agent_id=claims["agent_id"],
             allowed_tools=claims.get("allowed_tools", []),
             expires_at=claims["expires_at"],
             max_executions=claims.get("max_executions", 10),
+            audience=audience,
             metadata=claims.get("metadata", {}),
         )
 

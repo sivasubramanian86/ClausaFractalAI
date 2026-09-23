@@ -70,16 +70,46 @@ def dlp_processor(
     return dlp_scrub_dict(event_dict)
 
 
-# Initialize OpenTelemetry
-trace.set_tracer_provider(TracerProvider())
+def inject_trace_context(
+    logger: logging.Logger, method_name: str, event_dict: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Structlog processor injecting active W3C OpenTelemetry trace_id and span_id."""
+    span = trace.get_current_span()
+    span_ctx = span.get_span_context() if span else None
+    if span_ctx and span_ctx.is_valid:
+        trace_id = f"{span_ctx.trace_id:032x}"
+        span_id = f"{span_ctx.span_id:016x}"
+        event_dict["trace_id"] = trace_id
+        event_dict["span_id"] = span_id
+        event_dict["logging.googleapis.com/trace"] = f"projects/clausafractalai/traces/{trace_id}"
+        event_dict["logging.googleapis.com/spanId"] = span_id
+    return event_dict
+
+
+# Initialize OpenTelemetry with BatchSpanProcessor
+tracer_provider = TracerProvider()
+
+try:
+    from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+    tracer_provider.add_span_processor(BatchSpanProcessor(CloudTraceSpanExporter()))
+except (ImportError, Exception):
+    from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+    from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+
+    tracer_provider.add_span_processor(SimpleSpanProcessor(InMemorySpanExporter()))
+
+trace.set_tracer_provider(tracer_provider)
 tracer = trace.get_tracer("clausafractalai-mesh", "2.0.0")
 
-# Structlog Configuration
+# Structlog Configuration with Trace-to-Log Correlation
 structlog.configure(
     processors=[
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
+        inject_trace_context,
         dlp_processor,
         structlog.processors.JSONRenderer(),
     ],

@@ -5,9 +5,9 @@ variable "project_id" {
 }
 
 variable "region" {
-  description = "Google Cloud Region for deployment"
+  description = "Google Cloud Region for deployment (defaults to asia-south1 Mumbai for DPDP data residency)"
   type        = string
-  default     = "us-central1"
+  default     = "asia-south1"
 }
 
 variable "service_name" {

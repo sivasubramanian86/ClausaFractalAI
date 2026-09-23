@@ -98,6 +98,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div
         role="region"
         aria-label="Conversation Thread"
+        aria-live="polite"
+        aria-atomic="false"
         className="flex-1 p-4 overflow-y-auto space-y-4"
       >
         {messages.length === 0 ? (

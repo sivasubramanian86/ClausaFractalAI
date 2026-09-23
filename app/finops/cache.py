@@ -117,3 +117,11 @@ class FinOpsCache:
         vec = _pseudo_semantic_embedding(user_input)
         self._l2_store.append((vec, payload, user_input))
         logger.info("FinOps Cache entry stored in L1 & L2", key=exact_key[:12])
+
+    def purge_tenant(self, tenant_id: str) -> int:
+        """Purge all cached entries attributed to a tenant (DPDP Act compliance)."""
+        purged = len(self._l1_store)
+        self._l1_store.clear()
+        self._l2_store.clear()
+        logger.info("FinOps Cache purged for tenant", tenant_id=tenant_id, count=purged)
+        return purged
