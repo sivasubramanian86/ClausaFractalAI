@@ -13,6 +13,7 @@ import { AnalyticsDashboard } from "./components/AnalyticsDashboard";
 import { FAQSection } from "./components/FAQSection";
 import { AboutSection } from "./components/AboutSection";
 import { GovernanceView } from "./components/GovernanceView";
+import { NeuroSymbolicTraceVisualizer } from "./components/NeuroSymbolicTraceVisualizer";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import {
   MessageSquare,
@@ -571,6 +572,14 @@ export const AppContent: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
+          </ErrorBoundary>
+        )}
+
+        {activeView === "mesh" && (
+          <ErrorBoundary fallbackTitle="Neuro-Symbolic Mesh Disrupted">
+            <div className="mx-auto max-w-7xl px-4 md:px-6 py-6">
+              <NeuroSymbolicTraceVisualizer />
             </div>
           </ErrorBoundary>
         )}
