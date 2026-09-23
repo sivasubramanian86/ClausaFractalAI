@@ -24,6 +24,11 @@ lint:
 	$(PYTHON) -m ruff check app/ backend/ tests/
 	$(PYTHON) -m ruff format --check app/ backend/ tests/
 
+security-scan:
+	$(PYTHON) -m bandit -r app/ backend/src/ -ll
+	$(PYTHON) scripts/scan_frontend.py
+	cd frontend && npm audit --omit=dev
+
 test:
 	$(PYTHON) -m pytest tests/ backend/tests/ -v
 

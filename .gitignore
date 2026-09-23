@@ -46,6 +46,7 @@ uploads/
 *.zip
 *.tar.gz
 *.log
+!docs/images/*
 
 # Prompt files and session memories (internal collateral)
 phase-*.md
