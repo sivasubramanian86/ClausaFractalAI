@@ -1,21 +1,45 @@
+/**
+ * @file AppStudioNavigation.test.tsx
+ * @description Integration tests for ClausaFractalAI studio UI — cross-component rendering
+ * and navigation flows.
+ *
+ * These tests exercise multiple components together, including the full <App /> shell,
+ * to verify that navigation tabs, context providers (ThemeProvider, AuthProvider),
+ * and individual studio components integrate correctly.
+ *
+ * Test categories:
+ *  - Header: branding, language selector, ARIA combobox
+ *  - DocumentViewer: page rendering, pagination, citation highlight
+ *  - ChatInterface: agent messages, citation chips, complexity toggle, question send
+ *  - BlindspotMatrix: compliance report rendering, audit trigger
+ *  - PolicyCollider: collision submission, RIGHTS_SURRENDERED impact display
+ *  - AttorneyPrepView: prep sheet rendering, generate button
+ *  - CounterClauseView: redline proposal display, rewrite trigger
+ *  - Full App studio: all navigation tabs and views, Governance useEffect fetch stubbing
+ *
+ * @note All fetch calls are stubbed via (globalThis as any).fetch to prevent real network
+ *       calls in jsdom. Governance tab navigation is wrapped in act() to flush async
+ *       useEffect fetch → setState sequences.
+ */
+
 import { describe, it, expect, vi } from "vitest";
 import { act } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import { Header } from "../components/Header";
-import { DocumentViewer } from "../components/DocumentViewer";
-import { ChatInterface } from "../components/ChatInterface";
-import { BlindspotMatrix } from "../components/BlindspotMatrix";
-import { PolicyCollider } from "../components/PolicyCollider";
-import { AttorneyPrepView } from "../components/AttorneyPrepView";
-import { CounterClauseView } from "../components/CounterClauseView";
-import { App } from "../App";
+import { Header } from "../../components/Header";
+import { DocumentViewer } from "../../components/DocumentViewer";
+import { ChatInterface } from "../../components/ChatInterface";
+import { BlindspotMatrix } from "../../components/BlindspotMatrix";
+import { PolicyCollider } from "../../components/PolicyCollider";
+import { AttorneyPrepView } from "../../components/AttorneyPrepView";
+import { CounterClauseView } from "../../components/CounterClauseView";
+import { App } from "../../App";
 
-import { ThemeProvider } from "../context/ThemeContext";
-import { AuthProvider } from "../context/AuthContext";
+import { ThemeProvider } from "../../context/ThemeContext";
+import { AuthProvider } from "../../context/AuthContext";
 
-describe("Frontend Components Test Suite", () => {
+describe("App Studio Integration Test Suite", () => {
   it("renders Header with language selector and branding", () => {
     const handleLang = vi.fn();
     render(
@@ -284,22 +308,22 @@ describe("Frontend Components Test Suite", () => {
     fireEvent.click(counterTab);
     expect(screen.getByText(/Counter-Clause Negotiation Rewriter/i)).toBeInTheDocument();
 
-    // Test Navigation View switching: Analytics
+    // Navigation: Analytics
     const analyticsNav = screen.getByRole("button", { name: /Analytics & Telemetry/i });
     fireEvent.click(analyticsNav);
     expect(screen.getByText(/BigQuery Enterprise Legal Telemetry/i)).toBeInTheDocument();
 
-    // Test Navigation View switching: FAQ
+    // Navigation: FAQ
     const faqNav = screen.getByRole("button", { name: /Legal AI FAQ/i });
     fireEvent.click(faqNav);
     expect(screen.getByText(/Frequently Asked Questions/i)).toBeInTheDocument();
 
-    // Test Navigation View switching: About
+    // Navigation: About
     const aboutNav = screen.getByRole("button", { name: /Agentic Architecture/i });
     fireEvent.click(aboutNav);
     expect(screen.getByText(/Agentic System Architecture/i)).toBeInTheDocument();
 
-    // Test Navigation View switching: Governance — wrap in act() to flush useEffect fetch
+    // Navigation: Governance — wrap in act() to flush useEffect fetch → setState
     await act(async () => {
       const govNav = screen.getByRole("button", { name: /Governance & VPC-SC/i });
       fireEvent.click(govNav);
@@ -307,4 +331,3 @@ describe("Frontend Components Test Suite", () => {
     expect(screen.getByText(/Zero-Trust Security & Google Cloud Governance/i)).toBeInTheDocument();
   }, 20000);
 });
-

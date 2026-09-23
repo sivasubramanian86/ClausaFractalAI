@@ -19,7 +19,7 @@ export default defineConfig({
     setupFiles: ["./src/tests/setup.ts"],
     testTimeout: 15000,
     // Only pick up Vitest specs; Playwright e2e lives in e2e/ and uses its own runner
-    include: ["src/tests/**/*.{test,spec}.{ts,tsx}", "src/tests/components.test.tsx"],
+    include: ["src/tests/**/*.{test,spec}.{ts,tsx}"],
     exclude: ["node_modules/**", "e2e/**", "dist/**"],
     coverage: {
       provider: "v8",
