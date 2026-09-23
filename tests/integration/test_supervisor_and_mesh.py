@@ -70,7 +70,10 @@ def test_supervisor_hitl_escalation_on_exhaustion(monkeypatch: pytest.MonkeyPatc
 
     # Mock symbolic verifier to always return UNSAT
     class AlwaysUnsatVerifier(SymbolicVerifier):
-        def verify_action_plan(self, plan: ActionPlan):
+        """Mock symbolic verifier designed to simulate permanent constraint unsatisfiability."""
+
+        def verify_action_plan(self, plan: ActionPlan) -> VerificationResult:
+            """Return deterministic UNSAT result with a synthetic impossible theorem."""
             res = super().verify_action_plan(plan)
             return res.model_copy(
                 update={
