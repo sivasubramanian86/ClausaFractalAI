@@ -4,7 +4,7 @@ import pytest
 
 from app.agents.supervisor import AgentSupervisor
 from app.core.exceptions import DeadlockDetectedError, HITLEscalationRequiredError
-from app.symbolic.contracts import ActionPlan
+from app.symbolic.contracts import ActionPlan, VerificationResult
 from app.symbolic.solver import SymbolicVerifier
 
 
