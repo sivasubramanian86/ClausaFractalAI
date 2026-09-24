@@ -1,8 +1,0 @@
-[extend]
-useDefault = true
-ou
-[[rules]]
-id = "google-cloud-api-key"
-description = "Google Cloud API Key"
-regex = '''AIza[0-9A-Za-z\\-_]{35}'''
-tags = ["key", "Google"]
