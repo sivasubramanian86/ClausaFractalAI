@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { AlertOctagon, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
+import { logger } from "../lib/logger";
 
 interface Props {
   children: ReactNode;
@@ -29,8 +30,11 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(_error: Error, errorInfo: ErrorInfo): void {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ errorInfo });
+    logger.error("ErrorBoundary", "Uncaught React component render failure", error, {
+      componentStack: errorInfo.componentStack,
+    });
   }
 
   handleReset = (): void => {

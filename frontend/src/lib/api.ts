@@ -63,6 +63,8 @@ export interface NeuroSymbolicResponse {
   };
 }
 
+import { getW3CTraceparent, logger } from "./logger";
+
 export class NeuroSymbolicApiClient {
   private baseUrl: string;
 
@@ -71,35 +73,50 @@ export class NeuroSymbolicApiClient {
   }
 
   async analyzeClause(clauseText: string): Promise<NeuroSymbolicResponse> {
-    const trace = generateW3CTraceparent();
+    const traceparent = getW3CTraceparent();
+    logger.info("NeuroSymbolicApiClient", "Dispatching clause analysis", { clauseText: clauseText.slice(0, 60) });
     const response = await fetch(`${this.baseUrl}/api/v2/analyze`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        traceparent: trace.traceparent,
+        traceparent,
       },
       body: JSON.stringify({ clause_text: clauseText, use_cache: true }),
     });
 
     if (!response.ok) {
-      throw new Error(`API analysis failed with status ${response.status}`);
+      const err = new Error(`API analysis failed with status ${response.status}`);
+      logger.error("NeuroSymbolicApiClient", "Clause analysis request failed", err);
+      throw err;
     }
 
-    return response.json();
+    const data = await response.json();
+    logger.info("NeuroSymbolicApiClient", "Clause analysis success", { trace_id: data.trace_id });
+    return data;
   }
 
   async listMCPTools(): Promise<Array<{ name: string; description: string; required_capability: string }>> {
-    const response = await fetch(`${this.baseUrl}/api/v2/mcp/tools`);
+    const traceparent = getW3CTraceparent();
+    const response = await fetch(`${this.baseUrl}/api/v2/mcp/tools`, {
+      headers: { traceparent },
+    });
     if (!response.ok) {
-      throw new Error(`Failed to list MCP tools: ${response.status}`);
+      const err = new Error(`Failed to list MCP tools: ${response.status}`);
+      logger.error("NeuroSymbolicApiClient", "Failed to list MCP tools", err);
+      throw err;
     }
     return response.json();
   }
 
   async listHITLTickets(): Promise<any[]> {
-    const response = await fetch(`${this.baseUrl}/api/v2/hitl/tickets`);
+    const traceparent = getW3CTraceparent();
+    const response = await fetch(`${this.baseUrl}/api/v2/hitl/tickets`, {
+      headers: { traceparent },
+    });
     if (!response.ok) {
-      throw new Error(`Failed to fetch HITL tickets: ${response.status}`);
+      const err = new Error(`Failed to fetch HITL tickets: ${response.status}`);
+      logger.error("NeuroSymbolicApiClient", "Failed to fetch HITL tickets", err);
+      throw err;
     }
     return response.json();
   }

@@ -19,6 +19,8 @@ def ensure_src_in_path() -> None:
 
 ensure_src_in_path()
 
+import time
+
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
@@ -36,6 +38,25 @@ from mcp.server import ModelContextProtocolServer
 from services.audio_processor import AudioProcessor
 from services.document_processor import DocumentProcessor
 from services.rag_engine import RAGEngine
+from telemetry import format_w3c_traceparent, logger
+
+
+class TraceTelemetryMiddleware(BaseHTTPMiddleware):
+    """Middleware enforcing W3C traceparent context propagation and Cloud Trace correlation."""
+
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        """Inject or extract W3C traceparent header and record processing duration."""
+        traceparent = request.headers.get("traceparent")
+        if not traceparent:
+            traceparent = format_w3c_traceparent()
+
+        start_time = time.time()
+        response: Response = await call_next(request)
+        duration_ms = round((time.time() - start_time) * 1000, 2)
+
+        response.headers["traceparent"] = traceparent
+        response.headers["X-Processing-Time-Ms"] = str(duration_ms)
+        return response
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -134,7 +155,8 @@ def create_application() -> FastAPI:
     app.state.mcp_server = mcp_server
     app.state.orchestrator = orchestrator
 
-    # Security Headers Middleware
+    # Telemetry and Security Middlewares
+    app.add_middleware(TraceTelemetryMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
 
     # CORS Whitelist Middleware

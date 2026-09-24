@@ -136,8 +136,6 @@ class AgentSupervisor:
                     state_id=checkpoint.checkpoint_id,
                 )
 
-        return current_plan, ver_result
-
     def _enforce_watchdog(self, call_stack: List[str], target_agent: str) -> None:
         """Verify delegation hop threshold and detect directed cycles."""
         # Check hop threshold
