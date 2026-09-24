@@ -1,11 +1,11 @@
 """Comprehensive unit tests driving app/ module coverage to 100%."""
 
-import json
 import time
+
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.agents.triage_agent import TriageAgent
 from app.core.config import settings
 from app.core.exceptions import (
     ClausaFractalError,
@@ -14,7 +14,6 @@ from app.core.exceptions import (
     SecurityGovernanceError,
     SymbolicConstraintError,
 )
-from app.core.metrics import SLO_TARGETS
 from app.core.resilience import CircuitBreaker, CircuitBreakerOpenError, CircuitState
 from app.core.security import (
     CapabilityToken,
@@ -27,7 +26,6 @@ from app.core.telemetry import (
     format_w3c_traceparent,
     get_current_trace_id,
     inject_trace_context,
-    logger,
 )
 from app.finops.cache import (
     FinOpsCache,
@@ -35,11 +33,10 @@ from app.finops.cache import (
     _pseudo_semantic_embedding,
 )
 from app.hitl.queue import HITLQueue
+from app.main import app
 from app.mcp.server import GovernedMCPServer, MCPToolSchema
 from app.symbolic.contracts import ActionPlan
 from app.symbolic.solver import SymbolicVerifier
-from app.agents.triage_agent import TriageAgent
-from app.agents.supervisor import AgentSupervisor
 
 
 # 1. Resilience & CircuitBreaker Tests
@@ -141,7 +138,9 @@ def test_governed_mcp_unauthorized_and_edge_cases() -> None:
 
     # Attempt to call tool not in allowed list
     with pytest.raises(SecurityGovernanceError, match="not authorized to execute tool"):
-        server.execute_tool("calculate_liability_ratio", {"liability_cap": 100, "acv": 100}, token_str)
+        server.execute_tool(
+            "calculate_liability_ratio", {"liability_cap": 100, "acv": 100}, token_str
+        )
 
     # Valid token with all tools
     admin_token_str = issue_capability_token("tenant_test", "agent_admin", ["*"])
@@ -253,6 +252,7 @@ def test_telemetry_dlp_and_trace_branches() -> None:
 
     # Active span injection
     from app.core.telemetry import tracer
+
     with tracer.start_as_current_span("active_test_span"):
         curr_tid = get_current_trace_id()
         assert curr_tid != "00000000000000000000000000000000"
@@ -294,7 +294,6 @@ def test_finops_cache_edge_cases() -> None:
 # 7. Security & Capability Token Claims
 def test_security_capability_token_malformed_and_audience() -> None:
     # Corrupted JSON payload part
-    secret = settings.capability_secret_key
     bad_payload = "not_json.fake_sig"
     with pytest.raises(SecurityGovernanceError, match="Malformed|Corrupted|Invalid"):
         CapabilityToken.verify(bad_payload)
@@ -314,6 +313,7 @@ def test_security_capability_token_malformed_and_audience() -> None:
     # Valid signature over malformed non-JSON payload
     import hashlib
     import hmac
+
     secret_bytes = settings.capability_secret_key.encode("utf-8")
     sig = hmac.new(secret_bytes, b"malformed_non_json_payload", hashlib.sha256).hexdigest()
     with pytest.raises(SecurityGovernanceError, match="Corrupted capability token payload"):
@@ -349,8 +349,10 @@ def test_symbolic_verifier_assert_or_raise_branches() -> None:
         verifier.assert_valid_or_raise(unsat_plan)
 
     # Z3 UNKNOWN solver branch
-    import z3
     from unittest.mock import patch
+
+    import z3
+
     with patch.object(z3.Solver, "check", return_value=z3.unknown):
         unk_res = verifier.verify_action_plan(sat_plan)
         assert unk_res.status == "UNKNOWN"
@@ -383,6 +385,7 @@ def test_main_api_erasure_slo_and_exceptions() -> None:
         raise DeadlockDetectedError("Mocked circular deadlock")
 
     from app.main import supervisor
+
     orig_pipeline = supervisor.run_neuro_symbolic_pipeline
     supervisor.run_neuro_symbolic_pipeline = mock_deadlock
     deadlock_res = client.post("/api/v2/analyze", json={"clause_text": "sample"})
@@ -412,10 +415,19 @@ def test_main_api_erasure_slo_and_exceptions() -> None:
     supervisor.run_neuro_symbolic_pipeline = orig_pipeline
 
     # 4. Header traceparent provided in telemetry middleware
-    header_res = client.get("/health", headers={"traceparent": "00-11223344556677889900112233445566-1122334455667788-01"})
-    assert header_res.headers["traceparent"] == "00-11223344556677889900112233445566-1122334455667788-01"
+    header_res = client.get(
+        "/health",
+        headers={"traceparent": "00-11223344556677889900112233445566-1122334455667788-01"},
+    )
+    assert (
+        header_res.headers["traceparent"]
+        == "00-11223344556677889900112233445566-1122334455667788-01"
+    )
 
     # 5. use_cache = False branch in analyze_clause
-    no_cache_res = client.post("/api/v2/analyze", json={"clause_text": "Standard commercial agreement terms", "use_cache": False})
+    no_cache_res = client.post(
+        "/api/v2/analyze",
+        json={"clause_text": "Standard commercial agreement terms", "use_cache": False},
+    )
     assert no_cache_res.status_code == 200
     assert no_cache_res.json().get("cached") is False
