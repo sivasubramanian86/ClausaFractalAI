@@ -1,17 +1,16 @@
 """Unit tests for backend OpenTelemetry and structlog trace correlation."""
 
-import pytest
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from opentelemetry import trace
 
+from main import TraceTelemetryMiddleware
 from telemetry import (
     format_w3c_traceparent,
     get_current_trace_id,
     inject_trace_context,
     logger,
 )
-from main import TraceTelemetryMiddleware
 
 
 def test_telemetry_traceparent_formatter() -> None:
@@ -37,7 +36,7 @@ def test_telemetry_get_current_trace_id_and_inject_context() -> None:
 
     # When span is actively running
     tracer = trace.get_tracer("test-tracer")
-    with tracer.start_as_current_span("unit-test-span") as span:
+    with tracer.start_as_current_span("unit-test-span"):
         active_tid = get_current_trace_id()
         assert active_tid != "00000000000000000000000000000000"
 

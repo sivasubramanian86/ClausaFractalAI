@@ -28,26 +28,32 @@ class HarnessMemoryStore:
 
     def record_decision(self, title: str, decision: str, reason: str) -> None:
         """Record an architectural decision."""
-        self._decisions.append({
-            "title": title,
-            "decision": decision,
-            "reason": reason,
-        })
+        self._decisions.append(
+            {
+                "title": title,
+                "decision": decision,
+                "reason": reason,
+            }
+        )
 
     def record_progress(self, task: str, details: str) -> None:
         """Record task completion progress."""
-        self._progress.append({
-            "task": task,
-            "details": details,
-        })
+        self._progress.append(
+            {
+                "task": task,
+                "details": details,
+            }
+        )
 
     def record_failure(self, task: str, error: str, lesson_learned: str) -> None:
         """Record a failure and lesson learned to prevent future regressions."""
-        self._failures.append({
-            "task": task,
-            "error": error,
-            "lesson_learned": lesson_learned,
-        })
+        self._failures.append(
+            {
+                "task": task,
+                "error": error,
+                "lesson_learned": lesson_learned,
+            }
+        )
 
     def get_decisions(self) -> List[Dict[str, str]]:
         """Return list of recorded decisions."""

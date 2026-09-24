@@ -38,7 +38,7 @@ from mcp.server import ModelContextProtocolServer
 from services.audio_processor import AudioProcessor
 from services.document_processor import DocumentProcessor
 from services.rag_engine import RAGEngine
-from telemetry import format_w3c_traceparent, logger
+from telemetry import format_w3c_traceparent
 
 
 class TraceTelemetryMiddleware(BaseHTTPMiddleware):

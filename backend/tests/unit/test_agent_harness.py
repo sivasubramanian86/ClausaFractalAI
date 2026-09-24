@@ -390,5 +390,3 @@ def test_agent_harness_preapproved_plan():
     )
     assert result.success
     assert result.total_attempts == 1
-
-

@@ -262,7 +262,10 @@ async def test_e2e_mcp_registered_tools() -> None:
             (
                 "audit_blindspots",
                 {
-                    "document_text": "Mutual Nondisclosure Agreement. Confidential information shall be kept secret.",
+                    "document_text": (
+                        "Mutual Nondisclosure Agreement. "
+                        "Confidential information shall be kept secret."
+                    ),
                     "baseline": "mutual_nda",
                     "document_id": "doc_e2e_mcp",
                 },
