@@ -19,12 +19,12 @@ test.describe("ClausaFractalAI End-to-End Enterprise GUI Test Suite", () => {
 
   test("navigates smoothly across all main studio and informational views", async ({ page }) => {
     // 1. Analytics Dashboard View
-    await page.getByRole("button", { name: /Analytics & Intelligence/i }).click();
+    await page.getByRole("button", { name: /Analytics & Telemetry/i }).click();
     await expect(page.getByRole("heading", { name: /Contract Portfolio Intelligence/i })).toBeVisible();
     await expect(page.getByText("Total Contracts Analyzed")).toBeVisible();
 
     // 2. FAQ Section View
-    await page.getByRole("button", { name: /Knowledge & FAQ/i }).click();
+    await page.getByRole("button", { name: /Legal AI FAQ/i }).click();
     await expect(page.getByRole("heading", { name: /Legal Intelligence Knowledge Base/i })).toBeVisible();
     await expect(page.getByText("How does ClausaFractalAI prevent hallucinations?")).toBeVisible();
 
@@ -39,13 +39,13 @@ test.describe("ClausaFractalAI End-to-End Enterprise GUI Test Suite", () => {
     await expect(page.getByText("VPC Service Controls Perimeter")).toBeVisible();
 
     // 5. Back to Studio View
-    await page.getByRole("button", { name: /Active Studio/i }).click();
+    await page.getByRole("button", { name: /Studio Workspace/i }).click();
     await expect(page.getByRole("region", { name: /Document Viewer and Multimodal Ingestion/i })).toBeVisible();
   });
 
   test("verifies WCAG ARIA accessibility landmarks and controls", async ({ page }) => {
     // Ensure landmark regions exist
-    await expect(page.getByRole("banner")).toBeVisible();
+    await expect(page.getByRole("banner").first()).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Main Application Sections" })).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
 
