@@ -1,6 +1,6 @@
 # ClausaFractalAI: 100% Quality, Security & Faithfulness Perfection Audit Report
 
-**Evaluation Framework**: PromptWars APAC 2026 Evaluation Standard & `@15_ai_evaluator_100`  
+**Evaluation Framework**: PromptWars APAC 2026 Evaluation Standard & Enterprise AI Evaluator Suite  
 **Date**: September 19, 2026  
 **Auditor**: Lead AI Judge & Senior Solutions Architect  
 **Project**: ClausaFractalAI (Autonomous Legal Document Intelligence & Action Copilot)  

@@ -49,7 +49,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install ruff bandit pytest pytest-asyncio pytest-cov httpx \
             pydantic pydantic-settings fastapi sse-starlette google-cloud-bigquery \
-            google-cloud-firestore firebase-admin
+            google-cloud-firestore firebase-admin structlog opentelemetry-api opentelemetry-sdk
 
       - name: Ruff Linter Check
         run: ruff check src/ tests/ scripts/
