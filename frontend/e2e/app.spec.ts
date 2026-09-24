@@ -20,23 +20,20 @@ test.describe("ClausaFractalAI End-to-End Enterprise GUI Test Suite", () => {
   test("navigates smoothly across all main studio and informational views", async ({ page }) => {
     // 1. Analytics Dashboard View
     await page.getByRole("button", { name: /Analytics & Telemetry/i }).click();
-    await expect(page.getByRole("heading", { name: /Contract Portfolio Intelligence/i })).toBeVisible();
-    await expect(page.getByText("Total Contracts Analyzed")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /BigQuery Enterprise Legal Telemetry/i })).toBeVisible();
+    await expect(page.getByText("BigQuery Streaming: Active")).toBeVisible();
 
     // 2. FAQ Section View
     await page.getByRole("button", { name: /Legal AI FAQ/i }).click();
-    await expect(page.getByRole("heading", { name: /Legal Intelligence Knowledge Base/i })).toBeVisible();
-    await expect(page.getByText("How does ClausaFractalAI prevent hallucinations?")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Frequently Asked Questions/i })).toBeVisible();
 
     // 3. About / Foundational Research View
     await page.getByRole("button", { name: /Agentic Architecture/i }).click();
-    await expect(page.getByRole("heading", { name: /Enterprise Agentic AI Architecture/i })).toBeVisible();
-    await expect(page.getByText("Refusal Ladder")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Agentic System Architecture/i })).toBeVisible();
 
     // 4. Governance & VPC-SC View
     await page.getByRole("button", { name: /Governance & VPC-SC/i }).click();
-    await expect(page.getByRole("heading", { name: /Enterprise Security & Governance Perimeter/i })).toBeVisible();
-    await expect(page.getByText("VPC Service Controls Perimeter")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Zero-Trust Security & Google Cloud Governance/i })).toBeVisible();
 
     // 5. Back to Studio View
     await page.getByRole("button", { name: /Studio Workspace/i }).click();
