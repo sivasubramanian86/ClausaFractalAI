@@ -10,10 +10,15 @@ describe("Navigation Unit Test Suite", () => {
     render(<Navigation activeView="studio" onViewChange={handleChange} t={en} />);
 
     expect(screen.getByRole("button", { name: new RegExp(en.navStudio, "i") })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Judicial Chamber & Codex/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: new RegExp(en.navAnalytics, "i") })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: new RegExp(en.navFaq, "i") })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: new RegExp(en.navAbout, "i") })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: new RegExp(en.navGovernance, "i") })).toBeInTheDocument();
+
+    // Click on Judicial tab
+    fireEvent.click(screen.getByRole("button", { name: /Judicial Chamber & Codex/i }));
+    expect(handleChange).toHaveBeenCalledWith("courtroom");
 
     // Click on FAQ tab
     fireEvent.click(screen.getByRole("button", { name: new RegExp(en.navFaq, "i") }));

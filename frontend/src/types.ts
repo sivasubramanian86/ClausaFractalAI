@@ -86,3 +86,60 @@ export interface CounterClauseItem {
   suggestedCounterClause: string;
   strategicRationale: string;
 }
+
+export interface StatutorySection {
+  code_id: string;
+  title: string;
+  jurisdiction: string;
+  category: string;
+  elements: string[];
+  penalties: string;
+  precedents: string[];
+  statutory_test: string;
+}
+
+export interface StatutoryElementProof {
+  element: string;
+  is_satisfied: boolean;
+  evidentiary_basis: string;
+}
+
+export interface CaseDossier {
+  case_title: string;
+  incident_type: string;
+  parties: Record<string, string>;
+  facts_summary: string;
+  key_evidence: string[];
+  jurisdiction: string;
+}
+
+export interface JudicialVerdict {
+  case_title: string;
+  bench: string;
+  ratio_decidendi: string;
+  obiter_dicta: string;
+  element_proofs: StatutoryElementProof[];
+  final_decree: string;
+  relief_or_sentence: string;
+  statutory_compliance_score: number;
+}
+
+export interface AdvocateStrategy {
+  counsel_role: string;
+  prosecution_strengths: string[];
+  defense_shields: string[];
+  cross_examination_traps: string[];
+  evidentiary_vulnerabilities: string[];
+  settlement_or_plea_calculus: string;
+  win_probability_prosecution: number;
+  win_probability_defense: number;
+}
+
+export interface CourtroomAnalysisResult {
+  dossier: CaseDossier;
+  verdict: JudicialVerdict;
+  advocate_strategy: AdvocateStrategy;
+  matched_sections: StatutorySection[];
+  disclaimer: string;
+}
+

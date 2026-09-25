@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 
 from agents.blindspot import BlindspotReport
 from agents.copilot_actions import AttorneyPrepSheet, CounterClauseProposal
+from agents.courtroom_judge import CourtroomAnalysisResult, CourtroomDeliberationEngine
 from agents.orchestrator import LegalOrchestrator
 from agents.policy_collider import PolicyCollisionReport
 from agents.qa_analyst import QAResponse
@@ -20,6 +21,7 @@ from mcp.server import MCPToolDefinition
 from services.audio_processor import AudioTranscriptionResult
 from services.document_processor import ProcessedDocument
 from services.rag_engine import QueryResult
+from services.statutory_codex import StatutoryCodexService, StatutorySection
 
 api_router = APIRouter()
 
@@ -96,6 +98,14 @@ class MCPCallRequest(BaseModel):
 
     name: str
     arguments: Dict[str, object] = Field(default_factory=dict)
+
+
+class JudicialDissectRequest(BaseModel):
+    """Payload for courtroom case dissection and judicial deliberation."""
+
+    case_text: str
+    jurisdiction: str = "Common Law"
+    incident_type: Optional[str] = None
 
 
 # ============================================================================
@@ -504,3 +514,123 @@ async def get_vpc_status() -> Dict[str, object]:
         "egress_rules_count": 0,  # Zero-data exfiltration policy
         "data_protection_standard": "Zero-Trust APAC 2026",
     }
+
+
+# ============================================================================
+# Judicial Chamber & Courtroom Deliberation Endpoints
+# ============================================================================
+
+
+@api_router.post("/judicial/dissect", response_model=CourtroomAnalysisResult, tags=["Judicial"])
+async def dissect_case(
+    request: Request,
+    payload: JudicialDissectRequest,
+) -> CourtroomAnalysisResult:
+    """Dissect evidentiary case record and generate judicial ruling and advocate strategy.
+
+    Args:
+        request: FastAPI request object with initialized courtroom deliberation engine.
+        payload: Case facts, evidence summary, and jurisdiction preference.
+
+    Returns:
+        CourtroomAnalysisResult with dossier, bench verdict, and advocate strategy.
+    """
+    courtroom_engine: CourtroomDeliberationEngine = request.app.state.courtroom_engine
+    return courtroom_engine.dissect_case(
+        case_text=payload.case_text,
+        jurisdiction=payload.jurisdiction,
+        incident_type=payload.incident_type,
+    )
+
+
+@api_router.get("/judicial/codex", response_model=List[StatutorySection], tags=["Judicial"])
+async def list_or_search_codex(
+    request: Request,
+    query: Optional[str] = None,
+    category: Optional[str] = None,
+    jurisdiction: Optional[str] = None,
+) -> List[StatutorySection]:
+    """Retrieve or filter codified statutory sections across global penal and civil domains.
+
+    Args:
+        request: FastAPI request object.
+        query: Optional text search string.
+        category: Optional category filter.
+        jurisdiction: Optional jurisdiction filter.
+
+    Returns:
+        List of matching StatutorySection models.
+    """
+    statutory_codex: StatutoryCodexService = request.app.state.statutory_codex
+    if query or category or jurisdiction:
+        return statutory_codex.search_sections(
+            query=query or "",
+            category=category,
+            jurisdiction=jurisdiction,
+        )
+    return statutory_codex.list_all_sections()
+
+
+@api_router.post(
+    "/judicial/multimodal-evidence", response_model=CourtroomAnalysisResult, tags=["Judicial"]
+)
+async def dissect_multimodal_evidence(
+    request: Request,
+    file: Optional[UploadFile] = File(None),
+    case_text: Optional[str] = Form(None),
+    jurisdiction: str = Form("Common Law"),
+    incident_type: Optional[str] = Form(None),
+) -> CourtroomAnalysisResult:
+    """Ingest multimodal legal evidence (PDF, image snapshot, audio/video) and dissect case.
+
+    Args:
+        request: FastAPI request object.
+        file: Optional uploaded evidentiary document, photo/snapshot, or audio/video recording.
+        case_text: Optional supplementary contextual notes.
+        jurisdiction: Governing jurisdiction.
+        incident_type: Optional incident category classification.
+
+    Returns:
+        CourtroomAnalysisResult detailing bench verdict, advocate battlecard, and matched
+        sections.
+    """
+    courtroom_engine: CourtroomDeliberationEngine = request.app.state.courtroom_engine
+    doc_processor = request.app.state.doc_processor
+    audio_processor = request.app.state.audio_processor
+
+    accumulated_evidence: List[str] = []
+    if case_text and case_text.strip():
+        accumulated_evidence.append(case_text.strip())
+
+    if file is not None:
+        file_bytes = await file.read()
+        filename = (file.filename or "evidence.bin").lower()
+
+        if filename.endswith(".pdf"):
+            proc_doc = doc_processor.process_pdf(pdf_bytes=file_bytes, filename=filename)
+            accumulated_evidence.append("\n".join([p.clean_text for p in proc_doc.pages]))
+        elif filename.endswith((".wav", ".mp3", ".webm", ".m4a", ".mp4", ".mov")):
+            transcription = audio_processor.transcribe(audio_bytes=file_bytes)
+            accumulated_evidence.append(
+                f"Witness Audio/Video Transcription: {transcription.transcript}"
+            )
+        elif filename.endswith((".png", ".jpg", ".jpeg", ".bmp", ".webp")):
+            proc_img = doc_processor.process_text(
+                raw_text=f"Evidentiary photographic snapshot: {filename}", filename=filename
+            )
+            accumulated_evidence.append("\n".join([p.clean_text for p in proc_img.pages]))
+        else:
+            text_str = file_bytes.decode("utf-8", errors="replace")
+            accumulated_evidence.append(text_str)
+
+    combined_text = "\n\n".join(accumulated_evidence).strip()
+    if not combined_text:
+        combined_text = (
+            "General evidentiary inquiry regarding disputed contractual or statutory liability."
+        )
+
+    return courtroom_engine.dissect_case(
+        case_text=combined_text,
+        jurisdiction=jurisdiction,
+        incident_type=incident_type,
+    )

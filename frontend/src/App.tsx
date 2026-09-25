@@ -15,12 +15,14 @@ import { AboutSection } from "./components/AboutSection";
 import { GovernanceView } from "./components/GovernanceView";
 import { NeuroSymbolicTraceVisualizer } from "./components/NeuroSymbolicTraceVisualizer";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { CourtroomView } from "./components/CourtroomView";
 import {
   MessageSquare,
   ShieldAlert,
   GitCompare,
   FileCheck2,
   FileEdit,
+  Gavel,
 } from "lucide-react";
 
 import { ThemeProvider } from "./context/ThemeContext";
@@ -31,7 +33,12 @@ export const AppContent: React.FC = () => {
   const t = getTranslation(language);
   const [activeView, setActiveView] = useState<NavView>("studio");
   const [activeTab, setActiveTab] = useState<
-    "chat" | "blindspots" | "policyCollider" | "attorneyPrep" | "counterClauses"
+    | "chat"
+    | "blindspots"
+    | "policyCollider"
+    | "attorneyPrep"
+    | "counterClauses"
+    | "courtroom"
   >("chat");
   const [complexity, setComplexity] = useState<ComplexityLevel>("standard");
 
@@ -521,6 +528,19 @@ export const AppContent: React.FC = () => {
                     <FileEdit className="h-3.5 w-3.5" />
                     <span>{t.tabCounterClauses}</span>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("courtroom")}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                      activeTab === "courtroom"
+                        ? "border-amber-400 text-amber-400 bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
+                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
+                    }`}
+                  >
+                    <Gavel className="h-3.5 w-3.5 text-amber-400" />
+                    <span>Judicial & Codex</span>
+                  </button>
                 </nav>
 
                 {/* Tab Workspace Body */}
@@ -570,9 +590,19 @@ export const AppContent: React.FC = () => {
                       onRewrite={handleRewriteClause}
                     />
                   )}
+
+                  {activeTab === "courtroom" && (
+                    <CourtroomView initialCaseText={pages.map((p) => p.text).join("\n\n")} />
+                  )}
                 </div>
               </div>
             </div>
+          </ErrorBoundary>
+        )}
+
+        {activeView === "courtroom" && (
+          <ErrorBoundary fallbackTitle="Judicial Chamber Disrupted">
+            <CourtroomView initialCaseText={pages.map((p) => p.text).join("\n\n")} />
           </ErrorBoundary>
         )}
 

@@ -12,6 +12,14 @@ from agents.copilot_actions import (
     AttorneyQuestion,
     CounterClauseProposal,
 )
+from agents.courtroom_judge import (
+    AdvocateStrategy,
+    CaseDossier,
+    CourtroomAnalysisResult,
+    CourtroomDeliberationEngine,
+    JudicialVerdict,
+    StatutoryElementProof,
+)
 from agents.critic_reflection import CriticReflectionAgent, CriticReviewResult
 from agents.orchestrator import LegalOrchestrator, OrchestratedResponse
 from agents.policy_collider import ImpactItem, PolicyColliderAgent, PolicyCollisionReport
@@ -21,17 +29,22 @@ from agents.verification_guard import Citation, VerificationGuard, VerificationR
 
 __all__ = [
     "ActionableCopilotAgent",
+    "AdvocateStrategy",
     "AttorneyPrepSheet",
     "AttorneyQuestion",
     "BlindspotDetectorAgent",
     "BlindspotFinding",
     "BlindspotReport",
+    "CaseDossier",
     "Citation",
     "ComplexityTuner",
     "CounterClauseProposal",
+    "CourtroomAnalysisResult",
+    "CourtroomDeliberationEngine",
     "CriticReflectionAgent",
     "CriticReviewResult",
     "ImpactItem",
+    "JudicialVerdict",
     "LegalOrchestrator",
     "LegalQAAnalystAgent",
     "OrchestratedResponse",
@@ -40,6 +53,7 @@ __all__ = [
     "QAResponse",
     "RouterAgent",
     "RouterResult",
+    "StatutoryElementProof",
     "VerificationGuard",
     "VerificationResult",
 ]

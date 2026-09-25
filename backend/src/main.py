@@ -27,6 +27,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 
 from agents.blindspot import BlindspotDetectorAgent
 from agents.copilot_actions import ActionableCopilotAgent
+from agents.courtroom_judge import CourtroomDeliberationEngine
 from agents.critic_reflection import CriticReflectionAgent
 from agents.orchestrator import LegalOrchestrator
 from agents.policy_collider import PolicyColliderAgent
@@ -38,6 +39,7 @@ from mcp.server import ModelContextProtocolServer
 from services.audio_processor import AudioProcessor
 from services.document_processor import DocumentProcessor
 from services.rag_engine import RAGEngine
+from services.statutory_codex import StatutoryCodexService
 from telemetry import format_w3c_traceparent
 
 
@@ -142,6 +144,8 @@ def create_application() -> FastAPI:
         collider_agent=collider_agent,
         copilot_agent=copilot_agent,
     )
+    statutory_codex = StatutoryCodexService()
+    courtroom_engine = CourtroomDeliberationEngine(codex_service=statutory_codex)
 
     app.state.rag_engine = rag_engine
     app.state.doc_processor = doc_processor
@@ -154,6 +158,8 @@ def create_application() -> FastAPI:
     app.state.copilot_agent = copilot_agent
     app.state.mcp_server = mcp_server
     app.state.orchestrator = orchestrator
+    app.state.statutory_codex = statutory_codex
+    app.state.courtroom_engine = courtroom_engine
 
     # Telemetry and Security Middlewares
     app.add_middleware(TraceTelemetryMiddleware)

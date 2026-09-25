@@ -1,8 +1,15 @@
 import React from "react";
-import { Scale, BarChart3, HelpCircle, Info, ShieldCheck, Cpu } from "lucide-react";
+import { Scale, BarChart3, HelpCircle, Info, ShieldCheck, Cpu, Gavel } from "lucide-react";
 import { TranslationDictionary } from "../i18n/types";
 
-export type NavView = "studio" | "mesh" | "analytics" | "faq" | "about" | "governance";
+export type NavView =
+  | "studio"
+  | "courtroom"
+  | "mesh"
+  | "analytics"
+  | "faq"
+  | "about"
+  | "governance";
 
 interface NavigationProps {
   activeView: NavView;
@@ -13,6 +20,11 @@ interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange, t }) => {
   const navItems: Array<{ id: NavView; label: string; icon: React.ReactNode }> = [
     { id: "studio", label: t.navStudio, icon: <Scale className="h-4 w-4" /> },
+    {
+      id: "courtroom",
+      label: "Judicial Chamber & Codex",
+      icon: <Gavel className="h-4 w-4 text-amber-400" />,
+    },
     { id: "mesh", label: "Neuro-Symbolic Mesh", icon: <Cpu className="h-4 w-4" /> },
     { id: "analytics", label: t.navAnalytics, icon: <BarChart3 className="h-4 w-4" /> },
     { id: "faq", label: t.navFaq, icon: <HelpCircle className="h-4 w-4" /> },

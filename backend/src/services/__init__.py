@@ -9,6 +9,7 @@ from services.boilerplate_pruner import BoilerplatePruner
 from services.document_processor import DocumentProcessor, PageText, ProcessedDocument
 from services.pii_scrubber import PIIScrubber, ScrubResult
 from services.rag_engine import DocumentChunk, LegalTriple, QueryResult, RAGEngine
+from services.statutory_codex import StatutoryCodexService, StatutorySection
 
 __all__ = [
     "AudioProcessor",
@@ -23,4 +24,6 @@ __all__ = [
     "QueryResult",
     "RAGEngine",
     "ScrubResult",
+    "StatutoryCodexService",
+    "StatutorySection",
 ]
