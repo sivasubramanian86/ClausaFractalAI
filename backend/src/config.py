@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     agent_framework: str = "google-adk"
     context_caching_threshold: int = 32768
 
+    # Google Cloud Storage (GCS) Sample Media Assets
+    gcs_assets_bucket: str = Field(default="clausafractalai-demo-assets", alias="GCS_ASSETS_BUCKET")
+    gcs_assets_base_url: str = Field(
+        default="https://storage.googleapis.com/clausafractalai-demo-assets",
+        alias="GCS_ASSETS_BASE_URL",
+    )
+
     # Security & CORS Whitelist
     allowed_origins: List[str] = [
         "http://localhost:5173",

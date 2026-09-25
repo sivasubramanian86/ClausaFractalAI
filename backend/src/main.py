@@ -38,6 +38,7 @@ from config import get_settings
 from mcp.server import ModelContextProtocolServer
 from services.audio_processor import AudioProcessor
 from services.document_processor import DocumentProcessor
+from services.gcs_service import GCSSampleAssetsService
 from services.rag_engine import RAGEngine
 from services.statutory_codex import StatutoryCodexService
 from telemetry import format_w3c_traceparent
@@ -146,6 +147,9 @@ def create_application() -> FastAPI:
     )
     statutory_codex = StatutoryCodexService()
     courtroom_engine = CourtroomDeliberationEngine(codex_service=statutory_codex)
+    gcs_sample_service = GCSSampleAssetsService(
+        bucket_name=settings.gcs_assets_bucket, base_url=settings.gcs_assets_base_url
+    )
 
     app.state.rag_engine = rag_engine
     app.state.doc_processor = doc_processor
@@ -160,6 +164,7 @@ def create_application() -> FastAPI:
     app.state.orchestrator = orchestrator
     app.state.statutory_codex = statutory_codex
     app.state.courtroom_engine = courtroom_engine
+    app.state.gcs_sample_service = gcs_sample_service
 
     # Telemetry and Security Middlewares
     app.add_middleware(TraceTelemetryMiddleware)

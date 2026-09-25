@@ -26,7 +26,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
       result: { status: "PROVEN" },
     };
 
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockPayload,
     } as Response);
@@ -34,7 +34,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
     const res = await client.analyzeClause("Vendor shall indemnify Customer");
     expect(res.trace_id).toBe("test_trace_123");
     expect(res.result.status).toBe("PROVEN");
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect((globalThis as any).fetch).toHaveBeenCalledWith(
       "http://localhost:8000/api/v2/analyze",
       expect.objectContaining({
         method: "POST",
@@ -47,7 +47,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
   });
 
   it("analyzeClause throws on HTTP failure", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
     } as Response);
@@ -59,7 +59,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
 
   it("listMCPTools succeeds on valid response", async () => {
     const mockTools = [{ name: "formal_verify", description: "Z3", required_capability: "z3" }];
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockTools,
     } as Response);
@@ -69,7 +69,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
   });
 
   it("listMCPTools throws on failure", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 403,
     } as Response);
@@ -79,7 +79,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
 
   it("listHITLTickets succeeds on valid response", async () => {
     const mockTickets = [{ checkpoint_id: "chk_1" }];
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockTickets,
     } as Response);
@@ -89,7 +89,7 @@ describe("NeuroSymbolicApiClient Unit Tests", () => {
   });
 
   it("listHITLTickets throws on failure", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 502,
     } as Response);

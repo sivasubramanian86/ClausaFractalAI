@@ -4,9 +4,9 @@ Provides modular endpoints for document ingestion, real-time SSE chat streaming,
 blindspot detection, policy collision analysis, copilot actionable tools, and MCP servers.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
@@ -20,6 +20,7 @@ from agents.router import RouterResult
 from mcp.server import MCPToolDefinition
 from services.audio_processor import AudioTranscriptionResult
 from services.document_processor import ProcessedDocument
+from services.gcs_service import GCSSampleAssetsService
 from services.rag_engine import QueryResult
 from services.statutory_codex import StatutoryCodexService, StatutorySection
 
@@ -634,3 +635,55 @@ async def dissect_multimodal_evidence(
         jurisdiction=jurisdiction,
         incident_type=incident_type,
     )
+
+
+@api_router.get("/judicial/sample-cases", tags=["Judicial Chamber"])
+async def get_judicial_sample_cases(request: Request) -> List[Dict[str, Any]]:
+    """List curated multimodal legal case dossiers stored in Google Cloud Storage.
+
+    Args:
+        request: FastAPI request object.
+
+    Returns:
+        List[Dict[str, Any]]: List of sample cases with GCS media references.
+    """
+    gcs_service: GCSSampleAssetsService = request.app.state.gcs_sample_service
+    return [c.model_dump() for c in gcs_service.list_sample_cases()]
+
+
+@api_router.get("/judicial/sample-cases/{case_id}", tags=["Judicial Chamber"])
+async def get_judicial_sample_case(case_id: str, request: Request) -> Dict[str, Any]:
+    """Retrieve a specific multimodal sample case dossier by ID.
+
+    Args:
+        case_id: Case identifier.
+        request: FastAPI request object.
+
+    Returns:
+        Dict[str, Any]: Sample case dossier with GCS media references.
+
+    Raises:
+        HTTPException: If case_id is not found in catalog.
+    """
+    gcs_service: GCSSampleAssetsService = request.app.state.gcs_sample_service
+    case = gcs_service.get_case(case_id)
+    if not case:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Sample case '{case_id}' not found in GCS catalog.",
+        )
+    return case.model_dump()
+
+
+@api_router.get("/judicial/gcs-info", tags=["Judicial Chamber"])
+async def get_judicial_gcs_info(request: Request) -> Dict[str, Any]:
+    """Fetch Google Cloud Storage demo bucket connection and asset metadata.
+
+    Args:
+        request: FastAPI request object.
+
+    Returns:
+        Dict[str, Any]: GCS bucket configuration, region, and storage tier info.
+    """
+    gcs_service: GCSSampleAssetsService = request.app.state.gcs_sample_service
+    return gcs_service.get_gcs_bucket_info()

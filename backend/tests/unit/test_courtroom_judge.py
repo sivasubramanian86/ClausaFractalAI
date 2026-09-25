@@ -290,3 +290,51 @@ def test_judicial_multimodal_evidence_api_endpoint(test_client: TestClient) -> N
     # 6. Completely empty submission fallback
     resp_empty = test_client.post("/api/judicial/multimodal-evidence")
     assert resp_empty.status_code == 200
+
+
+def test_gcs_sample_assets_service_and_endpoints(test_client: TestClient) -> None:
+    """Test GCSSampleAssetsService catalog, retrieval, and API endpoints."""
+    from services.gcs_service import GCSSampleAssetsService
+
+    service = GCSSampleAssetsService(
+        bucket_name="custom-demo-bucket",
+        base_url="https://storage.googleapis.com/custom-demo-bucket",
+    )
+    cases = service.list_sample_cases()
+    assert len(cases) == 4
+
+    case = service.get_case("nexus_wire_fraud")
+    assert case is not None
+    assert case.case_id == "nexus_wire_fraud"
+    assert "https://storage.googleapis.com/custom-demo-bucket" in case.media.pdf_url
+    assert "custom-demo-bucket" == case.media.gcs_bucket
+
+    missing_case = service.get_case("non_existent_case_123")
+    assert missing_case is None
+
+    info = service.get_gcs_bucket_info()
+    assert info["bucket_name"] == "custom-demo-bucket"
+    assert info["git_footprint_bytes"] == 0
+    assert info["total_sample_cases"] == 4
+
+    # Test GET /api/judicial/sample-cases
+    resp_list = test_client.get("/api/judicial/sample-cases")
+    assert resp_list.status_code == 200
+    cases_data = resp_list.json()
+    assert len(cases_data) >= 4
+    assert any(c["case_id"] == "nexus_wire_fraud" for c in cases_data)
+
+    # Test GET /api/judicial/sample-cases/{case_id}
+    resp_detail = test_client.get("/api/judicial/sample-cases/nexus_wire_fraud")
+    assert resp_detail.status_code == 200
+    assert resp_detail.json()["case_id"] == "nexus_wire_fraud"
+
+    # Test 404 for unknown case_id
+    resp_404 = test_client.get("/api/judicial/sample-cases/unknown_missing_case")
+    assert resp_404.status_code == 404
+
+    # Test GET /api/judicial/gcs-info
+    resp_info = test_client.get("/api/judicial/gcs-info")
+    assert resp_info.status_code == 200
+    assert "bucket_name" in resp_info.json()
+    assert resp_info.json()["git_footprint_bytes"] == 0

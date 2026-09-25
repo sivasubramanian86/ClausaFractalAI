@@ -124,7 +124,7 @@ Implements an open standard MCP server exposing 5 native legal intelligence tool
 - **Neuro-Symbolic Mesh Visualizer**: Real-time trace visualizer with W3C `traceparent` inspection and Z3 solver SAT/UNSAT diagnostics.
 
 ### 5. Judicial Chamber & Global Statutory Codex (Courtroom Deliberation Engine)
-- **Multimodal Evidence Ingestion**: Accepts dispute contracts (PDF), photographic/forensic crime scene snapshots, recorded depositions (WAV/MP3), and video testimony to construct structured evidentiary dossiers.
+- **Multimodal Evidence Ingestion & GCS Sample Hub**: Ingests contracts (PDF), crime scene/forensic photos, recorded depositions (WAV/MP3), and video hearings. Includes an interactive Google Cloud Storage (`gs://clausafractalai-demo-assets/`) demo catalog streaming media directly without bloating git repository storage.
 - **The Honorable Courtroom Bench**: Acts as an impartial presiding judge generating formal decrees, authoritative **Ratio Decidendi**, analytical **Obiter Dicta**, and element-by-element statutory proof verifications.
 - **Senior Advocate War Room**: Simulates a seasoned Bar Senior Advocate providing prosecution offensive battlecards, affirmative defense counter-shields, cross-examination perjury traps, and probabilistic settlement/plea calculus.
 - **Global Statutory Codex**: In-memory searchable codex indexing penal, civil, commercial, IP, and privacy statutes (IPC/BNS, US Code, UCC, UK Common Law, GDPR) delivering legal intelligence at the user's fingertips.
@@ -136,17 +136,17 @@ Implements an open standard MCP server exposing 5 native legal intelligence tool
 ### 1. Full-Stack Quality & Security Scoreboard
 | Benchmark Category | Target | Verified Score |
 |---|---|---|
-| **Backend Statement Coverage** | $\ge 100.00\%$ | **100.00%** (1,710/1,710 statements) |
-| **Backend Branch Coverage** | $\ge 100.00\%$ | **100.00%** (356/356 branches) |
+| **Backend Statement Coverage** | $\ge 100.00\%$ | **100.00%** (1,766/1,766 statements) |
+| **Backend Branch Coverage** | $\ge 100.00\%$ | **100.00%** (358/358 branches) |
 | **Pragma / Bypass Tags** | Exactly 0 | **0** (`# pragma: no cover` forbidden) |
-| **Ruff Linter & Formatter** | 0 warnings | **0 warnings / 0 errors** |
-| **Python Bandit SAST (`app/` & `backend/`)**| 0 issues | **0 issues** across 5,091 LOC |
+| **Ruff Linter & Formatter** | 0 warnings | **0 warnings / 0 errors** (54 files) |
+| **Python Bandit SAST (`app/` & `backend/`)**| 0 issues | **0 issues** across 5,308 LOC |
 | **Frontend Production Audit (`npm audit`)**| 0 vulnerabilities | **0 vulnerabilities** (`--omit=dev`) |
 | **Frontend Secrets & Injection SAST** | 0 findings | **0 findings** across `frontend/src` |
 | **Frontend TypeScript Type-Check** | 0 errors | **0 errors** (`tsc --noEmit`) |
-| **Backend Unit & Integration Tests**| All Pass | **106 Passed** in 16.63s |
+| **Backend Unit & Integration Tests**| All Pass | **107 Passed** in 15.24s |
 | **Neuro-Symbolic Mesh Tests** | All Pass | **26 Passed** in 1.47s |
-| **Frontend Vitest Tests** | All Pass | **54 Passed across 20 test files** |
+| **Frontend Vitest Tests** | All Pass | **56 Passed across 20 test files** |
 
 ### 2. Continuous EvalOps Quality Gate (52 Golden Benchmarks)
 | Evaluation Metric | Benchmark Requirement | ClausaFractalAI Result | Status |

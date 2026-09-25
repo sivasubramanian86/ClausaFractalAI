@@ -16,11 +16,121 @@ import {
   Swords,
   ChevronRight,
   Sparkles,
+  Video,
+  Volume2,
+  Cloud,
+  Database,
+  ExternalLink,
+  Check,
 } from "lucide-react";
 import {
   CourtroomAnalysisResult,
+  SampleCase,
   StatutorySection,
 } from "../types";
+
+export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
+  {
+    case_id: "nexus_wire_fraud",
+    title: "State of California v. Nexus Enterprise (Wire Fraud & Forgery)",
+    jurisdiction: "US Federal / State",
+    incident_type: "Commercial Fraud & Forgery",
+    parties: {
+      Prosecution_or_Plaintiff: "California Dept. of Financial Protection",
+      Defense_or_Respondent: "Nexus Enterprise Ltd. & Ex-CFO Marcus Vance",
+    },
+    facts_summary:
+      "Executive leadership altered payment milestone schedules and forged electronic authorizations to siphon $2.4M into undisclosed offshore accounts. Defense claims authorized commercial restructuring.",
+    statutory_focus: "18 U.S.C. § 1343 (Wire Fraud), UCC § 2-302 (Unconscionability), IPC 463",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/nexus_fraudulent_vendor_agreement.pdf",
+      image_url:
+        "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80",
+      audio_url:
+        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+      video_url:
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+  {
+    case_id: "cyberextort_cfaa",
+    title: "In re: CyberExtort Cloud Data Penetration (CFAA § 1030 & GDPR Art. 83)",
+    jurisdiction: "Federal / Multi-Jurisdiction",
+    incident_type: "Cybercrime & Privacy Exfiltration",
+    parties: {
+      Prosecution_or_Plaintiff: "Federal Trade Commission & Healthcare Network",
+      Defense_or_Respondent: "Anonymous Threat Actor Group 'ZeroByte'",
+    },
+    facts_summary:
+      "External threat actors intentionally breached healthcare cloud databases, exfiltrated 450,000 protected medical records, and delivered a 15 BTC demand. Cloud provider audited for gross omission of encryption at rest.",
+    statutory_focus: "18 U.S.C. § 1030 (CFAA), GDPR Art. 83, IPC 420 (Cheating)",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/ransom_demand_and_incident_report.pdf",
+      image_url:
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
+      audio_url:
+        "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg",
+      video_url:
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+  {
+    case_id: "biovance_patent_theft",
+    title: "Global Oncology Inc. v. Biovance Labs (Patent Piracy & Trade Secrets)",
+    jurisdiction: "UK & International Common Law",
+    incident_type: "Intellectual Property & Commercial Secret Piracy",
+    parties: {
+      Prosecution_or_Plaintiff: "Global Oncology Inc.",
+      Defense_or_Respondent: "Biovance Labs Ltd. & Lead Chemist Dr. Rostova",
+    },
+    facts_summary:
+      "Former research directors downloaded proprietary molecular compound data before resigning, subsequently filing priority patents in duplicate jurisdictions in breach of confidentiality covenants.",
+    statutory_focus: "17 U.S.C. § 501 (Copyright/IP Infringement), UK CRA 2015, Negligence",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/biovance_nda_and_licensing_agreement.pdf",
+      image_url:
+        "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80",
+      audio_url:
+        "https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg",
+      video_url:
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+  {
+    case_id: "bns_consortium_cheating",
+    title: "Consortium Bank of India v. Sovereign Infra (IPC 405/420 & BNS 318)",
+    jurisdiction: "India (IPC / BNS)",
+    incident_type: "Criminal Breach of Trust & Cheating",
+    parties: {
+      Prosecution_or_Plaintiff: "Central Bureau of Investigation (Consortium)",
+      Defense_or_Respondent: "Sovereign Infra Ltd. Board & Promoters",
+    },
+    facts_summary:
+      "Promoters induced consortium banks to disburse ₹140 Crores for procuring machinery. On-site audits verified that the machinery was non-existent and funds were laundered into real estate shell companies.",
+    statutory_focus: "IPC Section 405 (Breach of Trust), IPC Section 420 / BNS 318(4) (Cheating)",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/hypothecation_deed_and_sanction_letter.pdf",
+      image_url:
+        "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f9?auto=format&fit=crop&w=600&q=80",
+      audio_url:
+        "https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg",
+      video_url:
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+];
 
 interface CourtroomViewProps {
   initialCaseText?: string;
@@ -40,6 +150,15 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
   const [incidentType, setIncidentType] = useState<string>("Criminal / Fraud");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+
+  // GCS Sample Demo Cases
+  const [sampleCases, setSampleCases] = useState<SampleCase[]>(DEFAULT_SAMPLE_CASES);
+  const [selectedSampleCase, setSelectedSampleCase] = useState<SampleCase | null>(
+    DEFAULT_SAMPLE_CASES[0]
+  );
+  const [selectedMediaPreview, setSelectedMediaPreview] = useState<
+    "pdf" | "image" | "audio" | "video"
+  >("image");
 
   // Codex Search & Filter
   const [codexQuery, setCodexQuery] = useState<string>("");
@@ -202,6 +321,28 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
     fetchCodex();
   }, [codexQuery, selectedCategory]);
 
+  // Fetch GCS Sample Cases catalog
+  useEffect(() => {
+    fetch("/api/judicial/sample-cases")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSampleCases(data);
+        }
+      })
+      .catch(() => {
+        // Fall back gracefully to DEFAULT_SAMPLE_CASES
+      });
+  }, []);
+
+  const handleSelectSampleCase = (sample: SampleCase) => {
+    setSelectedSampleCase(sample);
+    setCaseText(sample.facts_summary);
+    setJurisdiction(sample.jurisdiction);
+    setIncidentType(sample.incident_type);
+    setUploadedFileName(null);
+  };
+
   // Execute full Case Dissection
   const handleDissectCase = async () => {
     setIsLoading(true);
@@ -284,6 +425,13 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setActiveTab("dossier")}
+              className="px-3.5 py-2 rounded-xl text-sm font-medium bg-slate-800/80 hover:bg-slate-700/80 text-cyan-300 border border-cyan-500/30 transition flex items-center gap-1.5 shadow-sm"
+            >
+              <Cloud className="w-4 h-4 text-cyan-400" />
+              <span>GCS Demo Data ({sampleCases.length})</span>
+            </button>
             <button
               onClick={() => setActiveTab("codex")}
               className="px-4 py-2 rounded-xl text-sm font-medium bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700/60 transition flex items-center gap-2 shadow-sm"
@@ -601,6 +749,255 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
         {/* TAB 3: CASE DOSSIER & MULTIMODAL INGESTION */}
         {activeTab === "dossier" && (
           <div className="space-y-6 animate-fadeIn">
+            {/* GCS Sample Demo Cases Selector */}
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 border border-indigo-500/30 shadow-xl space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-indigo-500/20 pb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Cloud className="w-5 h-5 text-cyan-400" />
+                    <h3 className="text-lg font-bold text-white">
+                      Google Cloud Storage (GCS) Sample Media Catalog
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Select a ready-to-test case dossier backed by GCS media assets (PDF contracts, forensic snapshots, wiretap audio, deposition video). Git repo size remains 0 MB.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+                  <Database className="w-3.5 h-3.5" />
+                  <span>gs://clausafractalai-demo-assets/</span>
+                </div>
+              </div>
+
+              {/* Sample Case Selector Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {sampleCases.map((sample) => {
+                  const isSelected = selectedSampleCase?.case_id === sample.case_id;
+                  return (
+                    <button
+                      key={sample.case_id}
+                      type="button"
+                      onClick={() => handleSelectSampleCase(sample)}
+                      className={`text-left p-3.5 rounded-xl border transition-all flex flex-col justify-between h-full ${
+                        isSelected
+                          ? "bg-indigo-950/70 border-indigo-400 ring-2 ring-indigo-500/30 shadow-lg"
+                          : "bg-slate-950/60 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-1.5">
+                          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
+                            {sample.incident_type.split("/")[0].trim()}
+                          </span>
+                          {isSelected && (
+                            <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+                              <Check className="w-3 h-3" /> Active
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-xs font-bold text-white line-clamp-2 mb-1">
+                          {sample.title}
+                        </h4>
+                        <p className="text-[11px] text-slate-400 line-clamp-2">
+                          {sample.facts_summary}
+                        </p>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500">
+                        <span>{sample.jurisdiction}</span>
+                        <span className="text-indigo-400 font-mono">4 GCS Media</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Multimodal Media Stage (When Selected) */}
+              {selectedSampleCase && (
+                <div className="mt-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-300">
+                        Multimodal Evidence Assets:
+                      </span>
+                      <span className="text-xs text-indigo-400 font-medium">
+                        {selectedSampleCase.title}
+                      </span>
+                    </div>
+
+                    {/* Media Type Switcher Pills */}
+                    <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedMediaPreview("image")}
+                        className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
+                          selectedMediaPreview === "image"
+                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                            : "text-slate-400 hover:text-slate-200"
+                        }`}
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Snapshot</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedMediaPreview("audio")}
+                        className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
+                          selectedMediaPreview === "audio"
+                            ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                            : "text-slate-400 hover:text-slate-200"
+                        }`}
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                        <span>Audio</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedMediaPreview("video")}
+                        className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
+                          selectedMediaPreview === "video"
+                            ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                            : "text-slate-400 hover:text-slate-200"
+                        }`}
+                      >
+                        <Video className="w-3.5 h-3.5" />
+                        <span>Video</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedMediaPreview("pdf")}
+                        className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1.5 transition ${
+                          selectedMediaPreview === "pdf"
+                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
+                            : "text-slate-400 hover:text-slate-200"
+                        }`}
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>PDF Brief</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Active Media Player/Viewer */}
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800/80">
+                    {selectedMediaPreview === "image" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs text-slate-400">
+                          <span className="font-semibold text-slate-200">
+                            Forensic Snapshot / Evidentiary Exhibit
+                          </span>
+                          <span className="font-mono text-[11px] text-cyan-400">
+                            {selectedSampleCase.media.image_url.split("/").pop()}
+                          </span>
+                        </div>
+                        <div className="relative rounded-lg overflow-hidden border border-slate-700 bg-slate-950 flex items-center justify-center max-h-72">
+                          <img
+                            src={selectedSampleCase.media.image_url}
+                            alt="Forensic Evidence Snapshot"
+                            className="object-contain max-h-72 w-full hover:scale-105 transition-transform duration-300 cursor-zoom-in"
+                          />
+                          <div className="absolute top-2 left-2 bg-slate-950/80 px-2.5 py-1 rounded border border-cyan-500/40 text-[10px] text-cyan-300 font-mono">
+                            EXHIBIT SNAPSHOT · GCS CLOUD OBJECT
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedMediaPreview === "audio" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs text-slate-400">
+                          <span className="font-semibold text-slate-200">
+                            Recorded Deposition / Wiretap Audio
+                          </span>
+                          <span className="font-mono text-[11px] text-amber-400">
+                            {selectedSampleCase.media.audio_url.split("/").pop()}
+                          </span>
+                        </div>
+                        <div className="p-4 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+                          <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                            <Volume2 className="w-4 h-4 text-amber-400" />
+                            <span>HTML5 Audio Player (Streamed from Google Cloud Storage)</span>
+                          </div>
+                          <audio
+                            controls
+                            src={selectedSampleCase.media.audio_url}
+                            className="w-full mt-2"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedMediaPreview === "video" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs text-slate-400">
+                          <span className="font-semibold text-slate-200">
+                            Courtroom Hearing / Deposition Video Excerpt
+                          </span>
+                          <span className="font-mono text-[11px] text-rose-400">
+                            {selectedSampleCase.media.video_url.split("/").pop()}
+                          </span>
+                        </div>
+                        <div className="rounded-lg overflow-hidden border border-slate-700 bg-black flex items-center justify-center">
+                          <video
+                            controls
+                            src={selectedSampleCase.media.video_url}
+                            className="w-full max-h-64 object-contain"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedMediaPreview === "pdf" && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-xs text-slate-400">
+                          <span className="font-semibold text-slate-200">
+                            Evidentiary Brief / Disputed Contract (PDF)
+                          </span>
+                          <span className="font-mono text-[11px] text-indigo-400">
+                            {selectedSampleCase.media.pdf_url.split("/").pop()}
+                          </span>
+                        </div>
+                        <div className="p-4 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between gap-4">
+                          <div className="space-y-1">
+                            <div className="text-xs font-semibold text-white">
+                              {selectedSampleCase.media.pdf_url.split("/").pop()}
+                            </div>
+                            <div className="text-[11px] text-slate-400">
+                              Direct cloud object stream: {selectedSampleCase.media.pdf_url}
+                            </div>
+                          </div>
+                          <a
+                            href={selectedSampleCase.media.pdf_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-1.5 shrink-0"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            <span>Open GCS Object</span>
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Immediate Deliberation Call to Action */}
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
+                    <div className="text-xs text-slate-400">
+                      Case populated: <span className="text-white font-medium">{selectedSampleCase.title}</span> ({selectedSampleCase.jurisdiction})
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleDissectCase}
+                      disabled={isLoading}
+                      className="px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-md transition flex items-center gap-2 disabled:opacity-50 shrink-0"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{isLoading ? "Deliberating..." : "Deliberate This Case Now"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Input & Upload Panel */}
             <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">

@@ -6,7 +6,7 @@ import { CourtroomView } from "../../components/CourtroomView";
 describe("CourtroomView Component Suite", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => [],
     });
@@ -76,7 +76,7 @@ describe("CourtroomView Component Suite", () => {
   });
 
   it("switches to Statutory Codex tab and interacts with search filter", async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => [
         {
@@ -156,7 +156,7 @@ describe("CourtroomView Component Suite", () => {
       disclaimer: "AI Jurisprudential Co-Counsel",
     };
 
-    global.fetch = vi.fn().mockResolvedValue({
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => mockResult,
     });
@@ -171,4 +171,66 @@ describe("CourtroomView Component Suite", () => {
     });
     expect(screen.getByText(/9.8 \/ 10.0/i)).toBeInTheDocument();
   });
+
+  it("renders GCS Demo Data button and switches to dossier tab when clicked", () => {
+    render(<CourtroomView />);
+
+    const gcsDemoBtn = screen.getByRole("button", { name: /GCS Demo Data/i });
+    expect(gcsDemoBtn).toBeInTheDocument();
+
+    fireEvent.click(gcsDemoBtn);
+
+    expect(
+      screen.getByText(/Google Cloud Storage \(GCS\) Sample Media Catalog/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/gs:\/\/clausafractalai-demo-assets\//i)).toBeInTheDocument();
+  });
+
+  it("interacts with GCS Sample Media Catalog and switches between snapshot, audio, video, and pdf", async () => {
+    render(<CourtroomView />);
+
+    // Switch to dossier tab
+    const dossierTabBtn = screen.getByRole("button", {
+      name: /Case Dossier & Evidence Ingestion/i,
+    });
+    fireEvent.click(dossierTabBtn);
+
+    // Click on CyberExtort sample case
+    const cyberCaseBtn = screen.getByText(/In re: CyberExtort Cloud Data Penetration/i);
+    fireEvent.click(cyberCaseBtn);
+
+    // Verify textarea was populated with cyber case facts
+    expect(
+      screen.getByDisplayValue(/External threat actors intentionally breached healthcare cloud databases/i)
+    ).toBeInTheDocument();
+
+    // Verify media pills exist and switch between them
+    const snapshotPill = screen.getByRole("button", { name: /Snapshot/i });
+    const audioPill = screen.getByRole("button", { name: /Audio/i });
+    const videoPill = screen.getByRole("button", { name: /Video/i });
+    const pdfPill = screen.getByRole("button", { name: /PDF Brief/i });
+
+    expect(snapshotPill).toBeInTheDocument();
+    expect(audioPill).toBeInTheDocument();
+    expect(videoPill).toBeInTheDocument();
+    expect(pdfPill).toBeInTheDocument();
+
+    // Switch to audio
+    fireEvent.click(audioPill);
+    expect(screen.getByText(/Recorded Deposition \/ Wiretap Audio/i)).toBeInTheDocument();
+
+    // Switch to video
+    fireEvent.click(videoPill);
+    expect(screen.getByText(/Courtroom Hearing \/ Deposition Video Excerpt/i)).toBeInTheDocument();
+
+    // Switch to pdf
+    fireEvent.click(pdfPill);
+    expect(screen.getByText(/Evidentiary Brief \/ Disputed Contract \(PDF\)/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open GCS Object/i })).toBeInTheDocument();
+
+    // Switch back to snapshot
+    fireEvent.click(snapshotPill);
+    expect(screen.getByText(/Forensic Snapshot \/ Evidentiary Exhibit/i)).toBeInTheDocument();
+  });
 });
+

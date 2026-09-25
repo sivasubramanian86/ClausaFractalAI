@@ -143,3 +143,24 @@ export interface CourtroomAnalysisResult {
   disclaimer: string;
 }
 
+export interface SampleCaseMedia {
+  pdf_url: string;
+  image_url: string;
+  audio_url: string;
+  video_url: string;
+  gcs_bucket: string;
+}
+
+export interface SampleCase {
+  case_id: string;
+  title: string;
+  jurisdiction: string;
+  incident_type: string;
+  parties: Record<string, string>;
+  facts_summary: string;
+  statutory_focus: string;
+  media: SampleCaseMedia;
+  is_gcs_hosted: boolean;
+}
+
+
