@@ -136,9 +136,7 @@ class CourtroomDeliberationEngine:
         matches = self.codex.match_evidence_to_sections(clean_text)
         if matches:
             matched_sections = [
-                StatutorySection(**m["section"])
-                if isinstance(m["section"], dict)
-                else m["section"]
+                StatutorySection(**m["section"]) if isinstance(m["section"], dict) else m["section"]
                 for m in matches
             ]
         else:
@@ -263,9 +261,7 @@ class CourtroomDeliberationEngine:
         win_def = round(1.0 - win_pros, 2)
 
         p_prec = (
-            primary_section.precedents[0]
-            if primary_section.precedents
-            else "Established Precedent"
+            primary_section.precedents[0] if primary_section.precedents else "Established Precedent"
         )
         advocate = AdvocateStrategy(
             prosecution_strengths=[

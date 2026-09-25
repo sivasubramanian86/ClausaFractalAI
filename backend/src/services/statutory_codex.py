@@ -504,12 +504,14 @@ class StatutoryCodexService:
                 sec = self.get_section_by_id(item["code_id"])
                 if sec:
                     confidence = min(0.95, 0.50 + (len(matching_kw) * 0.15))
-                    matches.append({
-                        "section": sec.model_dump(),
-                        "confidence": round(confidence, 2),
-                        "matched_keywords": matching_kw,
-                        "statutory_test": sec.statutory_test,
-                    })
+                    matches.append(
+                        {
+                            "section": sec.model_dump(),
+                            "confidence": round(confidence, 2),
+                            "matched_keywords": matching_kw,
+                            "statutory_test": sec.statutory_test,
+                        }
+                    )
 
         matches.sort(key=lambda x: x["confidence"], reverse=True)
         return matches
