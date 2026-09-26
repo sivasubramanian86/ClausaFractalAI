@@ -165,7 +165,7 @@ class ActionableCopilotAgent:
                         ],
                     ),
                 )
-            except Exception:  # noqa: S110
+            except Exception:  # nosec B110 # noqa: S110
                 pass  # Fall through to dynamic contextual offline synthesis
 
         # 2. Dynamic Context-Aware Synthesis (Offline / Deterministic Fallback)
@@ -327,7 +327,7 @@ class ActionableCopilotAgent:
                     negotiation_tip=tip
                     or "Propose mutual parity as standard procurement practice.",
                 )
-            except Exception:  # noqa: S110
+            except Exception:  # nosec B110 # noqa: S110
                 pass  # Fall through to dynamic deterministic synthesis
 
         # 2. Dynamic Semantic Parsing & Redlining (Offline / Deterministic Fallback)

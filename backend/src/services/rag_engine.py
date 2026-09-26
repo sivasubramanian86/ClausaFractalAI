@@ -242,7 +242,7 @@ class RAGEngine:
                     for item in data
                     if item.get("subject") and item.get("object")
                 ]
-            except Exception:  # noqa: S110
+            except Exception:  # nosec B110 # noqa: S110
                 pass  # Fall through to deterministic rule extractor
 
         triples: List[LegalTriple] = []
