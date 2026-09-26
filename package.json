@@ -1,0 +1,14 @@
+{
+  "name": "clausa-fractal-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Evidence-grounded AI for Legal Assistance & Access: understand, compare, and navigate legal documents.",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm --prefix frontend test",
+    "test:frontend": "npm --prefix frontend test",
+    "test:backend": "pytest backend/tests/ -v",
+    "lint": "ruff check backend/src/ && npm --prefix frontend run type-check",
+    "build": "npm --prefix frontend run build"
+  }
+}
