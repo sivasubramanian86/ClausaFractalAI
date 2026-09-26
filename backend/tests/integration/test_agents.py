@@ -531,14 +531,10 @@ def test_rag_engine_extract_triples_with_gemini_client() -> None:
     rag = RAGEngine()
     mock_client = MagicMock()
     mock_resp = MagicMock()
-    mock_resp.text = (
-        '[{"subject": "Company", "relation": "OBLIGATED_TO", "object": "deliver"}]'
-    )
+    mock_resp.text = '[{"subject": "Company", "relation": "OBLIGATED_TO", "object": "deliver"}]'
     mock_client.models.generate_content.return_value = mock_resp
 
-    triples = rag.extract_triples(
-        "Company shall deliver services", gemini_client=mock_client
-    )
+    triples = rag.extract_triples("Company shall deliver services", gemini_client=mock_client)
     assert len(triples) == 1
     assert triples[0].subject == "Company"
     assert triples[0].relation == "OBLIGATED_TO"
