@@ -96,6 +96,7 @@ export interface StatutorySection {
   penalties: string;
   precedents: string[];
   statutory_test: string;
+  summary?: string;
 }
 
 export interface StatutoryElementProof {

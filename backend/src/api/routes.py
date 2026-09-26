@@ -393,8 +393,12 @@ async def generate_attorney_prep(
         AttorneyPrepSheet ready for legal consultation.
     """
     copilot_agent = request.app.state.copilot_agent
+    rag_engine = request.app.state.rag_engine
+    chunks = rag_engine.get_document_chunks(prep_req.document_id)
+    doc_text = " ".join(c.text for c in chunks) if chunks else ""
     return copilot_agent.generate_attorney_prep_sheet(
         document_id=prep_req.document_id,
+        document_text=doc_text,
         key_risks=prep_req.key_risks or None,
     )
 

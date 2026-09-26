@@ -41,32 +41,32 @@ interface AuthContextType {
 
 const ROLE_PROFILES: Record<LegalRole, Omit<LegalUser, "photoURL" | "firebaseUser">> = {
   counsel: {
-    uid: "usr_counsel_77",
-    email: "guest@clausafractal.ai",
-    displayName: "Scott (Demo)",
+    uid: "usr_tenant_77",
+    email: "priya.sharma@accesslegal.org",
+    displayName: "Priya Sharma (Tenant)",
     role: "counsel",
-    organization: "Global Legal Operations",
+    organization: "Residential Tenancy & Lease Review",
   },
   arbitrator: {
-    uid: "usr_arbitrator_12",
-    email: "arbitrator.tanaka@hkiac.org",
-    displayName: "Hon. Kenji Tanaka",
+    uid: "usr_employee_12",
+    email: "david.chen@workplaceaccess.org",
+    displayName: "David Chen (Employee)",
     role: "arbitrator",
-    organization: "International Arbitration Tribunal",
+    organization: "Employment Agreements & Fair Labor",
   },
   auditor: {
-    uid: "usr_auditor_05",
-    email: "risk.auditor@deloitte.com",
-    displayName: "Marcus Thorne, CPA/CISA",
+    uid: "usr_freelancer_05",
+    email: "alex.morgan@freelanceguild.org",
+    displayName: "Alex Morgan (Freelancer)",
     role: "auditor",
-    organization: "Enterprise Risk & Compliance",
+    organization: "Independent Contractor & Creator Rights",
   },
   founder: {
-    uid: "usr_founder_01",
-    email: "alex@fractalscale.io",
-    displayName: "Alex Rivera (CEO)",
+    uid: "usr_smb_01",
+    email: "elena@mainstreetbakery.com",
+    displayName: "Elena Rostova (Small Business)",
     role: "founder",
-    organization: "FractalScale Technologies",
+    organization: "Small Business Commerce & Vendor Terms",
   },
 };
 

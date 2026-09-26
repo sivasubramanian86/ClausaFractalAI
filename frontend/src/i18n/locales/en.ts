@@ -3,7 +3,7 @@ import { TranslationDictionary } from "../types";
 export const en: TranslationDictionary = {
   // Brand & Header
   appTitle: "ClausaFractalAI",
-  subtitle: "Autonomous Legal Document Intelligence & Action Platform",
+  subtitle: "GenAI Legal Document Assistant & Action Navigator for Everyday Readers",
   zeroHallucinationBadge: "Zero Hallucination Grounding Active",
   citationBadge: "Citation Verified",
   zeroKeyBadge: "Vertex AI ADC Zero-Key",
@@ -21,10 +21,10 @@ export const en: TranslationDictionary = {
   // Theme & Roles
   themeDark: "Dark Mode",
   themeLight: "Light Mode",
-  roleCounsel: "General Counsel",
-  roleArbitrator: "Lead Arbitrator",
-  roleAuditor: "Risk Auditor",
-  roleFounder: "Startup Founder",
+  roleCounsel: "Tenant (Residential Lease)",
+  roleArbitrator: "Employee (Job Offer & NDA)",
+  roleAuditor: "Freelancer (Client Contract)",
+  roleFounder: "Small Business (Vendor Terms)",
 
   // Studio Workspace
   uploadPrompt: "Drag and drop legal PDF or scanned contract photo here",

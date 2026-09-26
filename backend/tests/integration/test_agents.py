@@ -485,6 +485,60 @@ def test_copilot_attorney_prep_and_counter_clause() -> None:
     assert "thirty (30) days" in proposal_term.counter_clause
 
 
+def test_copilot_actions_with_gemini_client() -> None:
+    """Verify ActionableCopilotAgent with dynamic GenAI response and fallback error handling."""
+    mock_client = MagicMock()
+    mock_prep_resp = MagicMock()
+    mock_prep_resp.text = (
+        '{"executive_summary": "High risk detected", "attorney_questions": ['
+        '{"category": "Liability", "question": "What is the cap?", "context_rationale": "High risk"},'
+        '{"category": "Indemnity", "question": "Is it mutual?", "context_rationale": "Unilateral"},'
+        '{"category": "Termination", "question": "Can we exit?", "context_rationale": "Locked in"},'
+        '{"category": "IP", "question": "Who owns code?", "context_rationale": "Loss of IP"},'
+        '{"category": "Dispute", "question": "Where is venue?", "context_rationale": "Delaware"}'
+        '], "negotiation_leverage_points": ["Demand mutual terms"]}'
+    )
+    mock_client.models.generate_content.return_value = mock_prep_resp
+
+    copilot = ActionableCopilotAgent(gemini_client=mock_client)
+    sheet = copilot.generate_attorney_prep_sheet("doc_genai", document_text="Sample contract", key_risks=["Uncapped"])
+    assert sheet.executive_summary == "High risk detected"
+    assert len(sheet.attorney_questions) == 5
+
+    # Test rewrite_clause with client success
+    mock_rewrite_resp = MagicMock()
+    mock_rewrite_resp.text = '{"counter_clause": "Mutual liability cap", "strategic_rationale": "Bilateral balance", "negotiation_tip": "Propose parity"}'
+    mock_client.models.generate_content.return_value = mock_rewrite_resp
+    proposal = copilot.rewrite_clause("Customer pays all damages", "liability")
+    assert proposal.counter_clause == "Mutual liability cap"
+
+    # Test client exception fallback
+    mock_client.models.generate_content.side_effect = Exception("API rate limit")
+    fallback_sheet = copilot.generate_attorney_prep_sheet("doc_err", key_risks=["Risk"])
+    assert len(fallback_sheet.attorney_questions) == 5
+    fallback_prop = copilot.rewrite_clause("Customer pays all", "liability")
+    assert "twelve (12) months" in fallback_prop.counter_clause
+
+
+def test_rag_engine_extract_triples_with_gemini_client() -> None:
+    """Verify RAGEngine.extract_triples with mocked GenAI client and fallback."""
+    rag = RAGEngine()
+    mock_client = MagicMock()
+    mock_resp = MagicMock()
+    mock_resp.text = '[{"subject": "Company", "relation": "OBLIGATED_TO", "object": "deliver services"}]'
+    mock_client.models.generate_content.return_value = mock_resp
+
+    triples = rag.extract_triples("Company shall deliver services", gemini_client=mock_client)
+    assert len(triples) == 1
+    assert triples[0].subject == "Company"
+    assert triples[0].relation == "OBLIGATED_TO"
+
+    # Test exception fallback
+    mock_client.models.generate_content.side_effect = Exception("Gemini down")
+    fallback_triples = rag.extract_triples("Company shall deliver goods", gemini_client=mock_client)
+    assert len(fallback_triples) == 1
+
+
 # ============================================================================
 # ModelContextProtocolServer Tests
 # ============================================================================

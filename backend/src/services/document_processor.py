@@ -228,6 +228,7 @@ class DocumentProcessor:
                 text=clean,
                 page=page_num,
                 clause_ref=f"Page {page_num}",
+                gemini_client=self.gemini_client,
             )
             all_triples.extend(triples)
 
@@ -277,6 +278,7 @@ class DocumentProcessor:
             text=clean,
             page=1,
             clause_ref="Section 1",
+            gemini_client=self.gemini_client,
         )
 
         page_obj = PageText(

@@ -63,10 +63,10 @@ describe("GovernanceView Unit Test Suite", () => {
     });
 
     // Test Role Switching in Simulator
-    const arbitratorBtn = screen.getByRole("button", { name: new RegExp(en.roleArbitrator, "i") });
+    const arbitratorBtn = screen.getByText(en.roleArbitrator).closest("button")!;
     fireEvent.click(arbitratorBtn);
 
-    expect(screen.getByText(/Hon. Kenji Tanaka/i)).toBeInTheDocument();
+    expect(screen.getByText(/David Chen \(Employee\)/i)).toBeInTheDocument();
 
     // Test Refresh Button — wrap in act because click triggers async fetch → setState
     await act(async () => {

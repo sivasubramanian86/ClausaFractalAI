@@ -46,6 +46,6 @@ describe("SettingsSection Unit Tests", () => {
     expect(handleLanguageChange).toHaveBeenCalledWith("hi");
 
     // Shows demo account info
-    expect(screen.getByText(/Demo session as Scott \(Demo\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Demo session as Priya Sharma \(Tenant\)/i)).toBeInTheDocument();
   });
 });

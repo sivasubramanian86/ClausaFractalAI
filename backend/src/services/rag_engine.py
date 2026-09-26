@@ -187,19 +187,59 @@ class RAGEngine:
         self.index.add(matrix)
         self.chunks.extend(chunks)
 
-    def extract_triples(self, text: str, page: int = 1, clause_ref: str = "") -> List[LegalTriple]:
-        """Extract legal entity-relation triples from contract text using deterministic rules.
+    def extract_triples(
+        self,
+        text: str,
+        page: int = 1,
+        clause_ref: str = "",
+        gemini_client: Optional[object] = None,
+    ) -> List[LegalTriple]:
+        """Extract legal entity-relation triples from contract text using GenAI or semantic rules.
 
         Args:
             text: Clause or page text.
             page: Page number where text appears.
             clause_ref: Section or clause identifier.
+            gemini_client: Optional google-genai Client for dynamic LLM extraction.
 
         Returns:
             List of LegalTriple instances.
         """
         if not text:
             return []
+
+        # 1. GenAI Dynamic Extraction via Gemini if client is active
+        if gemini_client is not None:
+            try:
+                import json
+                prompt = (
+                    "Extract all contractual entity-relation triples from this text.\n\n"
+                    f"Text:\n{text[:1200]}\n\n"
+                    "Return JSON conforming to:\n"
+                    "[\n"
+                    '  {"subject": "Entity", "relation": "OBLIGATED_TO" | "PROHIBITED_FROM" | "INDEMNIFIES" | "LIMITS_LIABILITY_TO", "object": "Action or Term"}\n'
+                    "]"
+                )
+                response = gemini_client.models.generate_content(
+                    model="gemini-3.8-flash-001",
+                    contents=prompt,
+                )
+                raw_text = getattr(response, "text", "").strip()
+                cleaned_json = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+                data = json.loads(cleaned_json)
+                return [
+                    LegalTriple(
+                        subject=item.get("subject", "").strip().title(),
+                        relation=item.get("relation", "OBLIGATED_TO").strip().upper(),
+                        object=item.get("object", "").strip(),
+                        clause_ref=clause_ref,
+                        page=page,
+                    )
+                    for item in data
+                    if item.get("subject") and item.get("object")
+                ]
+            except Exception:
+                pass  # Fall through to deterministic rule extractor
 
         triples: List[LegalTriple] = []
 

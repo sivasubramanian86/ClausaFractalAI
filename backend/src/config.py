@@ -4,7 +4,7 @@ Provides settings management, Vertex AI model configuration, baseline contract t
 and security parameters.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         port: Port number on which the ASGI server listens.
         gcp_project_id: Google Cloud Platform Project ID for Vertex AI.
         gcp_location: Regional endpoint for Vertex AI Model Garden.
+        google_api_key: Optional Google GenAI API key for direct access.
         router_model: Low-latency intent classification model name.
         analyst_model: Core legal reasoning and context caching model name.
         synthesis_model: Deep strategic synthesis and attorney prep model name.
@@ -37,6 +38,7 @@ class Settings(BaseSettings):
     port: int = Field(default=8000, alias="PORT")
     gcp_project_id: str = Field(default="genai-apac-2026-491004", alias="GOOGLE_CLOUD_PROJECT")
     gcp_location: str = Field(default="us-central1", alias="GOOGLE_CLOUD_LOCATION")
+    google_api_key: Optional[str] = Field(default=None, alias="GOOGLE_API_KEY")
     google_genai_use_vertexai: bool = Field(default=True, alias="GOOGLE_GENAI_USE_VERTEXAI")
     auth_enforced: bool = Field(default=False, alias="AUTH_ENFORCED")
 

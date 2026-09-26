@@ -95,6 +95,16 @@ async def test_orchestrator_all_intents() -> None:
     assert res_prep.intent == "ATTORNEY_PREP"
     assert res_prep.attorney_prep_sheet is not None
 
+    # 6b. ATTORNEY_PREP with explicit document_text
+    res_prep_explicit = orchestrator.process_query(
+        query="Prepare for attorney meeting",
+        document_id="doc_test",
+        document_text="The tenant agrees to forfeit the deposit upon early departure.",
+        forced_intent="ATTORNEY_PREP",
+    )
+    assert res_prep_explicit.intent == "ATTORNEY_PREP"
+    assert res_prep_explicit.attorney_prep_sheet is not None
+
     # 7. CLAUSE_REWRITE
     res_rewrite = orchestrator.process_query(
         query="The customer assumes unlimited liability.",

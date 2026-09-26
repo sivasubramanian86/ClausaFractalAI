@@ -122,17 +122,23 @@ def create_application() -> FastAPI:
         lifespan=lifespan,
     )
 
+    gemini_client = None
+    if settings.google_api_key:
+        from google import genai
+
+        gemini_client = genai.Client(api_key=settings.google_api_key)
+
     # Initialize shared in-memory RAG, ingestion, and agent components
     rag_engine = RAGEngine()
-    doc_processor = DocumentProcessor(rag_engine=rag_engine)
-    audio_processor = AudioProcessor()
+    doc_processor = DocumentProcessor(rag_engine=rag_engine, gemini_client=gemini_client)
+    audio_processor = AudioProcessor(gemini_client=gemini_client)
 
     router_agent = RouterAgent()
-    qa_agent = LegalQAAnalystAgent(rag_engine=rag_engine)
+    qa_agent = LegalQAAnalystAgent(rag_engine=rag_engine, gemini_client=gemini_client)
     critic_agent = CriticReflectionAgent()
     blindspot_agent = BlindspotDetectorAgent()
     collider_agent = PolicyColliderAgent()
-    copilot_agent = ActionableCopilotAgent()
+    copilot_agent = ActionableCopilotAgent(gemini_client=gemini_client)
     mcp_server = ModelContextProtocolServer(
         blindspot_agent=blindspot_agent, copilot_agent=copilot_agent
     )

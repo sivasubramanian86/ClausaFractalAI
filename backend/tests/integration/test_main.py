@@ -274,3 +274,13 @@ async def test_mcp_endpoints() -> None:
         )
         assert call_resp.status_code == 200
         assert call_resp.json()["status"] == "success"
+
+
+def test_create_application_with_google_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify create_application initializes gemini_client when GOOGLE_API_KEY is present."""
+    from main import create_application
+
+    monkeypatch.setenv("GOOGLE_API_KEY", "test-api-key-12345")
+    test_app = create_application()
+    assert test_app is not None
+    assert hasattr(test_app.state, "copilot_agent")

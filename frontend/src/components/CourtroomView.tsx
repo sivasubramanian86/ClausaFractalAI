@@ -31,74 +31,24 @@ import {
 
 export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
   {
-    case_id: "nexus_crime_scene_forensics",
-    title: "State of California v. Nexus Enterprise (Forensic Crime Scene & Burglary)",
-    jurisdiction: "US Federal / State",
-    incident_type: "Physical Intrusion & Burglary Forensics",
+    case_id: "residential_lease_deposit",
+    title: "Residential Lease Dispute: Elena Rostova (Tenant) v. Apex Property Holdings",
+    jurisdiction: "State Civil / Tenant Rights",
+    incident_type: "Residential Tenancy & Security Deposit",
     parties: {
-      Prosecution_or_Plaintiff: "State of California & Police Forensic Division",
-      Defense_or_Respondent: "Nexus Enterprise Ltd. & Ex-CFO Marcus Vance",
+      Prosecution_or_Plaintiff: "Elena Rostova (Residential Tenant)",
+      Defense_or_Respondent: "Apex Property Holdings LLC (Landlord)",
     },
     facts_summary:
-      "Physical crime scene investigation of server room break-in. Numbered evidence markers recovered shattered biometric scanners, latex gloves with DNA traces, and severed fiber cables. Official chain-of-custody seal intact.",
-    statutory_focus: "California Penal Code § 459 (Burglary), 18 U.S.C. § 1343, Evid. Code § 1400",
+      "Tenant vacated apartment in clean condition after 12-month lease. Landlord improperly withheld $3,200 security deposit citing normal wear-and-tear, failing to provide itemized deductions within the statutory 21-day window under Cal. Civ. Code § 1950.5.",
+    statutory_focus: "Cal. Civ. Code § 1950.5 (Security Deposits), Cal. Civ. Code § 1942 (Habitability)",
     media: {
       pdf_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/nexus_forensic_crime_scene_investigation_report.pdf",
       image_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/crime_scene_forensic_evidence_imagen3.jpg",
-      audio_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_911_forensic_dispatch_recording.mp3",
-      video_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_crime_scene_forensic_cctv_deposition.mp4",
-      gcs_bucket: "clausafractalai-demo-assets",
-    },
-    is_gcs_hosted: true,
-  },
-  {
-    case_id: "cyberextort_cfaa",
-    title: "In re: CyberExtort Cloud Data Penetration (CFAA § 1030 & GDPR Art. 83)",
-    jurisdiction: "Federal / Multi-Jurisdiction",
-    incident_type: "Cybercrime & Digital Forensics",
-    parties: {
-      Prosecution_or_Plaintiff: "Federal Trade Commission & Healthcare Network",
-      Defense_or_Respondent: "Anonymous Threat Actor Group 'ZeroByte'",
-    },
-    facts_summary:
-      "External threat actors intentionally breached healthcare cloud databases. Digital forensics investigation verifying unauthorized server breach. Wireshark PCAP packets, SHA-256 evidence hash verification matching original payload, and forensic logs submitted under Exhibit C-1030.",
-    statutory_focus: "18 U.S.C. § 1030 (CFAA), GDPR Art. 83, Federal Rules of Evidence 901",
-    media: {
-      pdf_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/ransom_demand_and_incident_report.pdf",
-      image_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/cyber_forensic_evidence_imagen3.jpg",
-      audio_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_wiretapped_ransom_call_threat_actor.mp3",
-      video_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_soc_digital_forensics_breach_replay.mp4",
-      gcs_bucket: "clausafractalai-demo-assets",
-    },
-    is_gcs_hosted: true,
-  },
-  {
-    case_id: "sharma_land_dispute",
-    title: "Sharma & Ors v. State Development Corp (Land in Dispute: Cadastral Boundary Encroachment)",
-    jurisdiction: "India (Civil Law / High Court)",
-    incident_type: "Real Property & Disputed Land Boundaries",
-    parties: {
-      Prosecution_or_Plaintiff: "Sharma Family Heirs (Registered Title Holders)",
-      Defense_or_Respondent: "State Development Corporation & Private Developers",
-    },
-    facts_summary:
-      "Cadastral land boundary dispute concerning 0.18-acre disputed parcel highlighted on official surveyor topographic map. Revenue stamps, GPS coordinate benchmarks (IPF monuments), and title deed BK 1145 PG 203 submitted under Exhibit P-14.",
-    statutory_focus: "Specific Relief Act § 38 (Permanent Injunction), Transfer of Property Act § 54",
-    media: {
-      pdf_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/cadastral_land_deed_and_khasra_injunction_petition.pdf",
-      image_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/land_dispute_cadastral_survey_imagen3.jpg",
       audio_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_panchayat_land_surveyor_deposition.mp3",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_911_forensic_dispatch_recording.mp3",
       video_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_aerial_drone_topographic_boundary_dispute.mp4",
       gcs_bucket: "clausafractalai-demo-assets",
@@ -106,17 +56,67 @@ export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
     is_gcs_hosted: true,
   },
   {
-    case_id: "bns_consortium_cheating",
-    title: "Consortium Bank of India v. Sovereign Infra (IPC 405/420 & BNS 318)",
-    jurisdiction: "India (IPC / BNS)",
-    incident_type: "Corporate Financial Fraud & Money Laundering",
+    case_id: "employment_noncompete",
+    title: "Employment Agreement Dispute: David Chen (Employee) v. Enterprise Tech",
+    jurisdiction: "Labor & Employment",
+    incident_type: "Employment Contract & Non-Compete",
     parties: {
-      Prosecution_or_Plaintiff: "Central Bureau of Investigation (Banking Securities)",
-      Defense_or_Respondent: "Sovereign Infra Ltd. Board & Shell Entity Promoters",
+      Prosecution_or_Plaintiff: "David Chen (Former Software Engineer)",
+      Defense_or_Respondent: "Enterprise Tech Solutions Inc. (Employer)",
     },
     facts_summary:
-      "Forensic audit of bank ledger revealing unauthorized ₹140 Cr loan diversion. Ultraviolet signature examination identified forged executive approvals, while financial forensic flowcharts mapped fund laundering through 4 shell companies under Operation Golden Handshake.",
-    statutory_focus: "IPC Section 405 (Breach of Trust), IPC Section 420 / BNS 318(4) (Cheating)",
+      "Employer seeks to enforce an overbroad nationwide 24-month non-compete covenant and cancel vested stock options after involuntary reduction in force. Dispute centers on statutory non-compete unenforceability under Cal. Bus. & Prof. Code § 16600 & FTC rules.",
+    statutory_focus: "Cal. Bus. & Prof. Code § 16600, FTC 16 C.F.R. Part 910 (Non-Compete Rule)",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/ransom_demand_and_incident_report.pdf",
+      image_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/crime_scene_forensic_evidence_imagen3.jpg",
+      audio_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_wiretapped_ransom_call_threat_actor.mp3",
+      video_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_crime_scene_forensic_cctv_deposition.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+  {
+    case_id: "freelance_msa_ip_dispute",
+    title: "Freelance Services Dispute: Alex Morgan (Freelancer) v. Apex Digital Agency",
+    jurisdiction: "Commercial & Freelancer Rights",
+    incident_type: "Independent Contractor & IP Transfer",
+    parties: {
+      Prosecution_or_Plaintiff: "Alex Morgan (Independent Designer)",
+      Defense_or_Respondent: "Apex Digital Agency Corp (Client)",
+    },
+    facts_summary:
+      "Client claimed total ownership of design deliverables while withholding $8,500 milestone payment. Contract clause attempts unilateral IP transfer prior to payment and imposes unlimited unilateral indemnification on the independent contractor.",
+    statutory_focus: "Freelance Isn't Free Act (FIFA), UCC § 2-302 (Unconscionability)",
+    media: {
+      pdf_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/cadastral_land_deed_and_khasra_injunction_petition.pdf",
+      image_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/cyber_forensic_evidence_imagen3.jpg",
+      audio_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_panchayat_land_surveyor_deposition.mp3",
+      video_url:
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_soc_digital_forensics_breach_replay.mp4",
+      gcs_bucket: "clausafractalai-demo-assets",
+    },
+    is_gcs_hosted: true,
+  },
+  {
+    case_id: "small_business_saas_vendor",
+    title: "Small Business Terms Dispute: Sunrise Bakery LLC v. POS Cloud SaaS",
+    jurisdiction: "Commercial / Small Business",
+    incident_type: "SaaS Vendor Terms & Hidden Renewal",
+    parties: {
+      Prosecution_or_Plaintiff: "Sunrise Artisan Bakery LLC (SMB Retailer)",
+      Defense_or_Respondent: "CloudPOS Enterprise Systems Inc. (Vendor)",
+    },
+    facts_summary:
+      "Cloud POS vendor suffered a 48-hour weekend outage causing $42,000 lost revenue. Vendor claims limitation of liability to $100 while enforcing a hidden 3-year auto-renewal clause triggered without advance written notice.",
+    statutory_focus: "UCC § 2-719 (Modification of Remedy), FTC Auto-Renewal Negative Option Rule",
     media: {
       pdf_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/hypothecation_deed_and_sanction_letter.pdf",
@@ -150,10 +150,10 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
   >("bench");
   const [caseText, setCaseText] = useState<string>(
     initialCaseText ||
-      `State v. Nexus Corp\nAccused entities intentionally deceived complainant into parting with $2.4M worth of proprietary cloud source code and enterprise assets through unauthorized computer access and forged executive wire authorizations.`
+      `Residential Lease Agreement Dispute: Elena Rostova (Tenant) v. Apex Property Holdings LLC\nLandlord improperly withheld the full $3,200 security deposit following tenancy termination, claiming routine repainting and normal wear. Landlord failed to deliver an itemized deduction statement or return funds within the mandatory 21-day statutory period required by law.`
   );
   const [jurisdiction, setJurisdiction] = useState<string>("Common Law");
-  const [incidentType, setIncidentType] = useState<string>("Criminal / Fraud");
+  const [incidentType, setIncidentType] = useState<string>("Residential Lease / Tenant Rights");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
@@ -176,130 +176,98 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
   // Analysis result state with rich default demo data
   const [analysisResult, setAnalysisResult] = useState<CourtroomAnalysisResult>({
     dossier: {
-      case_title: "In re: State v. Nexus Corp & Officers",
-      incident_type: "Criminal / Fraud & Cyber Misappropriation",
+      case_title: "In re: Tenant v. Apex Property Holdings (Security Deposit & Habitability)",
+      incident_type: "Residential Tenancy & Consumer Protection",
       parties: {
-        Prosecution_or_Plaintiff: "State Special Prosecutor & Aggrieved Enterprise",
-        Defense_or_Respondent: "Nexus Corp & Executive Leadership",
+        Prosecution_or_Plaintiff: "Elena Rostova (Residential Tenant)",
+        Defense_or_Respondent: "Apex Property Holdings LLC (Landlord)",
       },
       facts_summary:
-        "Allegations center on systematic deception, unauthorized credential theft, and interstate wire communications inducing transfer of valuable enterprise property and source code under false pretenses.",
+        "Tenant vacated leased premises in clean condition. Landlord failed to provide itemized deductions or refund $3,200 security deposit within 21 statutory days, asserting unilateral forfeiture under Section 14 of the standard residential lease.",
       key_evidence: [
-        "Exhibit A: Digital audit trail indicating unauthorized CFAA system ingress",
-        "Exhibit B: Altered wire transfer authorization forms with forged digital signature",
-        "Exhibit C: Electronic email records demonstrating deceitful representations prior to asset delivery",
+        "Exhibit A: Move-out inspection checklist confirming zero tenant damage",
+        "Exhibit B: Certified mail delivery receipt of formal 30-day move-out notice",
+        "Exhibit C: Bank statement verifying initial $3,200 security deposit transfer",
       ],
-      jurisdiction: "United States (Federal) / Common Law",
+      jurisdiction: "Civil / Tenant Rights",
     },
     verdict: {
-      case_title: "In re: State v. Nexus Corp & Officers",
-      bench: "The Honorable Bench – High Jurisprudential Chamber",
+      case_title: "In re: Tenant v. Apex Property Holdings (Security Deposit & Habitability)",
+      bench: "The Honorable Bench – Housing & Consumer Rights Chamber",
       ratio_decidendi:
-        "Where the evidentiary record establishes intentional deception coupled with interstate wire transmission to induce delivery of valuable property, the defendant cannot shield themselves behind contractual limitation clauses or boilerplate arbitration disclaimers.",
+        "Statutory provisions protecting residential tenants against bad-faith deposit retention are non-waivable. Contractual clauses granting landlords unilateral discretion to forfeit security deposits for normal wear-and-tear violate statutory public policy.",
       obiter_dicta:
-        "Fiduciary officers cannot weaponize technical complexity to obfuscate fraudulent intent. Commercial entities are admonished that good faith and statutory compliance supersede private exculpatory pacts.",
+        "Housing providers must adhere to statutory itemization timeframes. Unilateral forfeiture clauses in standard-form residential leases will be strictly construed against the drafter.",
       element_proofs: [
         {
-          element: "Participation in a scheme to defraud or obtain property by false pretenses",
-          is_satisfied: true,
-          evidentiary_basis:
-            "Corroborated by contemporaneous server logs and forged authorization instruments.",
-        },
-        {
-          element: "Knowing and willful intent to defraud (Mens Rea)",
-          is_satisfied: true,
-          evidentiary_basis:
-            "Demonstrated by internal encrypted communications directing the diversion of funds.",
-        },
-        {
-          element: "Transmission in interstate wire commerce (Actus Reus)",
+          element: "Timely delivery of statutory itemized deduction statement within 21 days",
           is_satisfied: false,
           evidentiary_basis:
-            "SWIFT transaction routing records pending formal subpoena corroboration.",
+            "Postal records confirm landlord delivered no accounting within the statutory window.",
+        },
+        {
+          element: "Pre-existing condition or ordinary wear-and-tear exclusion",
+          is_satisfied: true,
+          evidentiary_basis:
+            "Move-in and move-out checklists establish apartment condition was maintained in good order.",
+        },
+        {
+          element: "Bad faith retention penalty threshold",
+          is_satisfied: true,
+          evidentiary_basis:
+            "Complete refusal to engage or return undisputed portions of deposit demonstrates bad faith.",
         },
       ],
-      final_decree: "Finding of Liability & Prima Facie Guilt under USC-18-1343 & IPC-420",
+      final_decree: "Decree in Favor of Tenant: Statutory Return of Deposit plus Statutory Bad-Faith Penalties",
       relief_or_sentence:
-        "Restitution in the sum of $2,400,000, statutory civil penalties, and referral for formal criminal indictment.",
-      statutory_compliance_score: 9.2,
+        "Full refund of $3,200 security deposit plus statutory damages of twice the deposit amount ($6,400) and reasonable attorney fees.",
+      statutory_compliance_score: 9.6,
     },
     advocate_strategy: {
-      counsel_role: "Senior Advocate & Lead Trial Counsel (BA LLB, LLM)",
+      counsel_role: "Senior Legal Advocate & Tenant Rights Counsel",
       prosecution_strengths: [
-        "Primary Landmark Precedent: Neder v. United States (1999) establishes that materiality of false statement is fully satisfied.",
-        "Direct statutory trigger under Wire Fraud (18 U.S.C. § 1343) and Cheating (IPC 420).",
-        "Contemporaneous digital footprints eliminate defense claims of accidental procedural oversight.",
+        "Strict statutory liability: Failure to itemize within 21 days forfeits right to retain any portion.",
+        "Statutory bad-faith damages available up to twice the deposit amount.",
+        "Clear documentary audit trail with signed move-in and move-out photo evidence.",
       ],
       defense_shields: [
-        "Motion in Limine to exclude unauthenticated third-party server telemetry.",
-        "Argue absence of subjective fraudulent intent at inception of commercial transaction.",
-        "Plead commercial contract dispute subject exclusively to Delaware commercial arbitration.",
+        "Argue landlord made good-faith effort to inspect within reasonable commercial timeframe.",
+        "Assert alleged damage exceeded ordinary wear and tear.",
       ],
       cross_examination_traps: [
-        "Trap 1: Confront CFO with discrepancy between initial representations and actual fund routing.",
-        "Trap 2: Force tech lead to concede absence of authorized executive signoff for credential override.",
-        "Trap 3: Impeach key witness on 6-month delay between internal discovery and public disclosure.",
+        "Trap 1: Confront property manager with date stamp proving itemization was not mailed within 21 days.",
+        "Trap 2: Force admission that no contractor repair receipts were attached to the deduction notice.",
+        "Trap 3: Impeach maintenance supervisor on pre-existing condition notes from initial walkthrough.",
       ],
       evidentiary_vulnerabilities: [
-        "Hearsay vulnerability regarding hearsay declarations in internal instant messaging logs.",
-        "Chain of custody gaps for secondary forensic disk clones.",
-        "Ambiguity in reciprocal indemnification terms in Master Services Agreement.",
+        "Tenant must ensure move-out photo metadata accurately reflects checkout date.",
+        "Ensure forwarding address was provided in writing to landlord.",
       ],
       settlement_or_plea_calculus:
-        "Claimant holds 85% trial leverage. Recommend rejecting defense offer below $2.1M; if defense files affirmative motion to compel arbitration, condition stay on escrow deposit.",
-      win_probability_prosecution: 0.82,
-      win_probability_defense: 0.18,
+        "Tenant holds 90% legal leverage. Demand immediate return of full $3,200 plus $1,500 statutory settlement to avoid formal small claims or municipal court litigation.",
+      win_probability_prosecution: 0.92,
+      win_probability_defense: 0.08,
     },
     matched_sections: [
       {
-        code_id: "USC-18-1343",
-        title: "Federal Wire Fraud",
-        jurisdiction: "United States (Federal)",
-        category: "Criminal / Federal Fraud",
+        code_id: "CAL-CIV-1950.5",
+        title: "California Security Deposit Statute",
+        jurisdiction: "California / State Civil",
+        category: "Civil / Tenant Rights",
         elements: [
-          "Participation in a scheme to defraud or obtain money/property by false pretenses",
-          "Knowing and willful intent to defraud",
-          "Transmission of wire communications in interstate commerce",
+          "Mandatory 21-day itemized deduction or return deadline",
+          "Prohibition against deductions for ordinary wear and tear",
+          "Bad faith penalty up to twice the deposit amount",
         ],
-        penalties: "Up to 20 years imprisonment and fines",
-        precedents: ["Neder v. United States (1999)", "Kelly v. United States (2020)"],
-        statutory_test:
-          "Scheme requires material misrepresentation transmitted via interstate wire.",
-      },
-      {
-        code_id: "IPC-420 / BNS-318(4)",
-        title: "Cheating and Dishonestly Inducing Delivery of Property",
-        jurisdiction: "India (IPC / BNS)",
-        category: "Criminal / Fraud",
-        elements: [
-          "Deception of any person",
-          "Fraudulent or dishonest inducement to deliver property or alter valuable security",
-          "Intentional causation of damage or harm in body, mind, or property",
-        ],
-        penalties: "Imprisonment up to 7 years and fine",
-        precedents: [
-          "Hridaya Ranjan Prasad Verma v. State of Bihar",
-          "S.W. Palanitkar v. State of Bihar",
-        ],
-        statutory_test: "Fraudulent intention must exist at inception of transaction.",
-      },
-      {
-        code_id: "USC-18-1030",
-        title: "Computer Fraud and Abuse Act (CFAA) - Unauthorized Access",
-        jurisdiction: "United States (Federal)",
-        category: "Cybercrime & Privacy",
-        elements: [
-          "Intentionally accessing a protected computer",
-          "Access without authorization or exceeding authorized access",
-          "Obtaining information or causing damage",
-        ],
-        penalties: "Fine and imprisonment up to 10 to 20 years",
-        precedents: ["Van Buren v. United States (2021)", "hiQ Labs v. LinkedIn (2022)"],
-        statutory_test: "Gates-up vs gates-down access barrier test.",
+        penalties: "Statutory damages up to twice the deposit amount plus actual damages",
+        precedents: ["Granberry v. Islay Investments (1995) 9 Cal.4th 738"],
+        statutory_test: "Retention without statutory itemization within 21 calendar days constitutes bad faith retention",
+        summary:
+          "Governs residential security deposits, requiring landlords to provide an itemized statement and return of unused funds within 21 calendar days of vacating.",
       },
     ],
     disclaimer:
-      "AI Jurisprudential Co-Counsel: Designed for legal research, mock-trial deliberation, and judicial decision support under Human-in-the-Loop oversight. Not a substitute for licensed bar representation.",
+      "ClausaFractalAI Legal Assistant: Designed to help tenants, consumers, and SMBs understand contract rights and prepare for discussions. Not a substitute for licensed legal representation.",
   });
 
   // Fetch Codex data on mount or when category/query changes

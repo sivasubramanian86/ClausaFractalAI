@@ -157,7 +157,13 @@ class LegalOrchestrator:
             )
 
         if intent == "ATTORNEY_PREP":
-            prep = self.copilot_agent.generate_attorney_prep_sheet(document_id=document_id)
+            if not document_text:
+                chunks = self.rag_engine.get_document_chunks(document_id)
+                document_text = " ".join(c.text for c in chunks)
+            prep = self.copilot_agent.generate_attorney_prep_sheet(
+                document_id=document_id,
+                document_text=document_text,
+            )
             return OrchestratedResponse(
                 intent="ATTORNEY_PREP",
                 answer=prep.executive_summary,

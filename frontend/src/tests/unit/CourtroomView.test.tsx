@@ -237,13 +237,13 @@ describe("CourtroomView Component Suite", () => {
     });
     fireEvent.click(dossierTabBtn);
 
-    // Click on CyberExtort sample case
-    const cyberCaseBtn = screen.getByText(/In re: CyberExtort Cloud Data Penetration/i);
-    fireEvent.click(cyberCaseBtn);
+    // Click on Residential Lease sample case
+    const leaseCaseBtn = screen.getAllByText(/Residential Lease Dispute/i)[0];
+    fireEvent.click(leaseCaseBtn);
 
-    // Verify textarea was populated with cyber case facts
+    // Verify textarea was populated with lease case facts
     expect(
-      screen.getByDisplayValue(/External threat actors intentionally breached healthcare cloud databases/i)
+      screen.getByDisplayValue(/Tenant vacated apartment in clean condition/i)
     ).toBeInTheDocument();
 
     // Verify media pills exist and switch between them
@@ -421,7 +421,7 @@ describe("CourtroomView Component Suite", () => {
     expect(screen.getByText(/clausafractalai-demo-assets/i)).toBeInTheDocument();
 
     // Select a sample case to open the multimodal media stage
-    const sampleCards = screen.getAllByText(/Nexus Enterprise/i);
+    const sampleCards = screen.getAllByText(/Apex Property Holdings/i);
     fireEvent.click(sampleCards[0]);
     expect(screen.getByText(/Multimodal Evidence Assets:/i)).toBeInTheDocument();
 
@@ -432,7 +432,7 @@ describe("CourtroomView Component Suite", () => {
 
     const videoPill = screen.getByRole("button", { name: /Video/i });
     fireEvent.click(videoPill);
-    expect(screen.getByText(/veo_crime_scene_forensic_cctv_deposition\.mp4/i)).toBeInTheDocument();
+    expect(screen.getByText(/veo_aerial_drone_topographic_boundary_dispute\.mp4/i)).toBeInTheDocument();
 
     const pdfPill = screen.getByRole("button", { name: /PDF Brief/i });
     fireEvent.click(pdfPill);
