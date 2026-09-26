@@ -24,8 +24,10 @@ class TriageAgent:
         self.model_name = model_name
         self.client = gemini_client
 
-    def analyze_clause_intent(self, clause_text: str, context: Optional[str] = None) -> ActionPlan:
-        """Analyze a contract clause using GenAI / semantic NLP and propose a candidate ActionPlan."""
+    def analyze_clause_intent(
+        self, clause_text: str, context: Optional[str] = None
+    ) -> ActionPlan:
+        """Analyze a contract clause using GenAI / NLP and propose a candidate ActionPlan."""
         logger.info(
             "TriageAgent analyzing clause",
             model=self.model_name,
@@ -37,11 +39,12 @@ class TriageAgent:
             try:
                 import json
                 prompt = (
-                    "You are ClausaFractalAI Triage Agent. Extract formal contract variables from this clause.\n\n"
+                    "You are ClausaFractalAI Triage Agent. "
+                    "Extract formal contract variables from this clause.\n\n"
                     f"Clause Text:\n{clause_text}\n\n"
                     "Return a JSON object conforming strictly to:\n"
                     "{\n"
-                    '  "risk_category": "Indemnification" | "Limitation of Liability" | "Termination & Notice" | "General Terms",\n'
+                    '  "risk_category": "Indemnification|Liability|Termination|General",\n'
                     '  "proposed_liability_cap_usd": number,\n'
                     '  "proposed_notice_days": integer,\n'
                     '  "require_mutual_indemnity": boolean,\n'
@@ -54,7 +57,9 @@ class TriageAgent:
                     contents=prompt,
                 )
                 raw_text = getattr(response, "text", "").strip()
-                cleaned_json = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+                cleaned_json = re.sub(
+                    r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE
+                ).strip()
                 data = json.loads(cleaned_json)
 
                 risk_cat = data.get("risk_category", "General Terms")
@@ -72,12 +77,16 @@ class TriageAgent:
                     notice_days=days,
                     is_mutual_indemnity=mutual,
                     has_consequential_damages_waiver=conseq,
-                    risk_level=RiskSeverity.HIGH if not mutual or cap > 1_000_000 else RiskSeverity.LOW,
+                    risk_level=(
+                        RiskSeverity.HIGH
+                        if not mutual or cap > 1_000_000
+                        else RiskSeverity.LOW
+                    ),
                 )
                 return ActionPlan(
                     plan_id=f"plan_{uuid.uuid4().hex[:8]}",
                     intent=f"Assess and remediate {risk_cat}",
-                    proposed_action=f"Standardize {risk_cat} clause to conform with enterprise policy",
+                    proposed_action=f"Standardize {risk_cat} clause to conform with policy",
                     risk_category=risk_cat,
                     target_clauses=[clause],
                     proposed_liability_cap_usd=cap,
@@ -87,7 +96,7 @@ class TriageAgent:
                     confidence=conf,
                     repair_attempt=0,
                 )
-            except Exception:
+            except Exception:  # noqa: S110
                 pass  # Fall through to semantic NLP extraction
 
         # 2. Semantic Linguistic & Numerical Parameter Extraction (Deterministic / Offline)
@@ -105,7 +114,10 @@ class TriageAgent:
 
         # Numerical & Semantic Mutuality Extraction
         is_mutual = True
-        if re.search(r"\b(unilateral|solely|only vendor|only customer|customer shall bear)\b", lower_text):
+        if re.search(
+            r"\b(unilateral|solely|only vendor|only customer|customer shall bear)\b",
+            lower_text,
+        ):
             is_mutual = False
 
         # Numerical Liability Cap Extraction
@@ -113,7 +125,9 @@ class TriageAgent:
         if re.search(r"\b(unlimited|no cap|uncapped|without limitation)\b", lower_text):
             proposed_cap = 2_000_000.0
         else:
-            cap_match = re.search(r"\$?\s*([0-9,]+(?:\.[0-9]+)?)\s*(?:million|m\b)", lower_text)
+            cap_match = re.search(
+                r"\$?\s*([0-9,]+(?:\.[0-9]+)?)\s*(?:million|m\b)", lower_text
+            )
             if cap_match:
                 val = float(cap_match.group(1).replace(",", ""))
                 proposed_cap = val * 1_000_000.0
@@ -123,12 +137,17 @@ class TriageAgent:
         if re.search(r"\b(immediate|immediately|without notice)\b", lower_text):
             notice_days = 5
         else:
-            days_match = re.search(r"\b(\d+)\s*(?:calendar\s*)?(?:business\s*)?days?\b", lower_text)
+            days_match = re.search(
+                r"\b(\d+)\s*(?:calendar\s*)?(?:business\s*)?days?\b", lower_text
+            )
             if days_match:
                 notice_days = int(days_match.group(1))
 
         forbid_consequential = True
-        if re.search(r"\b(allow(?:s)? consequential|liable for indirect|consequential damages permitted)\b", lower_text):
+        if re.search(
+            r"\b(allow(?:s)? consequential|liable for indirect|consequential damages permitted)\b",
+            lower_text,
+        ):
             forbid_consequential = False
 
         clause = ContractClause(
