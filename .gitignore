@@ -40,6 +40,11 @@ scratch/
 uploads/
 demo_assets/
 **/demo_assets/
+demo_video/
+scripts/generate_demo_voiceover.py
+scripts/record_demo_walkthrough.js
+scripts/*demo*
+*narration*
 *.pdf
 *.png
 *.jpg
@@ -48,6 +53,11 @@ demo_assets/
 *.wav
 *.mp4
 *.webm
+*.m4a
+*.mov
+*.mkv
+*.vtt
+*.srt
 *.zip
 *.tar.gz
 *.log
