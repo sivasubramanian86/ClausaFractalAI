@@ -288,6 +288,10 @@ describe("App Studio Integration Test Suite", () => {
     expect(screen.getAllByText(/ClausaFractalAI/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Verifiable Chat/i)).toBeInTheDocument();
 
+    // Click citation in chat
+    const citationBtn = screen.getByText(/Limitation of Liability/i);
+    fireEvent.click(citationBtn);
+
     // Switch to Blindspots tab
     const blindspotsTab = screen.getByRole("button", { name: /Blindspot Matrix/i });
     fireEvent.click(blindspotsTab);
@@ -307,6 +311,21 @@ describe("App Studio Integration Test Suite", () => {
     const counterTab = screen.getByRole("button", { name: /Clause Rewriter/i });
     fireEvent.click(counterTab);
     expect(screen.getByText(/Counter-Clause Negotiation Rewriter/i)).toBeInTheDocument();
+
+    // Switch to Courtroom tab inside Studio
+    const courtroomTab = screen.getByRole("button", { name: /Judicial & Codex/i });
+    fireEvent.click(courtroomTab);
+    expect(screen.getAllByText(/Judicial Chamber & Statutory Codex/i).length).toBeGreaterThan(0);
+
+    // Navigation: Courtroom Dedicated View
+    const courtroomNav = screen.getByRole("button", { name: /Judicial Chamber & Codex/i });
+    fireEvent.click(courtroomNav);
+    expect(screen.getAllByText(/Judicial Chamber & Statutory Codex/i).length).toBeGreaterThan(0);
+
+    // Navigation: Neuro-Symbolic Mesh
+    const meshNav = screen.getByRole("button", { name: /Neuro-Symbolic Mesh/i });
+    fireEvent.click(meshNav);
+    expect(screen.getByText(/Dual-Pass Neuro-Symbolic Agent Mesh/i)).toBeInTheDocument();
 
     // Navigation: Analytics
     const analyticsNav = screen.getByRole("button", { name: /Analytics & Telemetry/i });

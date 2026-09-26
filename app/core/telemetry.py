@@ -31,7 +31,7 @@ def dlp_scrub_text(text: str) -> str:
     if not text:
         return text
     scrubbed = _BEARER_TOKEN_RE.sub("Bearer [REDACTED_TOKEN]", text)
-    scrubbed = _SECRET_KEY_RE.sub("secret=[REDACTED_CREDENTIAL]", scrubbed)
+    scrubbed = _SECRET_KEY_RE.sub("[REDACTED_CREDENTIAL]", scrubbed)
     scrubbed = _AADHAAR_RE.sub("[REDACTED_AADHAAR]", scrubbed)
     scrubbed = _PAN_RE.sub("[REDACTED_PAN]", scrubbed)
     scrubbed = _SSN_RE.sub("[REDACTED_SSN]", scrubbed)
