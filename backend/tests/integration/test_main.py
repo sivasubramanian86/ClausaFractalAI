@@ -280,7 +280,7 @@ def test_create_application_with_google_api_key(monkeypatch: pytest.MonkeyPatch)
     """Verify create_application initializes gemini_client when GOOGLE_API_KEY is present."""
     from main import create_application
 
-    monkeypatch.setenv("GOOGLE_API_KEY", "test-api-key-12345")
+    monkeypatch.setenv("GOOGLE_API_KEY", "mock")  # gitleaks:allow
     test_app = create_application()
     assert test_app is not None
     assert hasattr(test_app.state, "copilot_agent")

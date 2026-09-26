@@ -1,0 +1,11 @@
+title = "ClausaFractalAI Secret Detection Configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore synthetic mock keys in test suites"
+paths = [
+  '''backend/tests/.*''',
+  '''frontend/src/tests/.*'''
+]
