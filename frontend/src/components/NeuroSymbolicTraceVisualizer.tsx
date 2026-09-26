@@ -2,7 +2,17 @@ import React, { useState } from "react";
 import { ShieldCheck, Cpu, Zap, RefreshCw, CheckCircle, AlertTriangle, Layers } from "lucide-react";
 import { api, NeuroSymbolicResponse } from "../lib/api";
 
-export const NeuroSymbolicTraceVisualizer: React.FC = () => {
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
+export interface NeuroSymbolicTraceVisualizerProps {
+  t?: TranslationDictionary;
+}
+
+export const NeuroSymbolicTraceVisualizer: React.FC<NeuroSymbolicTraceVisualizerProps> = ({
+  t: propT,
+}) => {
+  const t = propT || getTranslation("en");
   const [inputClause, setInputClause] = useState<string>(
     "Customer solely agrees to indemnify Vendor for all operational liabilities without limitation of liability or cap."
   );
@@ -32,20 +42,20 @@ export const NeuroSymbolicTraceVisualizer: React.FC = () => {
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-7 h-7 text-indigo-400 animate-pulse" aria-hidden="true" />
               <h2 className="text-2xl font-bold tracking-tight text-white">
-                Dual-Pass Neuro-Symbolic Agent Mesh
+                {t.meshTitle}
               </h2>
             </div>
             <p className="text-sm text-indigo-200/80 mt-1">
-              System 1 Neural Perception (Gemini 3.8) + System 2 Formal Mathematical Verification (Z3 Solver)
+              {t.meshSubtitle}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              Z3 Theorem Prover: SAT Ready
+              {t.satReadyBadge}
             </span>
             <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/40">
-              Watchdog: ≤5 Hops
+              {t.watchdogBadge}
             </span>
           </div>
         </div>
@@ -54,7 +64,7 @@ export const NeuroSymbolicTraceVisualizer: React.FC = () => {
       {/* Input Clause Workspace */}
       <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800 shadow-xl backdrop-blur-md">
         <label htmlFor="clause-input" className="block text-sm font-medium text-slate-200 mb-2">
-          Contract Clause to Formally Verify:
+          {t.clauseToVerifyLabel}
         </label>
         <textarea
           id="clause-input"
@@ -77,12 +87,12 @@ export const NeuroSymbolicTraceVisualizer: React.FC = () => {
             {loading ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin" aria-hidden="true" />
-                Proving Invariants...
+                {t.btnVerifyingZ3}
               </>
             ) : (
               <>
                 <Zap className="w-4 h-4" aria-hidden="true" />
-                Run Formal Verification
+                {t.btnVerifyZ3}
               </>
             )}
           </button>

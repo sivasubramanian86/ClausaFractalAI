@@ -8,17 +8,23 @@ export interface CounterClauseData {
   negotiation_tip: string;
 }
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface CounterClauseViewProps {
   onRewrite: (clauseText: string, clauseType: string) => Promise<void>;
   proposal: CounterClauseData | null;
   isLoading: boolean;
+  t?: TranslationDictionary;
 }
 
 export const CounterClauseView: React.FC<CounterClauseViewProps> = ({
   onRewrite,
   proposal,
   isLoading,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [clauseText, setClauseText] = useState(
     "Customer agrees to indemnify, defend, and hold harmless Vendor against any and all claims, without limitation."
   );
@@ -42,7 +48,7 @@ export const CounterClauseView: React.FC<CounterClauseViewProps> = ({
         <div className="flex items-center gap-2">
           <FileEdit className="h-4 w-4 text-legal-cyan" />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-            Counter-Clause Negotiation Rewriter
+            {t.counterClauseTitle}
           </h2>
         </div>
       </header>
@@ -52,7 +58,7 @@ export const CounterClauseView: React.FC<CounterClauseViewProps> = ({
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex items-center justify-between">
             <label htmlFor="clause-type-select" className="text-xs font-medium text-slate-300">
-              Clause Domain:
+              {t.clauseDomainLabel}
             </label>
             <select
               id="clause-type-select"
@@ -88,7 +94,7 @@ export const CounterClauseView: React.FC<CounterClauseViewProps> = ({
               className="rounded-lg bg-gradient-to-r from-legal-emerald to-legal-cyan px-4 py-1.5 text-xs font-semibold text-obsidian-950 hover:brightness-110 disabled:opacity-40 transition-all shadow-md flex items-center gap-1.5"
             >
               <Sparkles className="h-3 w-3" />
-              <span>{isLoading ? "Synthesizing Redline..." : "Draft Favorable Counter-Clause"}</span>
+              <span>{isLoading ? t.rewritingButton : t.rewriteButton}</span>
             </button>
           </div>
         </form>

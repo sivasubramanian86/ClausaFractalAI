@@ -18,17 +18,23 @@ export interface PolicyCollisionReportData {
   overall_verdict: string;
 }
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface PolicyColliderProps {
   report: PolicyCollisionReportData | null;
   onCompare: (docBText: string) => Promise<void>;
   isLoading: boolean;
+  t?: TranslationDictionary;
 }
 
 export const PolicyCollider: React.FC<PolicyColliderProps> = ({
   report,
   onCompare,
   isLoading,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [docBText, setDocBText] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,27 +49,27 @@ export const PolicyCollider: React.FC<PolicyColliderProps> = ({
         return (
           <span className="inline-flex items-center gap-1 rounded bg-rose-500/15 border border-rose-500/40 px-2 py-0.5 text-[11px] font-bold text-rose-300">
             <AlertOctagon className="h-3 w-3" />
-            RIGHTS SURRENDERED
+            {t.rightsSurrendered}
           </span>
         );
       case "LIABILITY_INCREASE":
         return (
           <span className="inline-flex items-center gap-1 rounded bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 text-[11px] font-bold text-amber-300">
             <TrendingUp className="h-3 w-3" />
-            LIABILITY ESCALATED
+            {t.liabilityEscalated}
           </span>
         );
       case "BENEFIT_GAINED":
         return (
           <span className="inline-flex items-center gap-1 rounded bg-legal-emerald/15 border border-legal-emerald/40 px-2 py-0.5 text-[11px] font-bold text-legal-emerald">
             <CheckCircle className="h-3 w-3" />
-            BENEFIT GAINED
+            {t.benefitGained}
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 rounded bg-slate-800 border border-slate-700 px-2 py-0.5 text-[11px] font-bold text-slate-400">
-            NEUTRAL SHIFT
+            {t.neutralShift}
           </span>
         );
     }
@@ -81,7 +87,7 @@ export const PolicyCollider: React.FC<PolicyColliderProps> = ({
         <div className="flex items-center gap-2">
           <GitCompare className="h-4 w-4 text-legal-cyan" />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-            Policy Collider: Practical Impact Matrix
+            {t.colliderTitle}
           </h2>
         </div>
       </header>
@@ -123,7 +129,7 @@ export const PolicyCollider: React.FC<PolicyColliderProps> = ({
               disabled={!docBText.trim() || isLoading}
               className="rounded-lg bg-gradient-to-r from-legal-emerald to-legal-cyan px-4 py-1.5 text-xs font-semibold text-obsidian-950 hover:brightness-110 disabled:opacity-40 transition-all shadow-md"
             >
-              {isLoading ? "Comparing..." : "Collide Versions"}
+              {isLoading ? t.comparingButton : t.compareButton}
             </button>
           </div>
         </form>

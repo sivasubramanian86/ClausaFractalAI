@@ -23,6 +23,9 @@ export interface ChatMessage {
   isStreaming?: boolean;
 }
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface ChatInterfaceProps {
   documentId: string;
   documentFilename: string;
@@ -32,6 +35,7 @@ export interface ChatInterfaceProps {
   messages: ChatMessage[];
   onSendMessage: (query: string) => Promise<void>;
   isGenerating: boolean;
+  t?: TranslationDictionary;
 }
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
@@ -43,7 +47,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   messages,
   onSendMessage,
   isGenerating,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [inputText, setInputText] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -215,7 +221,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Ask about liability, termination, indemnification, or IP..."
+            placeholder={t.askPlaceholder || "Ask about liability, termination, indemnification, or IP..."}
             disabled={isGenerating}
             className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-legal-emerald focus:outline-none focus:ring-1 focus:ring-legal-emerald disabled:opacity-50"
           />
@@ -226,7 +232,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             aria-label="Send Question"
           >
             <Send className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Ask</span>
+            <span className="hidden sm:inline">{t.sendButton || "Send Question"}</span>
           </button>
         </form>
 

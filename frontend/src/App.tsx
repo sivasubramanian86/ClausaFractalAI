@@ -453,6 +453,7 @@ export const AppContent: React.FC = () => {
                   onFileUpload={handleFileUpload}
                   onAudioUpload={handleAudioUpload}
                   isUploading={isUploading}
+                  t={t}
                 />
               </div>
 
@@ -539,7 +540,7 @@ export const AppContent: React.FC = () => {
                     }`}
                   >
                     <Gavel className="h-3.5 w-3.5 text-amber-400" />
-                    <span>Judicial & Codex</span>
+                    <span>{t.tabCourtroom}</span>
                   </button>
                 </nav>
 
@@ -555,6 +556,7 @@ export const AppContent: React.FC = () => {
                       messages={messages}
                       onSendMessage={handleSendMessage}
                       isGenerating={isGenerating}
+                      t={t}
                     />
                   )}
 
@@ -564,6 +566,7 @@ export const AppContent: React.FC = () => {
                       report={blindspotReport}
                       isLoading={isTabLoading}
                       onAudit={handleAuditBlindspots}
+                      t={t}
                     />
                   )}
 
@@ -572,6 +575,7 @@ export const AppContent: React.FC = () => {
                       report={collisionReport}
                       isLoading={isTabLoading}
                       onCompare={handlePolicyCompare}
+                      t={t}
                     />
                   )}
 
@@ -580,6 +584,7 @@ export const AppContent: React.FC = () => {
                       sheet={prepSheet}
                       isLoading={isTabLoading}
                       onGenerate={handleGeneratePrep}
+                      t={t}
                     />
                   )}
 
@@ -588,11 +593,15 @@ export const AppContent: React.FC = () => {
                       proposal={counterProposal}
                       isLoading={isTabLoading}
                       onRewrite={handleRewriteClause}
+                      t={t}
                     />
                   )}
 
                   {activeTab === "courtroom" && (
-                    <CourtroomView initialCaseText={pages.map((p) => p.text).join("\n\n")} />
+                    <CourtroomView
+                      initialCaseText={pages.map((p) => p.text).join("\n\n")}
+                      t={t}
+                    />
                   )}
                 </div>
               </div>
@@ -602,14 +611,17 @@ export const AppContent: React.FC = () => {
 
         {activeView === "courtroom" && (
           <ErrorBoundary fallbackTitle="Judicial Chamber Disrupted">
-            <CourtroomView initialCaseText={pages.map((p) => p.text).join("\n\n")} />
+            <CourtroomView
+              initialCaseText={pages.map((p) => p.text).join("\n\n")}
+              t={t}
+            />
           </ErrorBoundary>
         )}
 
         {activeView === "mesh" && (
           <ErrorBoundary fallbackTitle="Neuro-Symbolic Mesh Disrupted">
             <div className="mx-auto max-w-7xl px-4 md:px-6 py-6">
-              <NeuroSymbolicTraceVisualizer />
+              <NeuroSymbolicTraceVisualizer t={t} />
             </div>
           </ErrorBoundary>
         )}
@@ -621,12 +633,12 @@ export const AppContent: React.FC = () => {
         )}
         {activeView === "faq" && (
           <ErrorBoundary fallbackTitle="Legal FAQ Disrupted">
-            <FAQSection t={t} />
+            <FAQSection t={t} lang={language} />
           </ErrorBoundary>
         )}
         {activeView === "about" && (
           <ErrorBoundary fallbackTitle="Architecture Section Disrupted">
-            <AboutSection t={t} />
+            <AboutSection t={t} lang={language} />
           </ErrorBoundary>
         )}
         {activeView === "governance" && (

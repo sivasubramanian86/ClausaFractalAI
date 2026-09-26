@@ -31,26 +31,26 @@ import {
 
 export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
   {
-    case_id: "nexus_wire_fraud",
-    title: "State of California v. Nexus Enterprise (Wire Fraud & Forgery)",
+    case_id: "nexus_crime_scene_forensics",
+    title: "State of California v. Nexus Enterprise (Forensic Crime Scene & Burglary)",
     jurisdiction: "US Federal / State",
-    incident_type: "Commercial Fraud & Forgery",
+    incident_type: "Physical Intrusion & Burglary Forensics",
     parties: {
-      Prosecution_or_Plaintiff: "California Dept. of Financial Protection",
+      Prosecution_or_Plaintiff: "State of California & Police Forensic Division",
       Defense_or_Respondent: "Nexus Enterprise Ltd. & Ex-CFO Marcus Vance",
     },
     facts_summary:
-      "Executive leadership altered payment milestone schedules and forged electronic authorizations to siphon $2.4M into undisclosed offshore accounts. Defense claims authorized commercial restructuring.",
-    statutory_focus: "18 U.S.C. § 1343 (Wire Fraud), UCC § 2-302 (Unconscionability), IPC 463",
+      "Physical crime scene investigation of server room break-in. Numbered evidence markers recovered shattered biometric scanners, latex gloves with DNA traces, and severed fiber cables. Official chain-of-custody seal intact.",
+    statutory_focus: "California Penal Code § 459 (Burglary), 18 U.S.C. § 1343, Evid. Code § 1400",
     media: {
       pdf_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/nexus_fraudulent_vendor_agreement.pdf",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/nexus_forensic_crime_scene_investigation_report.pdf",
       image_url:
-        "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/crime_scene_forensic_evidence_imagen3.jpg",
       audio_url:
-        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_911_forensic_dispatch_recording.mp3",
       video_url:
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_crime_scene_forensic_cctv_deposition.mp4",
       gcs_bucket: "clausafractalai-demo-assets",
     },
     is_gcs_hosted: true,
@@ -59,48 +59,48 @@ export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
     case_id: "cyberextort_cfaa",
     title: "In re: CyberExtort Cloud Data Penetration (CFAA § 1030 & GDPR Art. 83)",
     jurisdiction: "Federal / Multi-Jurisdiction",
-    incident_type: "Cybercrime & Privacy Exfiltration",
+    incident_type: "Cybercrime & Digital Forensics",
     parties: {
       Prosecution_or_Plaintiff: "Federal Trade Commission & Healthcare Network",
       Defense_or_Respondent: "Anonymous Threat Actor Group 'ZeroByte'",
     },
     facts_summary:
-      "External threat actors intentionally breached healthcare cloud databases, exfiltrated 450,000 protected medical records, and delivered a 15 BTC demand. Cloud provider audited for gross omission of encryption at rest.",
-    statutory_focus: "18 U.S.C. § 1030 (CFAA), GDPR Art. 83, IPC 420 (Cheating)",
+      "External threat actors intentionally breached healthcare cloud databases. Digital forensics investigation verifying unauthorized server breach. Wireshark PCAP packets, SHA-256 evidence hash verification matching original payload, and forensic logs submitted under Exhibit C-1030.",
+    statutory_focus: "18 U.S.C. § 1030 (CFAA), GDPR Art. 83, Federal Rules of Evidence 901",
     media: {
       pdf_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/ransom_demand_and_incident_report.pdf",
       image_url:
-        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/cyber_forensic_evidence_imagen3.jpg",
       audio_url:
-        "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_wiretapped_ransom_call_threat_actor.mp3",
       video_url:
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_soc_digital_forensics_breach_replay.mp4",
       gcs_bucket: "clausafractalai-demo-assets",
     },
     is_gcs_hosted: true,
   },
   {
-    case_id: "biovance_patent_theft",
-    title: "Global Oncology Inc. v. Biovance Labs (Patent Piracy & Trade Secrets)",
-    jurisdiction: "UK & International Common Law",
-    incident_type: "Intellectual Property & Commercial Secret Piracy",
+    case_id: "sharma_land_dispute",
+    title: "Sharma & Ors v. State Development Corp (Land in Dispute: Cadastral Boundary Encroachment)",
+    jurisdiction: "India (Civil Law / High Court)",
+    incident_type: "Real Property & Disputed Land Boundaries",
     parties: {
-      Prosecution_or_Plaintiff: "Global Oncology Inc.",
-      Defense_or_Respondent: "Biovance Labs Ltd. & Lead Chemist Dr. Rostova",
+      Prosecution_or_Plaintiff: "Sharma Family Heirs (Registered Title Holders)",
+      Defense_or_Respondent: "State Development Corporation & Private Developers",
     },
     facts_summary:
-      "Former research directors downloaded proprietary molecular compound data before resigning, subsequently filing priority patents in duplicate jurisdictions in breach of confidentiality covenants.",
-    statutory_focus: "17 U.S.C. § 501 (Copyright/IP Infringement), UK CRA 2015, Negligence",
+      "Cadastral land boundary dispute concerning 0.18-acre disputed parcel highlighted on official surveyor topographic map. Revenue stamps, GPS coordinate benchmarks (IPF monuments), and title deed BK 1145 PG 203 submitted under Exhibit P-14.",
+    statutory_focus: "Specific Relief Act § 38 (Permanent Injunction), Transfer of Property Act § 54",
     media: {
       pdf_url:
-        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/biovance_nda_and_licensing_agreement.pdf",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/cadastral_land_deed_and_khasra_injunction_petition.pdf",
       image_url:
-        "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/land_dispute_cadastral_survey_imagen3.jpg",
       audio_url:
-        "https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_panchayat_land_surveyor_deposition.mp3",
       video_url:
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_aerial_drone_topographic_boundary_dispute.mp4",
       gcs_bucket: "clausafractalai-demo-assets",
     },
     is_gcs_hosted: true,
@@ -109,36 +109,42 @@ export const DEFAULT_SAMPLE_CASES: SampleCase[] = [
     case_id: "bns_consortium_cheating",
     title: "Consortium Bank of India v. Sovereign Infra (IPC 405/420 & BNS 318)",
     jurisdiction: "India (IPC / BNS)",
-    incident_type: "Criminal Breach of Trust & Cheating",
+    incident_type: "Corporate Financial Fraud & Money Laundering",
     parties: {
-      Prosecution_or_Plaintiff: "Central Bureau of Investigation (Consortium)",
-      Defense_or_Respondent: "Sovereign Infra Ltd. Board & Promoters",
+      Prosecution_or_Plaintiff: "Central Bureau of Investigation (Banking Securities)",
+      Defense_or_Respondent: "Sovereign Infra Ltd. Board & Shell Entity Promoters",
     },
     facts_summary:
-      "Promoters induced consortium banks to disburse ₹140 Crores for procuring machinery. On-site audits verified that the machinery was non-existent and funds were laundered into real estate shell companies.",
+      "Forensic audit of bank ledger revealing unauthorized ₹140 Cr loan diversion. Ultraviolet signature examination identified forged executive approvals, while financial forensic flowcharts mapped fund laundering through 4 shell companies under Operation Golden Handshake.",
     statutory_focus: "IPC Section 405 (Breach of Trust), IPC Section 420 / BNS 318(4) (Cheating)",
     media: {
       pdf_url:
         "https://storage.googleapis.com/clausafractalai-demo-assets/contracts/hypothecation_deed_and_sanction_letter.pdf",
       image_url:
-        "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f9?auto=format&fit=crop&w=600&q=80",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/forensics/financial_fraud_audit_forensics_imagen3.jpg",
       audio_url:
-        "https://actions.google.com/sounds/v1/alarms/mechanical_clock_ring.ogg",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/audio/lyria_cbi_financial_wiretap_promoter_confession.mp3",
       video_url:
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4",
+        "https://storage.googleapis.com/clausafractalai-demo-assets/video/veo_shell_company_forensic_audit_inspection.mp4",
       gcs_bucket: "clausafractalai-demo-assets",
     },
     is_gcs_hosted: true,
   },
 ];
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 interface CourtroomViewProps {
   initialCaseText?: string;
+  t?: TranslationDictionary;
 }
 
 export const CourtroomView: React.FC<CourtroomViewProps> = ({
   initialCaseText = "",
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [activeTab, setActiveTab] = useState<
     "dossier" | "bench" | "advocate" | "codex"
   >("bench");
@@ -417,7 +423,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-2.5">
-              Judicial Chamber & Statutory Codex
+              {t.courtroomTitle}
             </h1>
             <p className="text-sm text-slate-400 max-w-3xl">
               Impartial Senior Judicial Magistrate & Bar Senior Advocate (BA LLB, LLM) analysis. Dissects multimodal evidence, checks statutory offense elements, drafts judicial rulings, and strategizes trial battlecards.
@@ -445,7 +451,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-600/30 transition flex items-center gap-2 disabled:opacity-50"
             >
               <Sparkles className="w-4 h-4" />
-              {isLoading ? "Deliberating..." : "Deliberate Case"}
+              {isLoading ? t.btnAnalyzingCase : "Deliberate Case"}
             </button>
           </div>
         </div>
@@ -463,7 +469,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
             }`}
           >
             <Gavel className="w-4 h-4 text-amber-400" />
-            The Honorable Bench (Judge's Ruling)
+            {t.tabBench}
           </button>
 
           <button
@@ -475,7 +481,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
             }`}
           >
             <Swords className="w-4 h-4 text-rose-400" />
-            Senior Advocate War Room (Trial Strategy)
+            <span>{t.tabAdvocate}</span>
           </button>
 
           <button
@@ -487,7 +493,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
             }`}
           >
             <FileText className="w-4 h-4 text-cyan-400" />
-            Case Dossier & Evidence Ingestion
+            <span>{t.tabDossier}</span>
           </button>
 
           <button
@@ -499,7 +505,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
             }`}
           >
             <BookOpen className="w-4 h-4 text-emerald-400" />
-            Statutory Codex (Law at Fingertips)
+            <span>{t.tabCodex}</span>
           </button>
         </div>
       </div>
@@ -535,7 +541,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-indigo-300 font-semibold text-sm">
                   <Scale className="w-4 h-4" />
-                  Ratio Decidendi (Binding Legal Principle):
+                  {t.ratioDecidendiTitle}:
                 </div>
                 <p className="text-slate-200 text-sm leading-relaxed bg-indigo-950/30 p-4 rounded-xl border border-indigo-500/20">
                   {analysisResult.verdict.ratio_decidendi}
@@ -556,7 +562,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               {/* Obiter Dicta */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-slate-400 font-semibold text-xs uppercase tracking-wider">
-                  Obiter Dicta (Judicial Observations):
+                  {t.obiterDictaTitle}:
                 </div>
                 <p className="text-slate-400 text-xs italic">
                   "{analysisResult.verdict.obiter_dicta}"
@@ -618,7 +624,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                 <div>
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <Swords className="w-5 h-5 text-rose-400" />
-                    Trial Probability Calculus
+                    {t.winProbabilityTitle}
                   </h3>
                   <p className="text-xs text-slate-400">
                     Lead Counsel (BA LLB, LLM) assessment of evidentiary weight and judicial disposition.
@@ -670,7 +676,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               <div className="p-5 rounded-2xl bg-slate-900 border border-emerald-500/20 space-y-4">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold text-base">
                   <ShieldAlert className="w-5 h-5" />
-                  Prosecution / Claimant Winning Arsenal
+                  {t.prosecutionStrengthsTitle}
                 </div>
                 <ul className="space-y-2.5">
                   {analysisResult.advocate_strategy.prosecution_strengths.map((st, i) => (
@@ -689,7 +695,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               <div className="p-5 rounded-2xl bg-slate-900 border border-rose-500/20 space-y-4">
                 <div className="flex items-center gap-2 text-rose-400 font-bold text-base">
                   <Scale className="w-5 h-5" />
-                  Defense Counter-Shields & Mitigations
+                  {t.defenseShieldsTitle}
                 </div>
                 <ul className="space-y-2.5">
                   {analysisResult.advocate_strategy.defense_shields.map((sh, i) => (
@@ -711,7 +717,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
               <div className="p-5 rounded-2xl bg-slate-900 border border-amber-500/20 space-y-4">
                 <div className="flex items-center gap-2 text-amber-400 font-bold text-base">
                   <Gavel className="w-5 h-5" />
-                  Cross-Examination Witness Traps
+                  {t.crossExamTrapsTitle}
                 </div>
                 <div className="space-y-2.5">
                   {analysisResult.advocate_strategy.cross_examination_traps.map((tr, i) => (
@@ -756,7 +762,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                   <div className="flex items-center gap-2">
                     <Cloud className="w-5 h-5 text-cyan-400" />
                     <h3 className="text-lg font-bold text-white">
-                      Google Cloud Storage (GCS) Sample Media Catalog
+                      {t.gcsDemoDataTitle}
                     </h3>
                   </div>
                   <p className="text-xs text-slate-400 mt-1">
@@ -1185,7 +1191,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                     type="text"
                     value={codexQuery}
                     onChange={(e) => setCodexQuery(e.target.value)}
-                    placeholder="Search by code (e.g. IPC-420, USC-18-1343), crime, precedent, or test..."
+                    placeholder={t.codexSearchPlaceholder}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
@@ -1197,7 +1203,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
                   >
-                    <option value="All">All Legal Categories</option>
+                    <option value="All">{t.codexCategoryAll}</option>
                     <option value="Criminal">Criminal & Fraud</option>
                     <option value="Contracts">Contracts & Commercial</option>
                     <option value="Cyber">Cybercrime & Privacy</option>

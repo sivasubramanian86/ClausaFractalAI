@@ -10,71 +10,18 @@ import {
   Code2,
 } from "lucide-react";
 import { TranslationDictionary } from "../i18n/types";
+import { getLocalizedPapers } from "../i18n/sectionContent";
+import { LanguageCode } from "../types";
 
 interface AboutSectionProps {
   t: TranslationDictionary;
+  lang?: LanguageCode | string;
 }
 
-export const AboutSection: React.FC<AboutSectionProps> = ({ t }) => {
+export const AboutSection: React.FC<AboutSectionProps> = ({ t, lang = "en" }) => {
   const [activeTab, setActiveTab] = useState<"papers" | "graph" | "leaders">("papers");
 
-  const foundationalPapers = [
-    {
-      id: "react",
-      num: "01",
-      title: "ReAct: Reasoning + Acting in Language Models",
-      authors: "Yao et al. (Princeton & Google Brain, 2022)",
-      loop: "Think → Act → Observe → Think → Act → Observe",
-      howWeImplement:
-        "In LegalOrchestrator and RAG Analyst: instead of a monolithic answer, the agent plans a legal research trajectory, queries semantic FAISS indices, observes the extracted clause citations, verifies factual grounding, and then drafts answers with bidirectional citation anchors.",
-      arxiv: "https://arxiv.org/abs/2210.03629",
-      tagColor: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-    },
-    {
-      id: "toolformer",
-      num: "02",
-      title: "Toolformer: Models Can Teach Themselves to Use Tools",
-      authors: "Schick et al. (Meta AI, 2023)",
-      loop: "Goal → Reason → Select Tool → Verify Permissions → Execute → Observe",
-      howWeImplement:
-        "Implemented via our Model Context Protocol (MCP) server: rather than solving complex arithmetic or legal liability caps in-model, agents delegate to dedicated tools (compare_policies, audit_blindspots, calculate_liability_ratio, pii_scrubber) under strict least-privilege permissions.",
-      arxiv: "https://arxiv.org/abs/2302.04761",
-      tagColor: "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
-    },
-    {
-      id: "generative_agents",
-      num: "03",
-      title: "Generative Agents: Memory, Reflection, and Planning",
-      authors: "Park et al. (Stanford & Google, 2023)",
-      loop: "Experience → Memory Stream → Retrieve → Reflect → Plan → Act",
-      howWeImplement:
-        "LegalOrchestrator maintains a structured Memory Stream of negotiation history. Past redline rounds and counterparty pushback inform future attorney prep strategies, allowing the system to reflect on prior drafting concessions across turns.",
-      arxiv: "https://arxiv.org/abs/2304.03442",
-      tagColor: "border-violet-500/30 bg-violet-500/10 text-violet-400",
-    },
-    {
-      id: "reflexion",
-      num: "04",
-      title: "Reflexion: Verbal Reinforcement Learning from Failure",
-      authors: "Shinn et al. (MIT & Northeastern, 2023)",
-      loop: "Execute → Evaluate (Critic) → Reflect → Retry until Score ≥ 8.0",
-      howWeImplement:
-        "Our CriticReflectionAgent acts as an adversarial arbitrator. It scores draft responses (0-10) on factual faithfulness, ambiguity, and regulatory compliance. If composite score < 8.0, it generates a verbal critique and triggers a self-correction pass before user delivery.",
-      arxiv: "https://arxiv.org/abs/2303.11366",
-      tagColor: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-    },
-    {
-      id: "autogen",
-      num: "05",
-      title: "AutoGen: Multi-Agent Collaborative Conversation",
-      authors: "Wu et al. (Microsoft Research, 2023)",
-      loop: "User Goal → Orchestrator Supervisor → Specialized Workers → Critic → Final",
-      howWeImplement:
-        "Decomposition of enterprise legal analysis into 6 specialized autonomous roles: Intent Router, QA Analyst, Blindspot Detector, Policy Collider, Attorney Prep Synthesizer, and Arbitrator Critic.",
-      arxiv: "https://arxiv.org/abs/2308.08155",
-      tagColor: "border-rose-500/30 bg-rose-500/10 text-rose-400",
-    },
-  ];
+  const foundationalPapers = getLocalizedPapers(lang);
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2">
@@ -106,7 +53,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ t }) => {
                   : "text-slate-400 hover:text-white dark:hover:text-white light:text-slate-700"
               }`}
             >
-              5 Research Papers
+              {t.tabPapers}
             </button>
             <button
               type="button"
@@ -117,7 +64,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ t }) => {
                   : "text-slate-400 hover:text-white dark:hover:text-white light:text-slate-700"
               }`}
             >
-              40M-Doc Knowledge Graph
+              {t.tabGraph}
             </button>
             <button
               type="button"
@@ -128,7 +75,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ t }) => {
                   : "text-slate-400 hover:text-white dark:hover:text-white light:text-slate-700"
               }`}
             >
-              Agentic AI for Leaders
+              {t.tabLeaders}
             </button>
           </div>
         </div>

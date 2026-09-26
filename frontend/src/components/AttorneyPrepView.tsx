@@ -15,17 +15,23 @@ export interface AttorneyPrepSheetData {
   negotiation_leverage_points: string[];
 }
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface AttorneyPrepViewProps {
   sheet: AttorneyPrepSheetData | null;
   isLoading: boolean;
   onGenerate: () => Promise<void>;
+  t?: TranslationDictionary;
 }
 
 export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
   sheet,
   isLoading,
   onGenerate,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const handleExport = () => {
     if (!sheet) return;
     const text = [
@@ -70,7 +76,7 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
         <div className="flex items-center gap-2">
           <FileCheck2 className="h-4 w-4 text-legal-emerald" />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-            Attorney Consultation Prep Sheet
+            {t.prepSheetTitle}
           </h2>
         </div>
 
@@ -82,7 +88,7 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
               className="inline-flex items-center gap-1 rounded bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
             >
               <Download className="h-3.5 w-3.5" />
-              <span>Export Prep Sheet</span>
+              <span>{t.exportPrepButton}</span>
             </button>
           )}
 
@@ -92,7 +98,7 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
             disabled={isLoading}
             className="rounded-lg bg-gradient-to-r from-legal-emerald to-legal-cyan px-3 py-1 text-xs font-semibold text-obsidian-950 hover:brightness-110 disabled:opacity-40 shadow-sm"
           >
-            {isLoading ? "Generating..." : "Generate Prep Sheet"}
+            {isLoading ? t.generatingPrepButton : t.generatePrepButton}
           </button>
         </div>
       </header>

@@ -22,10 +22,10 @@ export const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange
     { id: "studio", label: t.navStudio, icon: <Scale className="h-4 w-4" /> },
     {
       id: "courtroom",
-      label: "Judicial Chamber & Codex",
+      label: t.navCourtroom,
       icon: <Gavel className="h-4 w-4 text-amber-400" />,
     },
-    { id: "mesh", label: "Neuro-Symbolic Mesh", icon: <Cpu className="h-4 w-4" /> },
+    { id: "mesh", label: t.navMesh, icon: <Cpu className="h-4 w-4" /> },
     { id: "analytics", label: t.navAnalytics, icon: <BarChart3 className="h-4 w-4" /> },
     { id: "faq", label: t.navFaq, icon: <HelpCircle className="h-4 w-4" /> },
     { id: "about", label: t.navAbout, icon: <Info className="h-4 w-4" /> },

@@ -12,25 +12,33 @@ import {
   Loader2,
 } from "lucide-react";
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface DocumentViewerProps {
-  documentId: string;
+  documentId?: string;
   filename: string;
   pages: Array<{ pageNumber: number; text: string }>;
   activeHighlight: { page: number; snippet: string } | null;
-  onFileUpload: (file: File) => Promise<void>;
+  onFileUpload?: (file: File) => Promise<void>;
+  onUpload?: (file: File) => Promise<void>;
   onAudioUpload?: (file: File) => Promise<void>;
   isUploading?: boolean;
+  t?: TranslationDictionary;
 }
 
 export const DocumentViewer: React.FC<DocumentViewerProps> = ({
-  documentId,
+  documentId = "doc_default",
   filename,
   pages,
   activeHighlight,
   onFileUpload,
+  onUpload,
   onAudioUpload,
   isUploading = false,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
 
@@ -49,7 +57,10 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      await onFileUpload(e.target.files[0]);
+      const uploadHandler = onFileUpload || onUpload;
+      if (uploadHandler) {
+        await uploadHandler(e.target.files[0]);
+      }
     }
   };
 
@@ -105,7 +116,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
         <div className="flex items-center gap-2">
           <FileText className="h-4 w-4 text-legal-cyan" aria-hidden="true" />
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-            Document Stage
+            {t.docViewerTitle}
           </span>
           <span className="inline-flex items-center gap-1 rounded bg-legal-emerald/10 px-2 py-0.5 text-[10px] font-medium text-legal-emerald">
             <Lock className="h-2.5 w-2.5" /> PII Scrubbed
@@ -118,10 +129,10 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
           <label
             htmlFor="audio-upload-input"
             className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800/80 px-2 py-1 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-            title="Upload audio notes for transcription"
+            title={t.uploadVoiceNote}
           >
             <Mic className="h-3.5 w-3.5 text-legal-cyan" />
-            <span className="hidden sm:inline">Voice Dictation</span>
+            <span className="hidden sm:inline">{t.uploadVoiceNote}</span>
             <input
               id="audio-upload-input"
               type="file"
@@ -143,7 +154,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
             ) : (
               <Upload className="h-3.5 w-3.5" />
             )}
-            <span>{isUploading ? "Ingesting..." : "Upload PDF/TXT"}</span>
+            <span>{isUploading ? "Ingesting..." : t.uploadButton}</span>
             <input
               id="document-file-upload"
               type="file"

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ShieldAlert, AlertTriangle, Info, CheckCircle2, RefreshCw } from "lucide-react";
 
+import { TranslationDictionary } from "../i18n/types";
+import { getTranslation } from "../i18n";
+
 export interface BlindspotFindingItem {
   clause_key: string;
   title: string;
@@ -22,6 +25,7 @@ export interface BlindspotMatrixProps {
   report: BlindspotReportData | null;
   isLoading: boolean;
   onAudit: (templateName: string) => Promise<void>;
+  t?: TranslationDictionary;
 }
 
 export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
@@ -29,7 +33,9 @@ export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
   report,
   isLoading,
   onAudit,
+  t: propT,
 }) => {
+  const t = propT || getTranslation("en");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("mutual_nda");
 
   const handleAuditClick = async () => {
@@ -75,7 +81,7 @@ export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
         <div className="flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 text-rose-400" />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-            Blindspot Risk Matrix
+            {t.blindspotTitle}
           </h2>
         </div>
 
@@ -102,7 +108,7 @@ export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
             className="inline-flex items-center gap-1.5 rounded-lg border border-legal-emerald/40 bg-legal-emerald/10 px-3 py-1 text-xs font-semibold text-legal-emerald hover:bg-legal-emerald/20 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`h-3 w-3 ${isLoading ? "animate-spin" : ""}`} />
-            <span>{isLoading ? "Auditing..." : "Audit Document"}</span>
+            <span>{isLoading ? t.auditingButton : t.auditButton}</span>
           </button>
         </div>
       </header>
@@ -111,7 +117,7 @@ export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
       {report && (
         <div className="flex items-center justify-between px-4 py-3 bg-slate-950/80 border-b border-slate-800">
           <div>
-            <span className="text-xs text-slate-400">Baseline Compliance Score:</span>
+            <span className="text-xs text-slate-400">{t.baselineCompliance}</span>
             <div className="flex items-baseline gap-2 mt-0.5">
               <span
                 className={`text-xl font-bold font-mono ${
@@ -125,7 +131,7 @@ export const BlindspotMatrix: React.FC<BlindspotMatrixProps> = ({
                 {report.compliance_score.toFixed(1)}%
               </span>
               <span className="text-xs text-slate-400">
-                ({report.critical_count} critical omission{report.critical_count !== 1 ? "s" : ""})
+                ({report.critical_count} {t.criticalOmissions})
               </span>
             </div>
           </div>

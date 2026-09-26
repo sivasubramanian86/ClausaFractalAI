@@ -50,8 +50,8 @@ describe("AttorneyPrepView Unit Test Suite", () => {
   it("renders full sheet and handles export click", () => {
     const createObjectURLMock = vi.fn(() => "blob:http://localhost/test-blob");
     const revokeObjectURLMock = vi.fn();
-    global.URL.createObjectURL = createObjectURLMock as any;
-    global.URL.revokeObjectURL = revokeObjectURLMock as any;
+    (globalThis as any).URL.createObjectURL = createObjectURLMock as any;
+    (globalThis as any).URL.revokeObjectURL = revokeObjectURLMock as any;
 
     const anchorClickMock = vi.fn();
     window.HTMLAnchorElement.prototype.click = anchorClickMock;
