@@ -8,7 +8,7 @@ test.describe("ClausaFractalAI End-to-End Enterprise GUI Test Suite", () => {
   test("renders brand header, legal role switcher, and switches theme", async ({ page }) => {
     // Assert title & branding
     await expect(page.getByRole("heading", { name: "ClausaFractalAI" })).toBeVisible();
-    await expect(page.getByText("PromptWars Exclusive")).toBeVisible();
+    await expect(page.getByLabel("Active Legal Role")).toBeVisible();
 
     // Toggle theme between dark and light
     const themeBtn = page.getByRole("button", { name: /Switch to (Light|Dark) Mode/i });
