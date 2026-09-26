@@ -434,18 +434,17 @@ export const AppContent: React.FC = () => {
   return (
     <div
       dir={isRTL(language) ? "rtl" : "ltr"}
-      className="min-h-screen flex flex-col font-sans"
-      style={{ backgroundColor: "var(--bg-root)", color: "var(--text-primary)" }}
+      className="app-shell font-sans"
     >
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
       <Navigation activeView={activeView} onViewChange={setActiveView} t={t} />
 
-      <main role="main" className="mx-auto flex w-full max-w-7xl flex-1 flex-col p-4 md:p-6 gap-6">
+      <main role="main" className="app-main">
         {activeView === "studio" && (
           <ErrorBoundary fallbackTitle="Studio Workspace Disrupted">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-[680px]">
-              {/* Left Column: Document Viewer & Ingestion Stage (6 cols) */}
-              <div className="lg:col-span-6 flex flex-col h-full">
+            <div className="studio-grid">
+              {/* Left Column: Document Viewer */}
+              <div className="studio-panel">
                 <DocumentViewer
                   documentId={documentId}
                   filename={filename}
@@ -458,91 +457,60 @@ export const AppContent: React.FC = () => {
                 />
               </div>
 
-              {/* Right Column: Multi-Agent Intelligence Studio (6 cols) */}
-              <div className="lg:col-span-6 flex flex-col h-full rounded-xl glass-panel border border-slate-800 dark:border-slate-800 light:border-slate-300 overflow-hidden">
-                {/* Top Navigation Tabs */}
+              {/* Right Column: Multi-Agent Intelligence Studio */}
+              <div
+                className="studio-panel glass-panel rounded-2xl overflow-hidden"
+                style={{ border: "1px solid var(--border-default)" }}
+              >
+                {/* Tab Bar */}
                 <nav
                   role="navigation"
                   aria-label="Studio Modes"
-                  className="flex border-b border-slate-800/80 dark:border-slate-800/80 light:border-slate-300 bg-slate-900/70 dark:bg-slate-900/70 light:bg-slate-100 overflow-x-auto"
+                  style={{
+                    display: "flex",
+                    borderBottom: "1px solid var(--border-default)",
+                    background: "var(--bg-elevated)",
+                    overflowX: "auto",
+                  }}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("chat")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "chat"
-                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" />
-                    <span>{t.tabChat}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("blindspots")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "blindspots"
-                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <ShieldAlert className="h-3.5 w-3.5" />
-                    <span>{t.tabBlindspots}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("policyCollider")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "policyCollider"
-                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <GitCompare className="h-3.5 w-3.5" />
-                    <span>{t.tabPolicyCollider}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("attorneyPrep")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "attorneyPrep"
-                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <FileCheck2 className="h-3.5 w-3.5" />
-                    <span>{t.tabAttorneyPrep}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("counterClauses")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "counterClauses"
-                        ? "border-legal-emerald text-legal-emerald bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <FileEdit className="h-3.5 w-3.5" />
-                    <span>{t.tabCounterClauses}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("courtroom")}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
-                      activeTab === "courtroom"
-                        ? "border-amber-400 text-amber-400 bg-slate-900/50 dark:bg-slate-900/50 light:bg-slate-200"
-                        : "border-transparent text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900"
-                    }`}
-                  >
-                    <Gavel className="h-3.5 w-3.5 text-amber-400" />
-                    <span>{t.tabCourtroom}</span>
-                  </button>
+                  {(
+                    [
+                      { id: "chat",           icon: <MessageSquare className="h-3.5 w-3.5" />, label: t.tabChat,           accent: "var(--accent-emerald)" },
+                      { id: "blindspots",     icon: <ShieldAlert   className="h-3.5 w-3.5" />, label: t.tabBlindspots,     accent: "var(--accent-emerald)" },
+                      { id: "policyCollider", icon: <GitCompare    className="h-3.5 w-3.5" />, label: t.tabPolicyCollider, accent: "var(--accent-emerald)" },
+                      { id: "attorneyPrep",   icon: <FileCheck2    className="h-3.5 w-3.5" />, label: t.tabAttorneyPrep,   accent: "var(--accent-emerald)" },
+                      { id: "counterClauses", icon: <FileEdit      className="h-3.5 w-3.5" />, label: t.tabCounterClauses, accent: "var(--accent-emerald)" },
+                      { id: "courtroom",      icon: <Gavel         className="h-3.5 w-3.5" style={{ color: "var(--accent-amber)" }} />, label: t.tabCourtroom, accent: "var(--accent-amber)" },
+                    ] as Array<{ id: typeof activeTab; icon: React.ReactNode; label: string; accent: string }>
+                  ).map(({ id, icon, label, accent }) => {
+                    const isActive = activeTab === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => setActiveTab(id)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "0.6rem 1rem",
+                          fontSize: "0.8rem",
+                          fontWeight: isActive ? 700 : 500,
+                          fontFamily: "'Outfit', sans-serif",
+                          borderBottom: `2px solid ${isActive ? accent : "transparent"}`,
+                          color: isActive ? accent : "var(--text-muted)",
+                          background: isActive ? "rgba(16,185,129,0.07)" : "transparent",
+                          cursor: "pointer",
+                          whiteSpace: "nowrap",
+                          transition: "color 0.2s, border-color 0.2s, background 0.2s",
+                          letterSpacing: "0.01em",
+                        }}
+                      >
+                        {icon}
+                        <span>{label}</span>
+                      </button>
+                    );
+                  })}
                 </nav>
 
                 {/* Tab Workspace Body */}
