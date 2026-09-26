@@ -19,26 +19,41 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange, t }) => {
   const navItems: Array<{ id: NavView; label: string; icon: React.ReactNode }> = [
-    { id: "studio", label: t.navStudio, icon: <Scale className="h-4 w-4" /> },
-    {
-      id: "courtroom",
-      label: t.navCourtroom,
-      icon: <Gavel className="h-4 w-4 text-amber-400" />,
-    },
-    { id: "mesh", label: t.navMesh, icon: <Cpu className="h-4 w-4" /> },
-    { id: "analytics", label: t.navAnalytics, icon: <BarChart3 className="h-4 w-4" /> },
-    { id: "faq", label: t.navFaq, icon: <HelpCircle className="h-4 w-4" /> },
-    { id: "about", label: t.navAbout, icon: <Info className="h-4 w-4" /> },
-    { id: "governance", label: t.navGovernance, icon: <ShieldCheck className="h-4 w-4" /> },
+    { id: "studio",     label: t.navStudio,     icon: <Scale style={{ width: "14px", height: "14px" }} /> },
+    { id: "courtroom",  label: t.navCourtroom,  icon: <Gavel style={{ width: "14px", height: "14px", color: "var(--accent-amber)" }} /> },
+    { id: "mesh",       label: t.navMesh,       icon: <Cpu style={{ width: "14px", height: "14px" }} /> },
+    { id: "analytics",  label: t.navAnalytics,  icon: <BarChart3 style={{ width: "14px", height: "14px" }} /> },
+    { id: "faq",        label: t.navFaq,        icon: <HelpCircle style={{ width: "14px", height: "14px" }} /> },
+    { id: "about",      label: t.navAbout,      icon: <Info style={{ width: "14px", height: "14px" }} /> },
+    { id: "governance", label: t.navGovernance, icon: <ShieldCheck style={{ width: "14px", height: "14px" }} /> },
   ];
 
   return (
     <nav
       role="navigation"
       aria-label="Main Application Sections"
-      className="mx-auto flex w-full max-w-7xl items-center justify-start gap-2 px-4 md:px-6 pt-4 overflow-x-auto"
+      style={{
+        maxWidth: "1280px",
+        margin: "0 auto",
+        width: "100%",
+        padding: "0.875rem 1.5rem 0",
+        overflowX: "auto",
+      }}
     >
-      <div className="flex items-center gap-1 rounded-xl p-1 bg-slate-900/60 dark:bg-slate-900/80 light:bg-slate-200 border border-slate-800/80 dark:border-slate-800 light:border-slate-300 shadow-inner">
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "2px",
+          borderRadius: "14px",
+          padding: "4px",
+          background: "var(--bg-card)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid var(--border-subtle)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+        }}
+      >
         {navItems.map((item) => {
           const isActive = activeView === item.id;
           return (
@@ -46,11 +61,38 @@ export const Navigation: React.FC<NavigationProps> = ({ activeView, onViewChange
               key={item.id}
               type="button"
               onClick={() => onViewChange(item.id)}
-              className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
-                isActive
-                  ? "bg-gradient-to-r from-legal-emerald/20 to-legal-cyan/20 text-legal-emerald dark:text-legal-emerald border border-legal-emerald/30 shadow-md shadow-legal-emerald/10"
-                  : "text-slate-400 hover:text-slate-200 dark:hover:text-white light:text-slate-600 light:hover:text-slate-900 border border-transparent"
-              }`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "0.4rem 0.875rem",
+                fontSize: "0.78rem",
+                fontWeight: isActive ? 700 : 500,
+                fontFamily: "'Outfit', sans-serif",
+                borderRadius: "10px",
+                border: isActive ? "1px solid var(--border-accent)" : "1px solid transparent",
+                background: isActive
+                  ? "linear-gradient(135deg, rgba(16,185,129,0.16), rgba(6,182,212,0.12))"
+                  : "transparent",
+                color: isActive ? "var(--accent-emerald)" : "var(--text-muted)",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                transition: "all 0.2s ease",
+                boxShadow: isActive ? "0 0 12px rgba(16,185,129,0.15)" : "none",
+                letterSpacing: isActive ? "0.01em" : "0",
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.04)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                }
+              }}
             >
               {item.icon}
               <span>{item.label}</span>

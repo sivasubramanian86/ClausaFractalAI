@@ -1,5 +1,5 @@
 import React from "react";
-import { Scale, ShieldCheck, Globe, Sun, Moon, User } from "lucide-react";
+import { Scale, ShieldCheck, Globe, Sun, Moon, User, Zap } from "lucide-react";
 import { LanguageCode } from "../types";
 import { getTranslation, SUPPORTED_LANGUAGES } from "../i18n";
 import { useTheme } from "../context/ThemeContext";
@@ -16,50 +16,137 @@ export const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChang
   const { user, switchRole } = useAuth();
 
   const roleLabels: Record<LegalRole, string> = {
-    counsel: t.roleCounsel,
+    counsel:    t.roleCounsel,
     arbitrator: t.roleArbitrator,
-    auditor: t.roleAuditor,
-    founder: t.roleFounder,
+    auditor:    t.roleAuditor,
+    founder:    t.roleFounder,
   };
 
   return (
     <header
       role="banner"
-      className="glass-panel sticky top-0 z-50 border-b border-slate-800/80 dark:border-slate-800/80 light:border-slate-300 px-4 md:px-6 py-3 transition-colors"
+      className="glass-panel sticky top-0 z-50"
+      style={{
+        borderBottom: "1px solid var(--border-subtle)",
+        padding: "0 1.5rem",
+      }}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-        {/* Brand and Tagline */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-legal-emerald to-legal-cyan text-obsidian-950 shadow-lg shadow-legal-emerald/20 font-bold shrink-0">
-            <Scale className="h-6 w-6" aria-hidden="true" />
+      <div
+        style={{
+          maxWidth: "1280px",
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+          height: "64px",
+        }}
+      >
+        {/* ── Brand ─────────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", flexShrink: 0 }}>
+          {/* Logo mark */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "42px",
+              height: "42px",
+              borderRadius: "12px",
+              background: "linear-gradient(135deg, #10b981, #06b6d4)",
+              boxShadow: "0 4px 16px rgba(16,185,129,0.40), inset 0 1px 0 rgba(255,255,255,0.2)",
+              flexShrink: 0,
+            }}
+          >
+            <Scale style={{ width: "20px", height: "20px", color: "#020617" }} aria-hidden="true" />
           </div>
+
+          {/* Title + tagline */}
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg md:text-xl font-bold tracking-tight text-white dark:text-white light:text-slate-900">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <h1
+                className="font-display"
+                style={{
+                  fontSize: "clamp(1rem, 2.2vw, 1.25rem)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.03em",
+                  color: "var(--text-primary)",
+                  margin: 0,
+                  lineHeight: 1.2,
+                }}
+              >
                 {t.appTitle}
               </h1>
-              <span className="hidden sm:inline-block rounded-full border border-legal-emerald/40 bg-legal-emerald/10 px-2 py-0.5 text-[11px] font-medium text-legal-emerald">
+              <span
+                className="badge badge-emerald"
+                style={{ fontSize: "10px", display: "none" }}
+              >
+                {t.exclusiveBadge}
+              </span>
+              <span
+                className="badge badge-emerald"
+                style={{ fontSize: "10px" }}
+              >
                 {t.exclusiveBadge}
               </span>
             </div>
-            <p className="text-xs text-slate-400 dark:text-slate-400 light:text-slate-600 truncate max-w-[280px] sm:max-w-none">
+            <p
+              style={{
+                fontSize: "0.7rem",
+                color: "var(--text-muted)",
+                margin: 0,
+                marginTop: "1px",
+                letterSpacing: "0.01em",
+                maxWidth: "300px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
               {t.subtitle}
             </p>
           </div>
         </div>
 
-        {/* Controls: Role Selector, Zero-Key, Theme Toggle, Language Selector */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Active Role Selector */}
-          <div className="relative hidden md:flex items-center">
-            <div className="pointer-events-none absolute left-2.5 text-legal-emerald">
-              <User className="h-3.5 w-3.5" aria-hidden="true" />
+        {/* ── Controls ──────────────────────────── */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+
+          {/* Role Selector */}
+          <div
+            style={{
+              position: "relative",
+              display: "none",
+              alignItems: "center",
+            }}
+            className="md-role-selector"
+          >
+            <div
+              style={{
+                pointerEvents: "none",
+                position: "absolute",
+                left: "0.625rem",
+                color: "var(--accent-emerald)",
+              }}
+            >
+              <User style={{ width: "13px", height: "13px" }} aria-hidden="true" />
             </div>
             <select
               aria-label="Active Legal Role"
               value={user.role}
               onChange={(e) => switchRole(e.target.value as LegalRole)}
-              className="appearance-none rounded-lg border border-slate-800 dark:border-slate-800 light:border-slate-300 bg-slate-900/80 dark:bg-slate-900/80 light:bg-slate-100 py-1.5 pl-7 pr-6 text-xs font-semibold text-legal-emerald transition-colors hover:border-legal-emerald focus:outline-none cursor-pointer"
+              style={{
+                appearance: "none",
+                borderRadius: "8px",
+                border: "1px solid var(--border-default)",
+                background: "var(--bg-input)",
+                color: "var(--accent-emerald)",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                fontFamily: "'Outfit', sans-serif",
+                padding: "0.375rem 1.25rem 0.375rem 1.75rem",
+                cursor: "pointer",
+                outline: "none",
+              }}
             >
               <option value="counsel">{roleLabels.counsel}</option>
               <option value="arbitrator">{roleLabels.arbitrator}</option>
@@ -68,40 +155,99 @@ export const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChang
             </select>
           </div>
 
-          {/* Zero-Key Security Badge */}
-          <div className="hidden xl:flex items-center gap-1.5 rounded-lg border border-slate-800 dark:border-slate-800 light:border-slate-300 bg-slate-900/60 dark:bg-slate-900/60 light:bg-slate-100 px-2.5 py-1.5 text-xs text-slate-300 dark:text-slate-300 light:text-slate-700">
-            <ShieldCheck className="h-4 w-4 text-legal-emerald" aria-hidden="true" />
+          {/* Zero-Key Badge */}
+          <div
+            style={{
+              display: "none",
+              alignItems: "center",
+              gap: "0.375rem",
+              borderRadius: "8px",
+              border: "1px solid var(--border-default)",
+              background: "var(--bg-card)",
+              padding: "0.375rem 0.75rem",
+              fontSize: "0.7rem",
+              color: "var(--text-secondary)",
+            }}
+            className="xl-zerokey"
+          >
+            <ShieldCheck style={{ width: "14px", height: "14px", color: "var(--accent-emerald)" }} aria-hidden="true" />
             <span>{t.zeroKeyBadge}</span>
           </div>
 
-          {/* Theme Toggle Button */}
+          {/* Theme Toggle */}
           <button
             type="button"
             onClick={toggleTheme}
             aria-label={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 bg-slate-900/80 dark:bg-slate-900/80 light:bg-slate-100 text-slate-300 dark:text-slate-300 light:text-slate-800 hover:text-legal-emerald transition-colors"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              border: "1px solid var(--border-default)",
+              background: "var(--bg-card)",
+              cursor: "pointer",
+              position: "relative",
+              overflow: "hidden",
+            }}
           >
+            {/* Glow ring on hover handled by CSS */}
+            <span
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "10px",
+                background: theme === "dark"
+                  ? "radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%)"
+                  : "radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)",
+                transition: "opacity 0.3s ease",
+              }}
+            />
             {theme === "dark" ? (
-              <Sun className="h-4 w-4 text-amber-400" />
+              <Sun style={{ width: "15px", height: "15px", color: "#fbbf24", position: "relative" }} aria-hidden="true" />
             ) : (
-              <Moon className="h-4 w-4 text-slate-700" />
+              <Moon style={{ width: "15px", height: "15px", color: "var(--accent-violet)", position: "relative" }} aria-hidden="true" />
             )}
           </button>
 
           {/* Language Selector */}
-          <div className="relative flex items-center">
+          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
             <label htmlFor="language-select" className="sr-only">
               Select Language
             </label>
-            <div className="pointer-events-none absolute left-2.5 text-slate-400">
-              <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+            <div
+              style={{
+                pointerEvents: "none",
+                position: "absolute",
+                left: "0.625rem",
+                color: "var(--text-muted)",
+              }}
+            >
+              <Globe style={{ width: "13px", height: "13px" }} aria-hidden="true" />
             </div>
             <select
               id="language-select"
               aria-label="Select Interface Language"
               value={currentLanguage}
               onChange={(e) => onLanguageChange(e.target.value as LanguageCode)}
-              className="appearance-none rounded-lg border border-slate-700 dark:border-slate-700 light:border-slate-300 bg-slate-900/80 dark:bg-slate-900/80 light:bg-slate-100 py-1.5 pl-8 pr-7 text-xs font-medium text-slate-200 dark:text-slate-200 light:text-slate-800 transition-colors hover:border-legal-cyan focus:border-legal-cyan focus:outline-none max-w-[170px] sm:max-w-[220px] truncate cursor-pointer"
+              style={{
+                appearance: "none",
+                borderRadius: "8px",
+                border: "1px solid var(--border-default)",
+                background: "var(--bg-input)",
+                color: "var(--text-primary)",
+                fontSize: "0.75rem",
+                fontWeight: 500,
+                padding: "0.375rem 1.5rem 0.375rem 1.75rem",
+                cursor: "pointer",
+                outline: "none",
+                maxWidth: "165px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
             >
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -110,8 +256,59 @@ export const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChang
               ))}
             </select>
           </div>
+
+          {/* AI status pulse */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.375rem",
+              padding: "0.375rem 0.75rem",
+              borderRadius: "8px",
+              border: "1px solid var(--border-accent)",
+              background: "rgba(16,185,129,0.08)",
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              fontFamily: "'Outfit', sans-serif",
+              color: "var(--accent-emerald)",
+              flexShrink: 0,
+            }}
+            className="hidden lg:flex"
+          >
+            <span
+              style={{
+                width: "7px",
+                height: "7px",
+                borderRadius: "50%",
+                background: "var(--accent-emerald)",
+                boxShadow: "0 0 8px var(--accent-emerald)",
+                animation: "pulse-glow 2s infinite",
+                flexShrink: 0,
+              }}
+            />
+            <Zap style={{ width: "11px", height: "11px" }} aria-hidden="true" />
+            <span>AI Live</span>
+          </div>
         </div>
       </div>
+
+      {/* Responsive: show role selector on md+ */}
+      <style>{`
+        @media (min-width: 768px) {
+          .md-role-selector { display: flex !important; }
+        }
+        @media (min-width: 1280px) {
+          .xl-zerokey { display: flex !important; }
+        }
+        header button:hover {
+          border-color: var(--accent-emerald) !important;
+        }
+        select:focus {
+          border-color: var(--accent-emerald) !important;
+          box-shadow: 0 0 0 3px rgba(16,185,129,0.15) !important;
+          outline: none !important;
+        }
+      `}</style>
     </header>
   );
 };

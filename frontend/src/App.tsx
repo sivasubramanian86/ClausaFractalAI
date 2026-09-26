@@ -434,7 +434,8 @@ export const AppContent: React.FC = () => {
   return (
     <div
       dir={isRTL(language) ? "rtl" : "ltr"}
-      className="min-h-screen bg-obsidian-950 dark:bg-obsidian-950 light:bg-slate-50 text-slate-100 dark:text-slate-100 light:text-slate-900 flex flex-col font-sans selection:bg-legal-emerald selection:text-obsidian-950 transition-colors duration-200"
+      className="min-h-screen flex flex-col font-sans"
+      style={{ backgroundColor: "var(--bg-root)", color: "var(--text-primary)" }}
     >
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
       <Navigation activeView={activeView} onViewChange={setActiveView} t={t} />

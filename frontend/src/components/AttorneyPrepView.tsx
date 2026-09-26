@@ -51,17 +51,18 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
       ),
       ``,
       `## NEGOTIATION LEVERAGE POINTS`,
-      ...sheet.negotiation_leverage_points.map((lp) => `- ${lp}`),
+      ...data.negotiation_leverage_points.map((lp) => `- ${lp}`),
     ].join("\n");
 
     const blob = new Blob([text], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Attorney_Prep_${sheet.document_id}.md`;
+    a.download = `Attorney_Prep_${data.document_id}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };
+
 
   return (
     <section
