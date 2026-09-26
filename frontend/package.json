@@ -2,6 +2,7 @@
   "name": "clausa-fractal-ai-frontend",
   "private": true,
   "version": "1.0.0",
+  "description": "Evidence-grounded AI for Legal Assistance & Access: understand, compare, and navigate legal documents.",
   "type": "module",
   "scripts": {
     "dev": "vite",
