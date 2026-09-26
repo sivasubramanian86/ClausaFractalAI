@@ -3,7 +3,7 @@
 > **Make sense of the fine print.** An evidence-grounded assistant for **AI for Legal Assistance & Access**: understand, compare, and navigate legal documents.  
 > *Powered by Google Gemini 3.8 (Flash & Pro) on Vertex AI, Dual-Pipeline Neuro-Symbolic Verification (Z3 SMT), and a React 19 Interactive Legal Studio.*
 
-[![CI Pipeline](https://github.com/sivasubramanian86/ClausaFractalAI/actions/workflows/ci.yml/badge.svg)](https://github.com/sivasubramanian86/ClausaFractalAI/actions)
+[![CI Pipeline](https://github.com/sivasubramanian86/ClausaFractalAI/actions/workflows/ci.yaml/badge.svg)](https://github.com/sivasubramanian86/ClausaFractalAI/actions/workflows/ci.yaml)
 [![Test Coverage: 100%](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg)](backend/tests/)
 [![Google Cloud Run](https://img.shields.io/badge/Google%20Cloud-Cloud%20Run-blue?logo=googlecloud)](https://cloud.google.com/run)
 [![Google Gemini 3.8](https://img.shields.io/badge/Vertex%20AI-Gemini%203.8%20Flash%20%26%20Pro-8E75B2?logo=googlegemini)](https://cloud.google.com/vertex-ai)
