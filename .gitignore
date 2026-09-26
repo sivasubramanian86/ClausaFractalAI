@@ -38,15 +38,25 @@ service_account.json
 # Local scratch, uploads, logs & large binaries (< 10MB limit defense)
 scratch/
 uploads/
+demo_assets/
+**/demo_assets/
 *.pdf
 *.png
 *.jpg
 *.jpeg
+*.mp3
+*.wav
 *.mp4
+*.webm
 *.zip
 *.tar.gz
 *.log
 !docs/images/*
+
+# Tooling and IDE internal state
+.codegraph/
+.firebase/
+
 
 # Prompt files and session memories (internal collateral)
 phase-*.md

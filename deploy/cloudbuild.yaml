@@ -1,0 +1,11 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - deploy/Dockerfile
+      - -t
+      - us-central1-docker.pkg.dev/genai-apac-2026-491004/clausafractalai/clausafractalai-mesh:latest
+      - .
+images:
+  - us-central1-docker.pkg.dev/genai-apac-2026-491004/clausafractalai/clausafractalai-mesh:latest

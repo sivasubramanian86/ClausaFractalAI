@@ -20,7 +20,8 @@ interface TelemetryMetrics {
   total_cached_tokens: number;
   cost_saved_usd: number;
   avg_latency_ms: number;
-  hallucination_rate: number;
+  measured_hallucination_rate?: number;
+  hallucination_rate?: number;
   cache_hit_rate_pct: number;
 }
 
@@ -37,7 +38,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ t }) => 
     total_cached_tokens: 1845200,
     cost_saved_usd: 14.76,
     avg_latency_ms: 312,
-    hallucination_rate: 0.0,
+    measured_hallucination_rate: undefined,
     cache_hit_rate_pct: 94.2,
   });
 
@@ -85,7 +86,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ t }) => 
       ]);
       if (mRes.ok) {
         const mData = await mRes.json();
-        setMetrics(mData);
+        setMetrics((current) => ({ ...current, ...mData }));
       }
       if (rRes.ok) {
         const rData = await rRes.json();
@@ -214,10 +215,12 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ t }) => 
           </div>
           <div className="mt-4">
             <span className="text-3xl font-extrabold tracking-tight text-emerald-400">
-              {(metrics.hallucination_rate * 100).toFixed(2)}%
+              {typeof (metrics.measured_hallucination_rate ?? metrics.hallucination_rate) === "number" && Number.isFinite(metrics.measured_hallucination_rate ?? metrics.hallucination_rate)
+                ? (((metrics.measured_hallucination_rate ?? metrics.hallucination_rate) as number) * 100).toFixed(2) + "%"
+                : "—"}
             </span>
             <div className="flex items-center gap-1.5 mt-1 text-xs text-emerald-400">
-              <span>Refusal Ladder Grounded</span>
+              <span>Refusal Ladder Grounded · rate not measured</span>
             </div>
           </div>
         </div>

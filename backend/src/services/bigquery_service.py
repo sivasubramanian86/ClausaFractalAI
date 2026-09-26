@@ -115,7 +115,7 @@ class BigQueryAnalyticsService:
                 "total_cached_tokens": 0,
                 "cost_saved_usd": 0.0,
                 "avg_latency_ms": 0.0,
-                "measured_hallucination_rate": 0.0,
+                "measured_hallucination_rate": None,
                 "refusal_rate_pct": 0.0,
             }
 
@@ -134,7 +134,8 @@ class BigQueryAnalyticsService:
             "total_prompt_tokens": total_prompt,
             "cost_saved_usd": round(cost_saved_usd, 4),
             "avg_latency_ms": round(avg_latency, 1),
-            "measured_hallucination_rate": 0.0,
+            # No independent hallucination evaluation is recorded yet.
+            "measured_hallucination_rate": None,
             "refusal_rate_pct": round((refusal_count / total_queries) * 100, 1),
         }
 

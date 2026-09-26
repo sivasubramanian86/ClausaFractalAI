@@ -165,6 +165,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
   const [selectedMediaPreview, setSelectedMediaPreview] = useState<
     "pdf" | "image" | "audio" | "video"
   >("image");
+  const [failedMedia, setFailedMedia] = useState<Record<string, boolean>>({});
 
   // Codex Search & Filter
   const [codexQuery, setCodexQuery] = useState<string>("");
@@ -408,7 +409,7 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-950 text-slate-100 overflow-y-auto">
+    <div className="courtroom-view flex flex-col h-full bg-slate-950 text-slate-100 overflow-y-auto">
       {/* Top Banner: Courtroom Jurisprudential Chambers */}
       <div className="border-b border-indigo-500/20 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -896,11 +897,16 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                           </span>
                         </div>
                         <div className="relative rounded-lg overflow-hidden border border-slate-700 bg-slate-950 flex items-center justify-center max-h-72">
-                          <img
-                            src={selectedSampleCase.media.image_url}
-                            alt="Forensic Evidence Snapshot"
-                            className="object-contain max-h-72 w-full hover:scale-105 transition-transform duration-300 cursor-zoom-in"
-                          />
+                          {failedMedia[selectedSampleCase.media.image_url] ? (
+                            <p className="p-6 text-center text-sm text-amber-300">Image unavailable. Check that this object exists and allows public reads.</p>
+                          ) : (
+                            <img
+                              src={selectedSampleCase.media.image_url}
+                              alt="Forensic Evidence Snapshot"
+                              onError={() => setFailedMedia((items) => ({ ...items, [selectedSampleCase.media.image_url]: true }))}
+                              className="object-contain max-h-72 w-full hover:scale-105 transition-transform duration-300 cursor-zoom-in"
+                            />
+                          )}
                           <div className="absolute top-2 left-2 bg-slate-950/80 px-2.5 py-1 rounded border border-cyan-500/40 text-[10px] text-cyan-300 font-mono">
                             EXHIBIT SNAPSHOT · GCS CLOUD OBJECT
                           </div>
@@ -926,8 +932,10 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                           <audio
                             controls
                             src={selectedSampleCase.media.audio_url}
+                            onError={() => setFailedMedia((items) => ({ ...items, [selectedSampleCase.media.audio_url]: true }))}
                             className="w-full mt-2"
                           />
+                          {failedMedia[selectedSampleCase.media.audio_url] && <p className="text-sm text-amber-300">Audio unavailable. Check that this object exists and allows public reads.</p>}
                         </div>
                       </div>
                     )}
@@ -946,8 +954,10 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
                           <video
                             controls
                             src={selectedSampleCase.media.video_url}
+                            onError={() => setFailedMedia((items) => ({ ...items, [selectedSampleCase.media.video_url]: true }))}
                             className="w-full max-h-64 object-contain"
                           />
+                          {failedMedia[selectedSampleCase.media.video_url] && <p className="p-3 text-sm text-amber-300">Video unavailable. Check that this object exists and allows public reads.</p>}
                         </div>
                       </div>
                     )}

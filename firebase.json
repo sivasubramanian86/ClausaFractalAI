@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "clausafractalai",
     "public": "frontend/dist",
     "ignore": [
       "firebase.json",
@@ -7,6 +8,13 @@
       "**/node_modules/**"
     ],
     "rewrites": [
+      {
+        "source": "/api/v2/**",
+        "run": {
+          "serviceId": "clausafractalai-mesh",
+          "region": "us-central1"
+        }
+      },
       {
         "source": "/api/**",
         "run": {
@@ -30,6 +38,18 @@
         ]
       }
     ]
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "ClausaFractalAI Demo",
+        "supportEmail": "test.scf@gmail.com",
+        "authorizedRedirectUris": [
+          "https://clausafractalai.web.app/__/auth/handler"
+        ]
+      }
+    }
   },
   "firestore": {
     "rules": "firestore.rules"

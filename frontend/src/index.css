@@ -1,11 +1,9 @@
+/* ═══════════════════════════════════════════════════════════════
+   GOOGLE FONTS — must be before @tailwind directives
+═══════════════════════════════════════════════════════════════ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ═══════════════════════════════════════════════════════════════
-   1. GOOGLE FONTS
-═══════════════════════════════════════════════════════════════ */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /* ═══════════════════════════════════════════════════════════════
    2. DESIGN TOKENS — CSS Custom Properties
@@ -89,7 +87,7 @@
   *, *::before, *::after { box-sizing: border-box; }
 
   html {
-    font-size: 17px;          /* Bump base from browser default 16 → 17 */
+    font-size: 18px;          /* Premium large: 18px base for legibility */
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
@@ -103,8 +101,8 @@
     background-color: var(--bg-root);
     color: var(--text-primary);
     line-height: 1.65;
-    min-height: 100dvh;
-    overflow-x: hidden;
+    height: 100dvh;
+    overflow: hidden;    /* sidebar layout: inner panels scroll independently */
   }
 
   /* Animated mesh gradient background */
@@ -121,9 +119,10 @@
   #root {
     position: relative;
     z-index: 1;
-    min-height: 100dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -464,3 +463,28 @@ button {
 body::before,
 .animate-fade-up,
 .skeleton { transition: none !important; }
+
+/* Courtroom uses a separate slate palette; keep it legible in light mode. */
+.light .courtroom-view {
+  color: #0f172a;
+  background: #f8fafc;
+}
+.light .courtroom-view [class*="bg-slate-"] {
+  background-color: #f1f5f9 !important;
+}
+.light .courtroom-view [class*="bg-gradient-to-"] {
+  background-image: none !important;
+}
+.light .courtroom-view :not(button)[class~="text-white"],
+.light .courtroom-view :not(button)[class~="text-slate-100"],
+.light .courtroom-view :not(button)[class~="text-slate-200"],
+.light .courtroom-view :not(button)[class~="text-slate-300"] {
+  color: #0f172a !important;
+}
+.light .courtroom-view :not(button)[class~="text-slate-400"],
+.light .courtroom-view :not(button)[class~="text-slate-500"] {
+  color: #475569 !important;
+}
+.light .courtroom-view [class*="border-slate-"] {
+  border-color: #cbd5e1 !important;
+}

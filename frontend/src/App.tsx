@@ -16,6 +16,8 @@ import { GovernanceView } from "./components/GovernanceView";
 import { NeuroSymbolicTraceVisualizer } from "./components/NeuroSymbolicTraceVisualizer";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { CourtroomView } from "./components/CourtroomView";
+import { HelpSection } from "./components/HelpSection";
+import { SettingsSection } from "./components/SettingsSection";
 import {
   MessageSquare,
   ShieldAlert,
@@ -437,9 +439,23 @@ export const AppContent: React.FC = () => {
       className="app-shell font-sans"
     >
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
-      <Navigation activeView={activeView} onViewChange={setActiveView} t={t} />
 
-      <main role="main" className="app-main">
+      {/* Body: sidebar + scrollable content */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: 0 }}>
+        <Navigation activeView={activeView} onViewChange={setActiveView} t={t} />
+
+        <main
+          role="main"
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            overflowX: "hidden",
+            padding: "1.5rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1.25rem",
+          }}
+        >
         {activeView === "studio" && (
           <ErrorBoundary fallbackTitle="Studio Workspace Disrupted">
             <div className="studio-grid">
@@ -615,7 +631,10 @@ export const AppContent: React.FC = () => {
             <GovernanceView t={t} />
           </ErrorBoundary>
         )}
+        {activeView === "help" && <HelpSection onNavigate={setActiveView} />}
+        {activeView === "settings" && <SettingsSection language={language} onLanguageChange={setLanguage} />}
       </main>
+      </div>   {/* end sidebar + main row */}
     </div>
   );
 };

@@ -32,5 +32,16 @@ describe("Header Unit Test Suite", () => {
     const themeBtn = screen.getByRole("button", { name: /Switch to Light Mode/i });
     fireEvent.click(themeBtn);
     expect(screen.getByRole("button", { name: /Switch to Dark Mode/i })).toBeInTheDocument();
+
+    // Sign In button opens AuthModal
+    const signInBtn = screen.getByRole("button", { name: /Sign In/i });
+    fireEvent.click(signInBtn);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("Welcome back")).toBeInTheDocument();
+
+    // Close AuthModal
+    const closeBtn = screen.getByLabelText("Close");
+    fireEvent.click(closeBtn);
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

@@ -68,7 +68,7 @@ import { getW3CTraceparent, logger } from "./logger";
 export class NeuroSymbolicApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = "http://localhost:8000") {
+  constructor(baseUrl: string = import.meta.env.VITE_API_URL ?? "") {
     this.baseUrl = baseUrl;
   }
 
