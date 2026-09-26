@@ -491,23 +491,29 @@ def test_copilot_actions_with_gemini_client() -> None:
     mock_prep_resp = MagicMock()
     mock_prep_resp.text = (
         '{"executive_summary": "High risk detected", "attorney_questions": ['
-        '{"category": "Liability", "question": "What is the cap?", "context_rationale": "High risk"},'
-        '{"category": "Indemnity", "question": "Is it mutual?", "context_rationale": "Unilateral"},'
-        '{"category": "Termination", "question": "Can we exit?", "context_rationale": "Locked in"},'
-        '{"category": "IP", "question": "Who owns code?", "context_rationale": "Loss of IP"},'
-        '{"category": "Dispute", "question": "Where is venue?", "context_rationale": "Delaware"}'
+        '{"category": "Liability", "question": "Cap?", "context_rationale": "Risk"},'
+        '{"category": "Indemnity", "question": "Mutual?", "context_rationale": "One-sided"},'
+        '{"category": "Termination", "question": "Exit?", "context_rationale": "Locked"},'
+        '{"category": "IP", "question": "Code?", "context_rationale": "Loss"},'
+        '{"category": "Dispute", "question": "Venue?", "context_rationale": "DE"}'
         '], "negotiation_leverage_points": ["Demand mutual terms"]}'
     )
     mock_client.models.generate_content.return_value = mock_prep_resp
 
     copilot = ActionableCopilotAgent(gemini_client=mock_client)
-    sheet = copilot.generate_attorney_prep_sheet("doc_genai", document_text="Sample contract", key_risks=["Uncapped"])
+    sheet = copilot.generate_attorney_prep_sheet(
+        "doc_genai", document_text="Sample contract", key_risks=["Uncapped"]
+    )
     assert sheet.executive_summary == "High risk detected"
     assert len(sheet.attorney_questions) == 5
 
     # Test rewrite_clause with client success
     mock_rewrite_resp = MagicMock()
-    mock_rewrite_resp.text = '{"counter_clause": "Mutual liability cap", "strategic_rationale": "Bilateral balance", "negotiation_tip": "Propose parity"}'
+    mock_rewrite_resp.text = (
+        '{"counter_clause": "Mutual liability cap", '
+        '"strategic_rationale": "Bilateral balance", '
+        '"negotiation_tip": "Propose parity"}'
+    )
     mock_client.models.generate_content.return_value = mock_rewrite_resp
     proposal = copilot.rewrite_clause("Customer pays all damages", "liability")
     assert proposal.counter_clause == "Mutual liability cap"
@@ -525,10 +531,14 @@ def test_rag_engine_extract_triples_with_gemini_client() -> None:
     rag = RAGEngine()
     mock_client = MagicMock()
     mock_resp = MagicMock()
-    mock_resp.text = '[{"subject": "Company", "relation": "OBLIGATED_TO", "object": "deliver services"}]'
+    mock_resp.text = (
+        '[{"subject": "Company", "relation": "OBLIGATED_TO", "object": "deliver"}]'
+    )
     mock_client.models.generate_content.return_value = mock_resp
 
-    triples = rag.extract_triples("Company shall deliver services", gemini_client=mock_client)
+    triples = rag.extract_triples(
+        "Company shall deliver services", gemini_client=mock_client
+    )
     assert len(triples) == 1
     assert triples[0].subject == "Company"
     assert triples[0].relation == "OBLIGATED_TO"

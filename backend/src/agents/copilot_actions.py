@@ -4,6 +4,7 @@ Generates tangible end-user deliverables:
 1. Attorney Consultation Prep Sheet (structured questions, risk summary, and leverage points).
 2. Favorable Counter-Clause Rewriter (balanced mutual redlines and negotiation tactics).
 """
+
 import json
 import re
 from typing import List, Optional
@@ -18,7 +19,7 @@ class AttorneyQuestion(BaseModel):
     """Specific question tailored for the user to ask their legal counsel.
 
     Attributes:
-        category: Risk domain (e.g. 'Liability Allocation', 'Indemnification Scope', 'Termination Rights').
+        category: Risk domain (e.g. 'Liability', 'Indemnity', 'Termination').
         question: Precise question phrasing for the attorney consultation.
         context_rationale: Why this question matters and the underlying legal risk.
     """
@@ -110,22 +111,22 @@ class ActionableCopilotAgent:
                 context_summary = "\n".join(f"- {r}" for r in risks[:6])
                 text_snippet = (document_text or "")[:1500]
                 prompt = (
-                    "You are ClausaFractalAI Action Copilot, an elite contract negotiation strategist. "
-                    "Analyze these identified contract risks and document excerpt to generate a tailored "
+                    "You are ClausaFractalAI Action Copilot, an elite contract strategist.\n"
+                    "Analyze identified contract risks and document excerpt to generate a tailored "
                     "Attorney Consultation Preparation Sheet.\n\n"
                     f"Document ID: {document_id}\n"
                     f"Key Identified Risks:\n{context_summary}\n\n"
                     f"Document Excerpt:\n{text_snippet}\n\n"
                     "Respond with a JSON object strictly conforming to this schema:\n"
                     "{\n"
-                    '  "executive_summary": "string overview of risk balance",\n'
+                    '  "executive_summary": "overview string",\n'
                     '  "attorney_questions": [\n'
-                    '    {"category": "Category Name", "question": "Question text", "context_rationale": "Rationale"}\n'
+                    '    {"category": "Name", "question": "Question", "context_rationale": "Why"}\n'
                     "  ],\n"
-                    '  "negotiation_leverage_points": ["leverage point 1", "leverage point 2", "leverage point 3"]\n'
+                    '  "negotiation_leverage_points": ["point 1", "point 2", "point 3"]\n'
                     "}\n"
-                    "Generate exactly 5 distinct, high-impact attorney questions across Liability, Indemnity, "
-                    "Termination, IP/Data Rights, and Dispute Resolution."
+                    "Generate exactly 5 distinct, high-impact attorney questions across Liability, "
+                    "Indemnity, Termination, IP/Data Rights, and Dispute Resolution."
                 )
 
                 response = self.client.models.generate_content(
@@ -133,7 +134,9 @@ class ActionableCopilotAgent:
                     contents=prompt,
                 )
                 raw_text = getattr(response, "text", "").strip()
-                cleaned_json = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+                cleaned_json = re.sub(
+                    r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE
+                ).strip()
                 data = json.loads(cleaned_json)
 
                 gen_questions = [
@@ -148,20 +151,21 @@ class ActionableCopilotAgent:
                     document_id=document_id,
                     executive_summary=data.get(
                         "executive_summary",
-                        f"Attorney Prep Sheet generated for Document '{document_id}' with {len(risks)} key focus areas.",
+                        f"Attorney Prep Sheet generated for Document '{document_id}' "
+                        f"with {len(risks)} key focus areas.",
                     ),
                     critical_red_flags=risks,
                     attorney_questions=gen_questions[:5],
                     negotiation_leverage_points=data.get(
                         "negotiation_leverage_points",
                         [
-                            "Propose a mutual 12-month fees liability cap as standard enterprise practice.",
-                            "Insert a 30-day written notice and cure period before any termination for default.",
-                            "Condition any indemnification obligation on immediate written notice and sole control of defense.",
+                            "Propose a mutual 12-month fees liability cap as standard practice.",
+                            "Insert a 30-day written notice and cure period before termination.",
+                            "Condition indemnification on written notice and control of defense.",
                         ],
                     ),
                 )
-            except Exception:
+            except Exception:  # noqa: S110
                 pass  # Fall through to dynamic contextual offline synthesis
 
         # 2. Dynamic Context-Aware Synthesis (Offline / Deterministic Fallback)
@@ -173,10 +177,13 @@ class ActionableCopilotAgent:
         q_liability = AttorneyQuestion(
             category="Liability Allocation",
             question=(
-                f"Given the identified risk of '{risks[0][:60]}', is the limitation of liability mutual, "
+                f"Given the identified risk of '{risks[0][:60]}', is liability mutual, "
                 "and does the dollar cap adequately reflect potential contract value?"
                 if has_liability
-                else "Is the limitation of liability mutual, and does the dollar cap adequately reflect potential contract value?"
+                else (
+                    "Is the limitation of liability mutual, and does the dollar cap "
+                    "adequately reflect potential contract value?"
+                )
             ),
             context_rationale=(
                 "One-sided caps or uncapped counterparty liability create severe, asymmetric "
@@ -190,7 +197,10 @@ class ActionableCopilotAgent:
                 "Are there carve-outs to the indemnification obligations for third-party "
                 "intellectual property claims and consequential damages?"
                 if has_indemnity
-                else "Are there carve-outs to the indemnification obligations for third-party intellectual property claims?"
+                else (
+                    "Are there carve-outs to the indemnification obligations for "
+                    "third-party intellectual property claims?"
+                )
             ),
             context_rationale=(
                 "Broad indemnities often obligate you to pay counterparty legal defense "
@@ -204,7 +214,10 @@ class ActionableCopilotAgent:
                 "Can either party terminate for convenience, and what is the exact cure "
                 "period for non-material breaches under this agreement?"
                 if has_termination
-                else "Can either party terminate for convenience, and what is the exact cure period for non-material breaches?"
+                else (
+                    "Can either party terminate for convenience, and what is the exact cure "
+                    "period for non-material breaches?"
+                )
             ),
             context_rationale=(
                 "Lacking a termination for convenience clause can lock you into long-term "
@@ -230,7 +243,8 @@ class ActionableCopilotAgent:
                 "individual arbitration?"
             ),
             context_rationale=(
-                "Unfavorable out-of-state venues dramatically increase litigation and arbitration costs."
+                "Unfavorable out-of-state venues dramatically increase litigation and "
+                "arbitration costs."
             ),
         )
 
@@ -279,9 +293,8 @@ class ActionableCopilotAgent:
         if self.client is not None:
             try:
                 prompt = (
-                    "You are ClausaFractalAI Action Copilot, an expert contract negotiation attorney. "
-                    "Draft a commercially balanced, mutually protective counter-clause proposal "
-                    f"protecting the {user_role}.\n\n"
+                    "You are ClausaFractalAI Action Copilot, an expert contract attorney.\n"
+                    f"Draft a balanced counter-clause proposal protecting {user_role}.\n\n"
                     f"Original One-Sided Clause:\n{clause_text}\n\n"
                     f"Clause Category: {clause_type}\n\n"
                     "Respond with a JSON object strictly conforming to this schema:\n"
@@ -297,7 +310,9 @@ class ActionableCopilotAgent:
                     contents=prompt,
                 )
                 raw_text = getattr(response, "text", "").strip()
-                cleaned_json = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+                cleaned_json = re.sub(
+                    r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE
+                ).strip()
                 data = json.loads(cleaned_json)
 
                 counter = data.get("counter_clause", "").strip()
@@ -307,10 +322,12 @@ class ActionableCopilotAgent:
                 return CounterClauseProposal(
                     original_clause=clause_text,
                     counter_clause=counter or clause_text,
-                    strategic_rationale=rationale or "Balanced mutual terms based on legal standards.",
-                    negotiation_tip=tip or "Propose mutual parity as standard procurement practice.",
+                    strategic_rationale=rationale
+                    or "Balanced mutual terms based on legal standards.",
+                    negotiation_tip=tip
+                    or "Propose mutual parity as standard procurement practice.",
                 )
-            except Exception:
+            except Exception:  # noqa: S110
                 pass  # Fall through to dynamic deterministic synthesis
 
         # 2. Dynamic Semantic Parsing & Redlining (Offline / Deterministic Fallback)
@@ -326,7 +343,7 @@ class ActionableCopilotAgent:
             )
             rationale = (
                 f"Redlines one-sided liability exposure from '{original_clean[:60]}...' by "
-                "establishing a reciprocal mutual cap and excluding speculative consequential damages."
+                "establishing a reciprocal mutual cap and excluding speculative damages."
             )
             tip = (
                 "Tell counterparty: 'Our standard procurement policy requires reciprocal "
@@ -341,8 +358,8 @@ class ActionableCopilotAgent:
                 "of any claim."
             )
             rationale = (
-                f"Balances unilateral indemnity in '{original_clean[:60]}...' by limiting obligations "
-                "to third-party claims caused by fault and requiring prompt written notice."
+                f"Balances unilateral indemnity in '{original_clean[:60]}...' by limiting "
+                "obligations to third-party claims caused by fault and requiring prompt notice."
             )
             tip = (
                 "Propose: 'We provide mutual indemnity for our own gross negligence and "
@@ -355,8 +372,8 @@ class ActionableCopilotAgent:
                 "continuing liability."
             )
             rationale = (
-                f"Modifies rigid termination terms in '{original_clean[:60]}...' to guarantee bilateral "
-                "flexibility to exit the contract with reasonable advance notice."
+                f"Modifies rigid termination terms in '{original_clean[:60]}...' to guarantee "
+                "bilateral flexibility to exit the contract with reasonable advance notice."
             )
             tip = (
                 "Suggest: 'Both organizations benefit from a standard 30-day exit window if "

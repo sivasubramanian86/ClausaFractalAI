@@ -212,12 +212,14 @@ class RAGEngine:
         if gemini_client is not None:
             try:
                 import json
+
                 prompt = (
                     "Extract all contractual entity-relation triples from this text.\n\n"
                     f"Text:\n{text[:1200]}\n\n"
                     "Return JSON conforming to:\n"
                     "[\n"
-                    '  {"subject": "Entity", "relation": "OBLIGATED_TO" | "PROHIBITED_FROM" | "INDEMNIFIES" | "LIMITS_LIABILITY_TO", "object": "Action or Term"}\n'
+                    '  {"subject": "Entity", "relation": "OBLIGATED_TO|INDEMNIFIES", '
+                    '"object": "Action"}\n'
                     "]"
                 )
                 response = gemini_client.models.generate_content(
@@ -225,7 +227,9 @@ class RAGEngine:
                     contents=prompt,
                 )
                 raw_text = getattr(response, "text", "").strip()
-                cleaned_json = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE).strip()
+                cleaned_json = re.sub(
+                    r"^```(?:json)?\s*|\s*```$", "", raw_text, flags=re.MULTILINE
+                ).strip()
                 data = json.loads(cleaned_json)
                 return [
                     LegalTriple(
@@ -238,7 +242,7 @@ class RAGEngine:
                     for item in data
                     if item.get("subject") and item.get("object")
                 ]
-            except Exception:
+            except Exception:  # noqa: S110
                 pass  # Fall through to deterministic rule extractor
 
         triples: List[LegalTriple] = []
