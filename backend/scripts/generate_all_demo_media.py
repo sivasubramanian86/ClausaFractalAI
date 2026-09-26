@@ -8,97 +8,132 @@ Generates complete, high-fidelity legal dossiers:
 - 4 Forensic CCTV / SOC / Drone MP4 Video Deposition Reels (FFmpeg + Overlays)
 """
 
-import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, HRFlowable
 
-BRAIN_CACHE = Path(r"C:\Users\USER\.gemini\antigravity-ide\brain\ac785a98-23a2-4e65-8a22-ceabac8a3fbc")
-ASSETS_DIR = Path(r"d:\Siva\Books\CAREER\HACKATHON\Gen_AI_APAC_2026\ClausaFractalAI\backend\demo_assets")
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.platypus import (
+    HRFlowable,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
+BRAIN_CACHE = Path(
+    r"C:\Users\USER\.gemini\antigravity-ide\brain\ac785a98-23a2-4e65-8a22-ceabac8a3fbc"
+)
+ASSETS_DIR = Path(
+    r"d:\Siva\Books\CAREER\HACKATHON\Gen_AI_APAC_2026\ClausaFractalAI\backend\demo_assets"
+)
+
 
 def ensure_dirs():
     for sub in ["contracts", "forensics", "audio", "video"]:
         (ASSETS_DIR / sub).mkdir(parents=True, exist_ok=True)
 
-def generate_pdf(filename: str, title: str, case_no: str, court: str, matter: str, statute: str, facts: str, exhibits: list):
+
+def generate_pdf(
+    filename: str,
+    title: str,
+    case_no: str,
+    court: str,
+    matter: str,
+    statute: str,
+    facts: str,
+    exhibits: list,
+):
     pdf_path = ASSETS_DIR / "contracts" / filename
-    doc = SimpleDocTemplate(str(pdf_path), pagesize=letter, rightMargin=54, leftMargin=54, topMargin=54, bottomMargin=54)
+    doc = SimpleDocTemplate(
+        str(pdf_path), pagesize=letter, rightMargin=54, leftMargin=54, topMargin=54, bottomMargin=54
+    )
     styles = getSampleStyleSheet()
-    
+
     title_style = ParagraphStyle(
-        'DocTitle',
-        parent=styles['Heading1'],
-        fontName='Helvetica-Bold',
+        "DocTitle",
+        parent=styles["Heading1"],
+        fontName="Helvetica-Bold",
         fontSize=16,
         leading=20,
-        textColor=colors.HexColor('#0f172a'),
+        textColor=colors.HexColor("#0f172a"),
         alignment=1,
     )
     court_style = ParagraphStyle(
-        'CourtHeading',
-        parent=styles['Heading2'],
-        fontName='Helvetica-Bold',
+        "CourtHeading",
+        parent=styles["Heading2"],
+        fontName="Helvetica-Bold",
         fontSize=12,
         leading=16,
-        textColor=colors.HexColor('#334155'),
+        textColor=colors.HexColor("#334155"),
         alignment=1,
     )
     label_style = ParagraphStyle(
-        'Label',
-        parent=styles['Normal'],
-        fontName='Helvetica-Bold',
+        "Label",
+        parent=styles["Normal"],
+        fontName="Helvetica-Bold",
         fontSize=10,
         leading=14,
-        textColor=colors.HexColor('#1e293b'),
+        textColor=colors.HexColor("#1e293b"),
     )
     body_style = ParagraphStyle(
-        'Body',
-        parent=styles['Normal'],
-        fontName='Helvetica',
+        "Body",
+        parent=styles["Normal"],
+        fontName="Helvetica",
         fontSize=10,
         leading=15,
-        textColor=colors.HexColor('#334155'),
+        textColor=colors.HexColor("#334155"),
     )
     stamp_style = ParagraphStyle(
-        'Stamp',
-        parent=styles['Normal'],
-        fontName='Helvetica-Bold',
+        "Stamp",
+        parent=styles["Normal"],
+        fontName="Helvetica-Bold",
         fontSize=9,
         leading=12,
-        textColor=colors.HexColor('#b91c1c'),
+        textColor=colors.HexColor("#b91c1c"),
         alignment=1,
     )
 
     story = []
-    
+
     # Official Seal / Header Box
     story.append(Paragraph(court.upper(), court_style))
     story.append(Spacer(1, 6))
     story.append(Paragraph(title, title_style))
     story.append(Spacer(1, 10))
-    story.append(HRFlowable(width="100%", thickness=2, color=colors.HexColor('#0284c7'), spaceAfter=12))
+    story.append(
+        HRFlowable(width="100%", thickness=2, color=colors.HexColor("#0284c7"), spaceAfter=12)
+    )
 
     # Case Metadata Table
     meta_data = [
         [Paragraph("<b>CASE PROCEEDING NO.:</b>", label_style), Paragraph(case_no, body_style)],
         [Paragraph("<b>MATTER:</b>", label_style), Paragraph(matter, body_style)],
         [Paragraph("<b>STATUTORY AUTHORITY:</b>", label_style), Paragraph(statute, body_style)],
-        [Paragraph("<b>JURISDICTION:</b>", label_style), Paragraph("Judicial Chamber Evidence Record (Verified Authenticity)", body_style)],
-        [Paragraph("<b>CHAIN OF CUSTODY SEAL:</b>", label_style), Paragraph("DIGITAL-HASH-SHA256: 8f9c1b7a... VERIFIED", stamp_style)],
+        [
+            Paragraph("<b>JURISDICTION:</b>", label_style),
+            Paragraph("Judicial Chamber Evidence Record (Verified Authenticity)", body_style),
+        ],
+        [
+            Paragraph("<b>CHAIN OF CUSTODY SEAL:</b>", label_style),
+            Paragraph("DIGITAL-HASH-SHA256: 8f9c1b7a... VERIFIED", stamp_style),
+        ],
     ]
     t = Table(meta_data, colWidths=[160, 344])
-    t.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f8fafc')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e2e8f0')),
-        ('TOPPADDING', (0,0), (-1,-1), 6),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-    ]))
+    t.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#cbd5e1")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#e2e8f0")),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            ]
+        )
+    )
     story.append(t)
     story.append(Spacer(1, 16))
 
@@ -109,28 +144,41 @@ def generate_pdf(filename: str, title: str, case_no: str, court: str, matter: st
     story.append(Spacer(1, 16))
 
     # Evidence Registry Table
-    story.append(Paragraph("<b>II. EXHIBIT INVENTORY & MULTIMODAL EVIDENCE DEPOSIT</b>", label_style))
+    story.append(
+        Paragraph("<b>II. EXHIBIT INVENTORY & MULTIMODAL EVIDENCE DEPOSIT</b>", label_style)
+    )
     story.append(Spacer(1, 8))
-    
+
     exhibit_rows = [
-        [Paragraph("<b>EXHIBIT ID</b>", label_style), Paragraph("<b>MODALITY</b>", label_style), Paragraph("<b>EVIDENCE DESCRIPTION</b>", label_style), Paragraph("<b>VERIFICATION STATUS</b>", label_style)]
+        [
+            Paragraph("<b>EXHIBIT ID</b>", label_style),
+            Paragraph("<b>MODALITY</b>", label_style),
+            Paragraph("<b>EVIDENCE DESCRIPTION</b>", label_style),
+            Paragraph("<b>VERIFICATION STATUS</b>", label_style),
+        ]
     ]
     for ex in exhibits:
-        exhibit_rows.append([
-            Paragraph(f"<b>{ex[0]}</b>", body_style),
-            Paragraph(ex[1], body_style),
-            Paragraph(ex[2], body_style),
-            Paragraph(f"<font color='#15803d'><b>{ex[3]}</b></font>", body_style),
-        ])
-    
+        exhibit_rows.append(
+            [
+                Paragraph(f"<b>{ex[0]}</b>", body_style),
+                Paragraph(ex[1], body_style),
+                Paragraph(ex[2], body_style),
+                Paragraph(f"<font color='#15803d'><b>{ex[3]}</b></font>", body_style),
+            ]
+        )
+
     et = Table(exhibit_rows, colWidths=[80, 80, 244, 100])
-    et.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#f1f5f9')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cbd5e1')),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e2e8f0')),
-        ('TOPPADDING', (0,0), (-1,-1), 5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 5),
-    ]))
+    et.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f1f5f9")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#cbd5e1")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#e2e8f0")),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ]
+        )
+    )
     story.append(et)
     story.append(Spacer(1, 24))
 
@@ -147,18 +195,29 @@ def generate_pdf(filename: str, title: str, case_no: str, court: str, matter: st
     story.append(Spacer(1, 20))
 
     sig_data = [
-        [Paragraph("<b>EXAMINED BY:</b> Forensic Division Chief Officer", label_style), Paragraph("<b>SEALED AT:</b> San Francisco / New Delhi Court Record", label_style)],
-        [Paragraph("<b>DATE:</b> September 26, 2026", body_style), Paragraph("<b>STATUS:</b> ADMITTED AS EVIDENCE", stamp_style)],
+        [
+            Paragraph("<b>EXAMINED BY:</b> Forensic Division Chief Officer", label_style),
+            Paragraph("<b>SEALED AT:</b> San Francisco / New Delhi Court Record", label_style),
+        ],
+        [
+            Paragraph("<b>DATE:</b> September 26, 2026", body_style),
+            Paragraph("<b>STATUS:</b> ADMITTED AS EVIDENCE", stamp_style),
+        ],
     ]
     st = Table(sig_data, colWidths=[252, 252])
-    st.setStyle(TableStyle([
-        ('LINEABOVE', (0,0), (-1,0), 1, colors.HexColor('#94a3b8')),
-        ('TOPPADDING', (0,0), (-1,-1), 8),
-    ]))
+    st.setStyle(
+        TableStyle(
+            [
+                ("LINEABOVE", (0, 0), (-1, 0), 1, colors.HexColor("#94a3b8")),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+            ]
+        )
+    )
     story.append(st)
 
     doc.build(story)
     print(f"Generated PDF: {pdf_path.name} ({pdf_path.stat().st_size} bytes)")
+
 
 def copy_images():
     image_mappings = {
@@ -176,14 +235,22 @@ def copy_images():
         else:
             print(f"ERROR: Image not found in brain: {src_path}")
 
-def generate_audio_and_video(case_id: str, spoken_text: str, audio_filename: str, video_filename: str, bg_image_name: str, video_overlay_text: str):
+
+def generate_audio_and_video(
+    case_id: str,
+    spoken_text: str,
+    audio_filename: str,
+    video_filename: str,
+    bg_image_name: str,
+    video_overlay_text: str,
+):
     wav_temp = ASSETS_DIR / "audio" / f"temp_{case_id}.wav"
     mp3_path = ASSETS_DIR / "audio" / audio_filename
     mp4_path = ASSETS_DIR / "video" / video_filename
     bg_image_path = ASSETS_DIR / "forensics" / bg_image_name
 
     # 1. Generate Voice with SAPI TTS via PowerShell
-    ps_cmd = f'''
+    ps_cmd = f"""
     $voice = New-Object -ComObject SAPI.SpVoice;
     $stream = New-Object -ComObject SAPI.SpFileStream;
     $stream.Open('{str(wav_temp)}', 3, $false);
@@ -191,15 +258,24 @@ def generate_audio_and_video(case_id: str, spoken_text: str, audio_filename: str
     $voice.Rate = 0;
     $voice.Speak('{spoken_text.replace("'", "''")}');
     $stream.Close();
-    '''
-    subprocess.run(["powershell", "-NoProfile", "-Command", ps_cmd], check=True, capture_output=True)
+    """
+    subprocess.run(
+        ["powershell", "-NoProfile", "-Command", ps_cmd], check=True, capture_output=True
+    )
 
     # 2. Encode to high quality MP3 with audio filter
     ffmpeg_audio_cmd = [
-        "ffmpeg", "-y", "-i", str(wav_temp),
-        "-af", "highpass=f=200,lowpass=f=3500,volume=1.5",
-        "-c:a", "libmp3lame", "-b:a", "128k",
-        str(mp3_path)
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(wav_temp),
+        "-af",
+        "highpass=f=200,lowpass=f=3500,volume=1.5",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "128k",
+        str(mp3_path),
     ]
     subprocess.run(ffmpeg_audio_cmd, check=True, capture_output=True)
     if wav_temp.exists():
@@ -217,19 +293,34 @@ def generate_audio_and_video(case_id: str, spoken_text: str, audio_filename: str
         f"drawtext=fontfile='C\\:/Windows/Fonts/consola.ttf':text='● REC  [24 FPS  1080p  FORENSIC SEAL INTACT]':fontcolor=red:fontsize=20:x=w-500:y=18,"
         f"drawtext=fontfile='C\\:/Windows/Fonts/consola.ttf':text='CLAUSAFRACTALAI COURTROOM EVIDENCE EXHIBIT':fontcolor=yellow:fontsize=18:x=20:y=h-35"
     )
-    
+
     ffmpeg_video_cmd = [
-        "ffmpeg", "-y",
-        "-loop", "1", "-i", str(bg_image_path),
-        "-i", str(mp3_path),
-        "-vf", vf_filter,
-        "-c:v", "libx264", "-tune", "stillimage", "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "128k",
+        "ffmpeg",
+        "-y",
+        "-loop",
+        "1",
+        "-i",
+        str(bg_image_path),
+        "-i",
+        str(mp3_path),
+        "-vf",
+        vf_filter,
+        "-c:v",
+        "libx264",
+        "-tune",
+        "stillimage",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
         "-shortest",
-        str(mp4_path)
+        str(mp4_path),
     ]
     subprocess.run(ffmpeg_video_cmd, check=True, capture_output=True)
     print(f"Generated Video: {video_filename} ({mp4_path.stat().st_size} bytes)")
+
 
 def main():
     print("=== Generating ClausaFractalAI Multimodal Demo Assets ===")
@@ -253,11 +344,31 @@ def main():
             "The physical crime scene investigation report establishes unauthorized physical access concurrent with unauthorized wire transfer initiation."
         ),
         exhibits=[
-            ("EX-A1", "Photograph", "Crime Scene Server Vault Biometric Shards & Blood Trace", "AUTHENTICATED"),
-            ("EX-A2", "Audio Dispatch", "Lyria 911 Emergency Police Dispatch Radio Recording", "TRANSCRIPTION MATCH"),
-            ("EX-A3", "Video Feed", "Veo Forensic CCTV Camera Vault Deposition Footage", "CHAIN OF CUSTODY VERIFIED"),
-            ("EX-A4", "Physical Seal", "Nitrile Gloves & High-Tensile Cable Cutter Markings", "DNA LAB CONFIRMED"),
-        ]
+            (
+                "EX-A1",
+                "Photograph",
+                "Crime Scene Server Vault Biometric Shards & Blood Trace",
+                "AUTHENTICATED",
+            ),
+            (
+                "EX-A2",
+                "Audio Dispatch",
+                "Lyria 911 Emergency Police Dispatch Radio Recording",
+                "TRANSCRIPTION MATCH",
+            ),
+            (
+                "EX-A3",
+                "Video Feed",
+                "Veo Forensic CCTV Camera Vault Deposition Footage",
+                "CHAIN OF CUSTODY VERIFIED",
+            ),
+            (
+                "EX-A4",
+                "Physical Seal",
+                "Nitrile Gloves & High-Tensile Cable Cutter Markings",
+                "DNA LAB CONFIRMED",
+            ),
+        ],
     )
 
     generate_pdf(
@@ -274,11 +385,31 @@ def main():
             "and cryptographic bitcoin ransom demand notes threatening public release on darknet markets."
         ),
         exhibits=[
-            ("EX-B1", "Photograph", "Terminal Network PCAP Packet Exfiltration Analysis", "SHA256 MATCH"),
-            ("EX-B2", "Audio Intercept", "Lyria VoIP Wiretapped Ransom Call & Threat Actor Voice", "SPEECH ACCREDITED"),
-            ("EX-B3", "Video Replay", "Veo Security Operations Center (SOC) Digital Breach Replay", "TIMECODE SYNCHRONIZED"),
-            ("EX-B4", "Forensic Hash", "ZeroByte Ransomware Payload sha256:7f3a09...", "SIGNATURE REGISTERED"),
-        ]
+            (
+                "EX-B1",
+                "Photograph",
+                "Terminal Network PCAP Packet Exfiltration Analysis",
+                "SHA256 MATCH",
+            ),
+            (
+                "EX-B2",
+                "Audio Intercept",
+                "Lyria VoIP Wiretapped Ransom Call & Threat Actor Voice",
+                "SPEECH ACCREDITED",
+            ),
+            (
+                "EX-B3",
+                "Video Replay",
+                "Veo Security Operations Center (SOC) Digital Breach Replay",
+                "TIMECODE SYNCHRONIZED",
+            ),
+            (
+                "EX-B4",
+                "Forensic Hash",
+                "ZeroByte Ransomware Payload sha256:7f3a09...",
+                "SIGNATURE REGISTERED",
+            ),
+        ],
     )
 
     generate_pdf(
@@ -295,11 +426,31 @@ def main():
             "in violation of the status quo injunction order."
         ),
         exhibits=[
-            ("EX-C1", "Photograph", "Cadastral Survey Map with Disputed Parcel Boundary Overlay", "SURVEYOR ATTESTED"),
-            ("EX-C2", "Audio Deposition", "Lyria Panchayat Revenue Surveyor Deposition Recording", "SWORN STATEMENT"),
-            ("EX-C3", "Video Flyover", "Veo Topographic Drone Aerial Boundary Inspection Footage", "GPS BENCHMARK ALIGNED"),
-            ("EX-C4", "Deed Extract", "Registered Title Deed Book 1145 Page 203 (Certified Copy)", "REVENUE RECORD FOUND"),
-        ]
+            (
+                "EX-C1",
+                "Photograph",
+                "Cadastral Survey Map with Disputed Parcel Boundary Overlay",
+                "SURVEYOR ATTESTED",
+            ),
+            (
+                "EX-C2",
+                "Audio Deposition",
+                "Lyria Panchayat Revenue Surveyor Deposition Recording",
+                "SWORN STATEMENT",
+            ),
+            (
+                "EX-C3",
+                "Video Flyover",
+                "Veo Topographic Drone Aerial Boundary Inspection Footage",
+                "GPS BENCHMARK ALIGNED",
+            ),
+            (
+                "EX-C4",
+                "Deed Extract",
+                "Registered Title Deed Book 1145 Page 203 (Certified Copy)",
+                "REVENUE RECORD FOUND",
+            ),
+        ],
     )
 
     generate_pdf(
@@ -316,11 +467,31 @@ def main():
             "uncovered layered routing through four offshore shell entities."
         ),
         exhibits=[
-            ("EX-D1", "Photograph", "Forensic Audit Flowchart & Shell Company Diversion Map", "AUDITOR SIGNED"),
-            ("EX-D2", "Audio Wiretap", "Lyria CBI Financial Wiretap Promoter Admission Call", "LEGAL TAP CERTIFIED"),
-            ("EX-D3", "Video Inspection", "Veo Shell Company Forensic Site Audit & Physical Inspection", "METADATA VALIDATED"),
-            ("EX-D4", "Sanction Letter", "Hypothecation Deed & Loan Sanction Agreement (Exhibit F-1)", "OFFICIAL EVIDENCE"),
-        ]
+            (
+                "EX-D1",
+                "Photograph",
+                "Forensic Audit Flowchart & Shell Company Diversion Map",
+                "AUDITOR SIGNED",
+            ),
+            (
+                "EX-D2",
+                "Audio Wiretap",
+                "Lyria CBI Financial Wiretap Promoter Admission Call",
+                "LEGAL TAP CERTIFIED",
+            ),
+            (
+                "EX-D3",
+                "Video Inspection",
+                "Veo Shell Company Forensic Site Audit & Physical Inspection",
+                "METADATA VALIDATED",
+            ),
+            (
+                "EX-D4",
+                "Sanction Letter",
+                "Hypothecation Deed & Loan Sanction Agreement (Exhibit F-1)",
+                "OFFICIAL EVIDENCE",
+            ),
+        ],
     )
 
     # 3. Generate Audio and Video Reels
@@ -390,6 +561,7 @@ def main():
         )
 
     print("\n=== All 16 Multimodal Demo Assets Successfully Generated! ===")
+
 
 if __name__ == "__main__":
     main()
