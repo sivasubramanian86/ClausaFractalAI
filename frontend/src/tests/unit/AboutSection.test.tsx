@@ -23,5 +23,10 @@ describe("AboutSection Unit Test Suite", () => {
     fireEvent.click(leadersTab);
     expect(screen.getByText(/Concentric Agentic AI Hierarchy/i)).toBeInTheDocument();
     expect(screen.getByText(/LEVEL 4 \(CLAUSA\)/i)).toBeInTheDocument();
+
+    // Switch back to papers
+    const papersTab = screen.getByRole("button", { name: /5 Research Papers/i });
+    fireEvent.click(papersTab);
+    expect(screen.getByText(/ReAct: Reasoning \+ Acting in Language Models/i)).toBeInTheDocument();
   });
 });

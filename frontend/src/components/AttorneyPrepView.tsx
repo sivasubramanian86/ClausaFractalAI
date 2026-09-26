@@ -32,21 +32,20 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
   t: propT,
 }) => {
   const t = propT || getTranslation("en");
-  const handleExport = () => {
-    if (!sheet) return;
+  const handleExport = (data: AttorneyPrepSheetData) => {
     const text = [
       `# CLAUSAFRACTAL AI - ATTORNEY CONSULTATION PREP SHEET`,
-      `Document ID: ${sheet.document_id}`,
+      `Document ID: ${data.document_id}`,
       `Generated: ${new Date().toISOString()}`,
       ``,
       `## EXECUTIVE SUMMARY`,
-      sheet.executive_summary,
+      data.executive_summary,
       ``,
       `## CRITICAL RED FLAGS`,
-      ...sheet.critical_red_flags.map((rf, i) => `${i + 1}. ${rf}`),
+      ...data.critical_red_flags.map((rf, i) => `${i + 1}. ${rf}`),
       ``,
       `## QUESTIONS FOR LEGAL COUNSEL`,
-      ...sheet.attorney_questions.map(
+      ...data.attorney_questions.map(
         (q, i) =>
           `Q${i + 1} [${q.category}]: ${q.question}\n   Context: ${q.context_rationale}\n`
       ),
@@ -84,7 +83,7 @@ export const AttorneyPrepView: React.FC<AttorneyPrepViewProps> = ({
           {sheet && (
             <button
               type="button"
-              onClick={handleExport}
+              onClick={() => handleExport(sheet)}
               className="inline-flex items-center gap-1 rounded bg-slate-800 border border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
             >
               <Download className="h-3.5 w-3.5" />

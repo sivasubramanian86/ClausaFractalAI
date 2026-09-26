@@ -212,9 +212,9 @@ export const CourtroomView: React.FC<CourtroomViewProps> = ({
         },
         {
           element: "Transmission in interstate wire commerce (Actus Reus)",
-          is_satisfied: true,
+          is_satisfied: false,
           evidentiary_basis:
-            "Confirmed by SWIFT transaction records and interstate server transmission routes.",
+            "SWIFT transaction routing records pending formal subpoena corroboration.",
         },
       ],
       final_decree: "Finding of Liability & Prima Facie Guilt under USC-18-1343 & IPC-420",

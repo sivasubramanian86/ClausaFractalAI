@@ -42,14 +42,15 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
 
+  const totalPages = Math.max(1, pages.length);
+
   // Sync to highlighted page when activeHighlight updates
   React.useEffect(() => {
-    if (activeHighlight && activeHighlight.page >= 1 && activeHighlight.page <= (pages.length || 1)) {
+    if (activeHighlight && activeHighlight.page >= 1 && activeHighlight.page <= totalPages) {
       setCurrentPage(activeHighlight.page);
     }
-  }, [activeHighlight, pages.length]);
+  }, [activeHighlight, totalPages]);
 
-  const totalPages = Math.max(1, pages.length);
   const activePageData = pages.find((p) => p.pageNumber === currentPage) || {
     pageNumber: currentPage,
     text: "No text content available for this page.",

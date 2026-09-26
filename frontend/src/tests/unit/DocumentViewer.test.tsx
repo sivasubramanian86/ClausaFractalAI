@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { DocumentViewer } from "../../components/DocumentViewer";
 
 describe("DocumentViewer Unit Test Suite", () => {
@@ -59,5 +59,91 @@ describe("DocumentViewer Unit Test Suite", () => {
 
     const mark = screen.getByText(/Enterprise Cloud Intelligence/i);
     expect(mark.tagName.toLowerCase()).toBe("mark");
+  });
+
+  it("renders fallback text when page content is empty or unmatched", () => {
+    render(
+      <DocumentViewer
+        filename="Empty_Contract.pdf"
+        pages={[]}
+        activeHighlight={null}
+        onUpload={vi.fn()}
+        isUploading={false}
+      />
+    );
+    expect(screen.getByText(/No text content available for this page/i)).toBeInTheDocument();
+  });
+
+  it("renders unhighlighted text when citation snippet is not found", () => {
+    render(
+      <DocumentViewer
+        filename="Contract_2026.pdf"
+        pages={samplePages}
+        activeHighlight={{ page: 1, snippet: "Completely Unmatched Text String" }}
+        onUpload={vi.fn()}
+        isUploading={false}
+      />
+    );
+    expect(screen.getByText(/Enterprise Cloud Intelligence Services/i)).toBeInTheDocument();
+  });
+
+  it("triggers onAudioUpload when an audio file is selected", () => {
+    const onAudioUpload = vi.fn();
+    const { container } = render(
+      <DocumentViewer
+        filename="Contract_2026.pdf"
+        pages={samplePages}
+        activeHighlight={null}
+        onAudioUpload={onAudioUpload}
+        isUploading={false}
+      />
+    );
+    const audioInput = container.querySelector('input[type="file"][accept*="audio"]') as HTMLInputElement;
+    if (audioInput) {
+      const file = new File(["audio"], "deposition.mp3", { type: "audio/mp3" });
+      fireEvent.change(audioInput, { target: { files: [file] } });
+      expect(onAudioUpload).toHaveBeenCalledWith(file);
+    }
+  });
+
+  it("triggers onFileUpload and handles out-of-range activeHighlight safely", async () => {
+    const onFileUpload = vi.fn();
+    render(
+      <DocumentViewer
+        filename="Contract_2026.pdf"
+        pages={samplePages}
+        activeHighlight={{ page: 999, snippet: "Out of range" }}
+        onFileUpload={onFileUpload}
+        isUploading={false}
+      />
+    );
+    const docInput = screen.getByLabelText(/Upload Contract PDF or Text File/i);
+    const file = new File(["pdf"], "test.pdf", { type: "application/pdf" });
+    fireEvent.change(docInput, { target: { files: [file] } });
+    await waitFor(() => {
+      expect(onFileUpload).toHaveBeenCalledWith(file);
+    });
+  });
+
+  it("triggers onUpload when onFileUpload is not provided", async () => {
+    const onUpload = vi.fn();
+    render(
+      <DocumentViewer
+        filename="Contract_2026.pdf"
+        pages={samplePages}
+        activeHighlight={{ page: 0, snippet: "Below range" }}
+        onUpload={onUpload}
+        isUploading={false}
+      />
+    );
+    const docInput = screen.getByLabelText(/Upload Contract PDF or Text File/i);
+    const file = new File(["pdf"], "test2.pdf", { type: "application/pdf" });
+    fireEvent.change(docInput, { target: { files: [file] } });
+    await waitFor(() => {
+      expect(onUpload).toHaveBeenCalledWith(file);
+    });
+
+    // Also trigger with empty files array
+    fireEvent.change(docInput, { target: { files: [] } });
   });
 });

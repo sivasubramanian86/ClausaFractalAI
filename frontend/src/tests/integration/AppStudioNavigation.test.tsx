@@ -24,7 +24,7 @@
 
 import { describe, it, expect, vi } from "vitest";
 import { act } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import { Header } from "../../components/Header";
@@ -349,4 +349,38 @@ describe("App Studio Integration Test Suite", () => {
     });
     expect(screen.getByText(/Zero-Trust Security & Google Cloud Governance/i)).toBeInTheDocument();
   }, 20000);
+
+  it("handles document upload fallback when server returns non-ok status and audio upload network error", async () => {
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("/api/documents/upload")) {
+        return Promise.resolve({
+          ok: false,
+          status: 500,
+        });
+      }
+      if (url.includes("/api/audio/transcribe")) {
+        return Promise.reject(new Error("Audio network error"));
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+    });
+
+    render(<App />);
+
+    // Upload with non-ok status -> triggers lines 128-132 fallback
+    const file = new File(["sample content"], "mock_agreement.pdf", { type: "application/pdf" });
+    const fileInput = screen.getByLabelText(/Upload Contract PDF or Text File/i);
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/mock_agreement\.pdf/i).length).toBeGreaterThan(0);
+    });
+
+    // Audio upload with network rejection -> triggers catch block
+    const audioFile = new File(["audio bytes"], "dictation.wav", { type: "audio/wav" });
+    const audioInput = screen.getByLabelText(/Upload audio voice dictation/i);
+    fireEvent.change(audioInput, { target: { files: [audioFile] } });
+  });
 });

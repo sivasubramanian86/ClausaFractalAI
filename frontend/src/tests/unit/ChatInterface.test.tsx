@@ -94,4 +94,26 @@ describe("ChatInterface Unit Test Suite", () => {
     fireEvent.click(sendBtn);
     expect(onSendMessage).toHaveBeenCalledWith("What about indemnification?");
   });
+
+  it("prevents question submission when input is empty or query is generating", () => {
+    const onSendMessage = vi.fn();
+    render(
+      <ChatInterface
+        documentId="doc_1"
+        documentFilename="contract.pdf"
+        messages={[]}
+        onSendMessage={onSendMessage}
+        isGenerating={false}
+        complexity="standard"
+        onComplexityChange={vi.fn()}
+        onCitationClick={vi.fn()}
+      />
+    );
+
+    const input = screen.getByLabelText(/Ask a legal question/i);
+    const form = input.closest("form")!;
+    fireEvent.submit(form);
+
+    expect(onSendMessage).not.toHaveBeenCalled();
+  });
 });

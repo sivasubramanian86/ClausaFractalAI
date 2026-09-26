@@ -35,11 +35,20 @@ describe("FrontendLogger Unit Tests", () => {
     expect(d.message).toBe("Debug message");
     expect(d.component).toBe("TestComponent");
 
+    const dNoData = logger.debug("TestComponent", "Debug without data");
+    expect(dNoData.level).toBe("DEBUG");
+
     const i = logger.info("TestComponent", "Info message");
     expect(i.level).toBe("INFO");
 
+    const iWithData = logger.info("TestComponent", "Info with data", { infoKey: 42 });
+    expect(iWithData.level).toBe("INFO");
+
     const w = logger.warn("TestComponent", "Warn message");
     expect(w.level).toBe("WARN");
+
+    const wWithData = logger.warn("TestComponent", "Warn with data", { warnKey: "active" });
+    expect(wWithData.level).toBe("WARN");
 
     const testErr = new Error("Sample breakdown");
     const e = logger.error("TestComponent", "Error message", testErr, { extra: 123 });
@@ -48,12 +57,20 @@ describe("FrontendLogger Unit Tests", () => {
     expect(e.error?.message).toBe("Sample breakdown");
     expect(e.error?.stack).toBeDefined();
 
+    // Error with data only and no error object
+    const eDataOnly = logger.error("TestComponent", "Error without err object", undefined, { extra: 456 });
+    expect(eDataOnly.level).toBe("ERROR");
+
+    // Error with neither error object nor data
+    const eNeither = logger.error("TestComponent", "Error with neither");
+    expect(eNeither.level).toBe("ERROR");
+
     // Plain object error
     const objErr = logger.error("TestComponent", "Obj error message", { code: 500 });
     expect(objErr.error?.name).toBe("UnknownError");
 
     const logs = logger.getLogs();
-    expect(logs.length).toBe(5);
+    expect(logs.length).toBe(10);
 
     consoleDebugSpy.mockRestore();
     consoleInfoSpy.mockRestore();
@@ -66,5 +83,12 @@ describe("FrontendLogger Unit Tests", () => {
     expect(logger.getLogs().length).toBe(1);
     logger.clearLogs();
     expect(logger.getLogs().length).toBe(0);
+  });
+
+  it("caps in-memory log buffer at maxLogs and drops oldest entries", () => {
+    for (let i = 0; i < 505; i++) {
+      logger.info("Comp", `msg ${i}`);
+    }
+    expect(logger.getLogs().length).toBe(500);
   });
 });

@@ -33,15 +33,31 @@ describe("StudioWorkflow Integration Test Suite", () => {
         });
       }
       if (url.includes("/api/chat")) {
+        const sseData =
+          "event: token\n" +
+          "data: invalid_json\n\n" +
+          "event: token\n" +
+          "data: {\"token\": \"The liability is capped at $50,000 trailing fees.\"}\n\n" +
+          "event: citation\n" +
+          "data: invalid_json\n\n" +
+          "event: citation\n" +
+          "data: [{\"clause\": \"Limitation of Liability\", \"page\": 2, \"snippet\": \"capped at $50,000\"}]\n\n" +
+          "event: done\n" +
+          "data: invalid_json\n\n" +
+          "event: done\n" +
+          "data: {\"quality_score\": 9.8}\n\n";
+
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode(sseData));
+            controller.close();
+          },
+        });
+
         return Promise.resolve({
           ok: true,
-          json: () =>
-            Promise.resolve({
-              answer: "The liability is capped at $50,000 trailing fees.",
-              intent: "LEGAL_QA",
-              quality_score: 9.8,
-              citations: [{ clause: "Limitation of Liability", page: 2, snippet: "capped at $50,000" }],
-            }),
+          body: stream,
         });
       }
       if (url.includes("/api/blindspots")) {
@@ -155,7 +171,17 @@ describe("StudioWorkflow Integration Test Suite", () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith("/api/chat", expect.any(Object));
+      expect(screen.getByText(/The liability is capped at \$50,000 trailing fees\./i)).toBeInTheDocument();
     });
+
+    // Click citation to test handleCitationClick in App (multiple may exist — take first)
+    const citBtns = screen.getAllByRole("button", { name: /Limitation of Liability/i });
+    fireEvent.click(citBtns[0]);
+
+    // Switch language to Arabic to test RTL direction in App
+    const langSelect = screen.getByRole("combobox", { name: /Select Interface Language/i });
+    fireEvent.change(langSelect, { target: { value: "ar" } });
+    fireEvent.change(langSelect, { target: { value: "en" } });
 
     // 4. Test Blindspots audit trigger
     const blindspotsTab = screen.getByRole("button", { name: /Blindspot Matrix/i });
@@ -208,6 +234,16 @@ describe("StudioWorkflow Integration Test Suite", () => {
 
     render(<App />);
 
+    // Test offline Chat stream fallback
+    const chatInput = screen.getByLabelText(/Ask a legal question/i);
+    fireEvent.change(chatInput, { target: { value: "Will this fail offline?" } });
+    const sendBtn = screen.getByRole("button", { name: /Send Question/i });
+    fireEvent.click(sendBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/I cannot determine this based on the provided document\./i)).toBeInTheDocument();
+    });
+
     // Test offline Attorney Prep fallback
     const prepTab = screen.getByRole("button", { name: /Attorney Prep Sheet/i });
     fireEvent.click(prepTab);
@@ -227,5 +263,55 @@ describe("StudioWorkflow Integration Test Suite", () => {
     await waitFor(() => {
       expect(screen.getByText(/Establishes a bilateral reciprocal cap/i)).toBeInTheDocument();
     });
+
+    // Test offline Blindspot Matrix fallback
+    const blindspotsTab = screen.getByRole("button", { name: /Blindspot Matrix/i });
+    fireEvent.click(blindspotsTab);
+    const auditBtn = screen.getByRole("button", { name: /Audit Document/i });
+    fireEvent.click(auditBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Missing Gross Negligence Carve-out/i)).toBeInTheDocument();
+    });
+
+    // Test offline Policy Collider fallback
+    const diffTab = screen.getByRole("button", { name: /Policy Collider/i });
+    fireEvent.click(diffTab);
+    const diffTextarea = screen.getByPlaceholderText(/Paste proposed amended terms/i);
+    fireEvent.change(diffTextarea, { target: { value: "Proposed amended terms for collision detection" } });
+    const collideBtn = screen.getByRole("button", { name: /Collide Versions/i });
+    fireEvent.click(collideBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Surrendered right to jury trial and judicial appeal/i)).toBeInTheDocument();
+    });
+
+    // Test offline Document Upload fallback
+    const file = new File(["dummy contract content"], "offline_doc.pdf", { type: "application/pdf" });
+    const fileInput = screen.getByLabelText(/Upload Contract PDF or Text File/i);
+    fireEvent.change(fileInput, { target: { files: [file] } });
+    await waitFor(() => {
+      expect(screen.getByText(/offline_doc\.pdf/i)).toBeInTheDocument();
+    });
   }, 25000);
+
+  it("handles chat stream error when response body is null", async () => {
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (typeof url === "string" && url.includes("/api/chat")) {
+        return Promise.resolve({ ok: true, body: null });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<App />);
+
+    const chatInput = screen.getByLabelText(/Ask a legal question/i);
+    fireEvent.change(chatInput, { target: { value: "Test null body" } });
+    const sendBtn = screen.getByRole("button", { name: /Send Question/i });
+    fireEvent.click(sendBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText(/I cannot determine this based on the provided document\./i)).toBeInTheDocument();
+    });
+  });
 });

@@ -75,4 +75,49 @@ describe("GovernanceView Unit Test Suite", () => {
     });
     expect(mockFetch).toHaveBeenCalled();
   });
+
+  it("renders default fallback protected services and perimeter when omitted in vpcStatus", async () => {
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("/api/governance/vpc-status")) {
+        return Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              status: "ENFORCED_FALLBACK",
+            }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      });
+    });
+
+    render(
+      <AuthProvider>
+        <GovernanceView t={en} />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("ENFORCED_FALLBACK")).toBeInTheDocument();
+      expect(screen.getByText("firestore.googleapis.com")).toBeInTheDocument();
+      expect(screen.getByText(/Perimeter: clausa_perimeter/i)).toBeInTheDocument();
+    });
+  });
+
+  it("gracefully catches network failure in fetchGovernanceData", async () => {
+    (globalThis as any).fetch = vi.fn().mockRejectedValue(new Error("Network Error"));
+
+    render(
+      <AuthProvider>
+        <GovernanceView t={en} />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(en.governanceTitle)).toBeInTheDocument();
+      expect(screen.getByText("aud_01_sample")).toBeInTheDocument();
+    });
+  });
 });

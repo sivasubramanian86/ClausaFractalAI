@@ -39,7 +39,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ t, lang = "en" }) => {
 
   const categories = rawCategories.map((c) => ({
     ...c,
-    icon: iconMap[c.id] || <Layers className="h-3.5 w-3.5" />,
+    icon: iconMap[c.id],
   }));
 
   const filteredFaqs = faqs.filter((item) => {

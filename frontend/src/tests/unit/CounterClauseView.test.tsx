@@ -35,4 +35,17 @@ describe("CounterClauseView Unit Test Suite", () => {
     expect(screen.getByText(/Aligns with enterprise bilateral standard norms./i)).toBeInTheDocument();
     expect(screen.getByText(/Present as mandatory legal policy from corporate insurance counsel./i)).toBeInTheDocument();
   });
+
+  it("prevents submission when clause text is empty or component is loading", () => {
+    const onRewrite = vi.fn();
+    render(<CounterClauseView onRewrite={onRewrite} proposal={null} isLoading={false} />);
+
+    const textarea = screen.getByPlaceholderText(/Paste one-sided clause to redline/i);
+    fireEvent.change(textarea, { target: { value: "   " } });
+
+    const form = textarea.closest("form")!;
+    fireEvent.submit(form);
+
+    expect(onRewrite).not.toHaveBeenCalled();
+  });
 });

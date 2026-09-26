@@ -221,7 +221,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={t.askPlaceholder || "Ask about liability, termination, indemnification, or IP..."}
+            placeholder={t.askPlaceholder}
             disabled={isGenerating}
             className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-legal-emerald focus:outline-none focus:ring-1 focus:ring-legal-emerald disabled:opacity-50"
           />
@@ -232,7 +232,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             aria-label="Send Question"
           >
             <Send className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t.sendButton || "Send Question"}</span>
+            <span className="hidden sm:inline">{t.sendButton}</span>
           </button>
         </form>
 

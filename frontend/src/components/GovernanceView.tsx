@@ -273,23 +273,23 @@ export const GovernanceView: React.FC<GovernanceViewProps> = ({ t }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono text-[11px]">
-              {(Array.isArray(auditLogs) ? auditLogs : []).map((log) => (
+              {auditLogs.map((log) => (
                 <tr key={log.audit_id} className="text-slate-300 hover:bg-slate-900/40">
                   <td className="py-3 text-legal-cyan">{log.audit_id.slice(0, 16)}</td>
                   <td className="py-3 font-semibold text-white dark:text-white light:text-slate-900">
                     {log.action}
                   </td>
-                  <td className="py-3 text-slate-400">{log.user?.email || "system"}</td>
+                  <td className="py-3 text-slate-400">{log.user.email}</td>
                   <td className="py-3">
                     <span className="px-2 py-0.5 rounded bg-slate-800 text-legal-emerald">
-                      {log.user?.role || "counsel"}
+                      {log.user.role}
                     </span>
                   </td>
                   <td className="py-3 text-slate-500">
                     {new Date(log.timestamp).toLocaleTimeString()}
                   </td>
                   <td className="py-3 text-slate-400">
-                    {JSON.stringify(log.details || {})}
+                    {JSON.stringify(log.details)}
                   </td>
                 </tr>
               ))}

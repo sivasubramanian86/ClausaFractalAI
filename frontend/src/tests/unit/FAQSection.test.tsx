@@ -29,5 +29,15 @@ describe("FAQSection Unit Test Suite", () => {
     const questionBtn = screen.getByText(/How are enterprise contracts protected under Google Cloud Security standards/i);
     fireEvent.click(questionBtn);
     expect(screen.getByText(/VPC Service Controls \(VPC-SC\) perimeters/i)).toBeInTheDocument();
+
+    // Collapse accordion item
+    fireEvent.click(questionBtn);
+    expect(screen.queryByText(/VPC Service Controls \(VPC-SC\) perimeters/i)).not.toBeInTheDocument();
+  });
+
+  it("handles fallback placeholder when searchFaqPlaceholder is missing", () => {
+    const tWithoutPlaceholder = { ...en, searchFaqPlaceholder: "" };
+    render(<FAQSection t={tWithoutPlaceholder as any} />);
+    expect(screen.getByPlaceholderText(/Search FAQs on ReAct loops/i)).toBeInTheDocument();
   });
 });

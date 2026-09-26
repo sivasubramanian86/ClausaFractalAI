@@ -6,9 +6,51 @@ import { CourtroomView } from "../../components/CourtroomView";
 describe("CourtroomView Component Suite", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    (globalThis as any).fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => [],
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (typeof url === "string" && url.includes("/api/judicial/dissect")) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            verdict: {
+              bench: "The Honorable Bench – Jurisprudential Chamber",
+              ratio_decidendi: "Test ratio decidendi",
+              obiter_dicta: "Test obiter dicta",
+              element_proofs: [
+                {
+                  element: "Intentional deception",
+                  is_satisfied: true,
+                  evidentiary_basis: "Server logs",
+                },
+                {
+                  element: "Wire transmission",
+                  is_satisfied: false,
+                  evidentiary_basis: "Pending subpoena",
+                },
+              ],
+              final_decree: "Finding of Liability",
+              relief_or_sentence: "Restitution",
+              statutory_compliance_score: 9.5,
+            },
+            advocate_strategy: {
+              prosecution_strengths: ["Strong logs"],
+              defense_counter_arguments: ["Lack of jurisdiction"],
+              cross_examination_traps: ["Audit trails"],
+              settlement_leverage: "High",
+              trial_conviction_probability: 0.88,
+            },
+            dossier: {
+              facts_summary: "Test case facts summary",
+              key_evidence: ["Exhibit A"],
+              statutory_sections: ["Section 1343"],
+              precedent_citations: ["United States v. Miller"],
+            },
+          }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => [],
+      });
     });
   });
 
@@ -231,6 +273,222 @@ describe("CourtroomView Component Suite", () => {
     // Switch back to snapshot
     fireEvent.click(snapshotPill);
     expect(screen.getByText(/Forensic Snapshot \/ Evidentiary Exhibit/i)).toBeInTheDocument();
+  });
+
+  it("handles multimodal evidence upload and displays uploaded artifact name", async () => {
+    const mockUploadResult = {
+      dossier: {
+        case_title: "Uploaded Evidence Case",
+        incident_type: "Cybercrime & Privacy",
+        parties: {
+          Prosecution_or_Plaintiff: "Cyber Command",
+          Defense_or_Respondent: "Hostile Actor",
+        },
+        facts_summary: "Evidence from uploaded forensic PDF.",
+        key_evidence: ["Uploaded Exhibit: packet_dump.pdf"],
+        jurisdiction: "Federal",
+      },
+      verdict: {
+        case_title: "Uploaded Evidence Case",
+        bench: "The Honorable Bench",
+        ratio_decidendi: "Forensic evidence establishes direct intrusion.",
+        obiter_dicta: "Ensure logging controls.",
+        element_proofs: [],
+        final_decree: "Indictment Sustained",
+        relief_or_sentence: "Trial expedited",
+        statutory_compliance_score: 9.5,
+      },
+      advocate_strategy: {
+        counsel_role: "Lead Counsel",
+        prosecution_strengths: ["Clean hash"],
+        defense_shields: [],
+        cross_examination_traps: [],
+        evidentiary_vulnerabilities: [],
+        settlement_or_plea_calculus: "Proceed to trial",
+        win_probability_prosecution: 0.95,
+        win_probability_defense: 0.05,
+      },
+      matched_sections: [],
+      disclaimer: "AI Jurisprudential Co-Counsel",
+    };
+
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => mockUploadResult,
+    });
+
+    const { container } = render(<CourtroomView />);
+
+    // Switch to dossier tab
+    const dossierTabBtn = screen.getByRole("button", {
+      name: /Case Dossier & Evidence Ingestion/i,
+    });
+    fireEvent.click(dossierTabBtn);
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(fileInput).not.toBeNull();
+
+    const sampleFile = new File(["dummy pdf evidence"], "forensic_brief.pdf", {
+      type: "application/pdf",
+    });
+    fireEvent.change(fileInput, { target: { files: [sampleFile] } });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Uploaded Evidence Artifact: forensic_brief\.pdf/i)
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("renders empty codex message when search query has no matches", async () => {
+    (globalThis as any).fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => [],
+    });
+
+    render(<CourtroomView />);
+
+    const codexTabButton = screen.getByRole("button", {
+      name: /Statutory Codex \(Law at Fingertips\)/i,
+    });
+    fireEvent.click(codexTabButton);
+
+    const searchInput = screen.getByPlaceholderText(/Search by code/i);
+    fireEvent.change(searchInput, { target: { value: "xyznonexistentquery123" } });
+
+    // Also test category dropdown selection
+    const categorySelect = screen.getByRole("combobox");
+    fireEvent.change(categorySelect, { target: { value: "Criminal" } });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No statutory sections match your query\. Try a broader search term\./i)
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("handles network error gracefully during deliberate case", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    (globalThis as any).fetch = vi.fn().mockRejectedValue(new Error("Network disconnect"));
+
+    render(<CourtroomView />);
+
+    const deliberateBtn = screen.getByRole("button", { name: /Deliberate Case/i });
+    fireEvent.click(deliberateBtn);
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith("Dissection error:", expect.any(Error));
+    });
+    consoleSpy.mockRestore();
+  });
+
+  it("handles multimodal evidence upload network error and empty files safely", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    (globalThis as any).fetch = vi.fn().mockRejectedValue(new Error("Upload network error"));
+
+    const { container } = render(<CourtroomView />);
+    const dossierTabBtn = screen.getByRole("button", {
+      name: /Case Dossier & Evidence Ingestion/i,
+    });
+    fireEvent.click(dossierTabBtn);
+
+    const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+
+    // Test with empty files list
+    fireEvent.change(fileInput, { target: { files: [] } });
+
+    // Test with file when fetch rejects
+    const sampleFile = new File(["dummy pdf evidence"], "forensic_brief.pdf", {
+      type: "application/pdf",
+    });
+    fireEvent.change(fileInput, { target: { files: [sampleFile] } });
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith("Multimodal evidence upload error:", expect.any(Error));
+    });
+    consoleSpy.mockRestore();
+  });
+
+  it("renders UNPROVEN element status badge and exercises header shortcuts and media pills", async () => {
+    render(<CourtroomView />);
+
+    // Verify unproven element badge renders on bench tab
+    expect(screen.getByText("UNPROVEN")).toBeInTheDocument();
+
+    // Click header shortcut to GCS Demo Data (opens dossier tab)
+    const gcsDemoBtn = screen.getByRole("button", { name: /GCS Demo Data/i });
+    fireEvent.click(gcsDemoBtn);
+    expect(screen.getByText(/clausafractalai-demo-assets/i)).toBeInTheDocument();
+
+    // Select a sample case to open the multimodal media stage
+    const sampleCards = screen.getAllByText(/Nexus Enterprise/i);
+    fireEvent.click(sampleCards[0]);
+    expect(screen.getByText(/Multimodal Evidence Assets:/i)).toBeInTheDocument();
+
+    // Switch between all 4 media preview pills
+    const audioPill = screen.getByRole("button", { name: /Audio/i });
+    fireEvent.click(audioPill);
+    expect(screen.getByText(/lyria_911_forensic_dispatch_recording\.mp3/i)).toBeInTheDocument();
+
+    const videoPill = screen.getByRole("button", { name: /Video/i });
+    fireEvent.click(videoPill);
+    expect(screen.getByText(/veo_crime_scene_forensic_cctv_deposition\.mp4/i)).toBeInTheDocument();
+
+    const pdfPill = screen.getByRole("button", { name: /PDF Brief/i });
+    fireEvent.click(pdfPill);
+    expect(screen.getByText(/Direct cloud object stream:/i)).toBeInTheDocument();
+
+    const snapshotPill = screen.getByRole("button", { name: /Snapshot/i });
+    fireEvent.click(snapshotPill);
+
+    // Exercise jurisdiction and incident type select dropdowns
+    const selects = screen.getAllByRole("combobox");
+    fireEvent.change(selects[0], { target: { value: "India (IPC / BNS)" } });
+    fireEvent.change(selects[1], { target: { value: "Criminal / Fraud" } });
+
+    // Trigger deliberate case from dossier button
+    const dossierDeliberateBtn = screen.getByRole("button", { name: /Deliberate This Case Now/i });
+    fireEvent.click(dossierDeliberateBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText("Statutory Proof Score")).toBeInTheDocument();
+    });
+
+    // Click header shortcut to Global Codex (opens codex tab)
+    const codexShortcutBtn = screen.getByRole("button", { name: /Global Codex/i });
+    fireEvent.click(codexShortcutBtn);
+    expect(screen.getByText(/Global Statutory Codex & Penal Sections/i)).toBeInTheDocument();
+  });
+
+  it("handles failure of /api/judicial/sample-cases gracefully", async () => {
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (typeof url === "string" && url.includes("/api/judicial/sample-cases")) {
+        return Promise.resolve({ ok: false, status: 500 });
+      }
+      return Promise.resolve({ ok: true, json: async () => [] });
+    });
+
+    render(<CourtroomView />);
+    expect(screen.getByText("Judicial Chamber & Statutory Codex")).toBeInTheDocument();
+  });
+
+  it("catches error during case dissection when API rejects", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    (globalThis as any).fetch = vi.fn().mockImplementation((url: string) => {
+      if (typeof url === "string" && url.includes("/api/judicial/dissect")) {
+        return Promise.reject(new Error("Z3 timeout"));
+      }
+      return Promise.resolve({ ok: true, json: async () => [] });
+    });
+
+    render(<CourtroomView />);
+    const deliberateBtn = screen.getByRole("button", { name: /Deliberate Case/i });
+    fireEvent.click(deliberateBtn);
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith("Dissection error:", expect.any(Error));
+    });
+    consoleSpy.mockRestore();
   });
 });
 

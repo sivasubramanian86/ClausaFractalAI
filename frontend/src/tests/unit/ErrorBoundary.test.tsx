@@ -48,4 +48,17 @@ describe("ErrorBoundary Unit Test Suite", () => {
 
     consoleError.mockRestore();
   });
+
+  it("renders default fallbackTitle when none is provided", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(
+      <ErrorBoundary>
+        <ThrowingComponent shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText("Component Render Disruption Caught")).toBeInTheDocument();
+    consoleError.mockRestore();
+  });
 });

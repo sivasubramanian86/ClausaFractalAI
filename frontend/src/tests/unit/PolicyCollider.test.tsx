@@ -82,4 +82,17 @@ describe("PolicyCollider Unit Test Suite", () => {
     expect(screen.getByText(/FAVORABLE: Well-balanced bilateral terms/i)).toBeInTheDocument();
     expect(screen.getByText(/No Policy Collisions/i)).toBeInTheDocument();
   });
+
+  it("prevents comparison submit when input text is empty", () => {
+    const onCompare = vi.fn();
+    render(<PolicyCollider onCompare={onCompare} report={null} isLoading={false} />);
+
+    const textarea = screen.getByPlaceholderText(/Paste proposed amended terms/i);
+    fireEvent.change(textarea, { target: { value: "   " } });
+
+    const form = textarea.closest("form")!;
+    fireEvent.submit(form);
+
+    expect(onCompare).not.toHaveBeenCalled();
+  });
 });

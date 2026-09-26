@@ -59,4 +59,16 @@ describe("AnalyticsDashboard Unit Test Suite", () => {
     });
     expect(mockFetch).toHaveBeenCalled();
   });
+
+  it("retains optimistic fallback metrics when fetch throws error", async () => {
+    (globalThis as any).fetch = vi.fn().mockRejectedValue(new Error("Telemetry service unavailable"));
+
+    render(<AnalyticsDashboard t={en} />);
+
+    expect(screen.getByText(en.analyticsTitle)).toBeInTheDocument();
+    // Default optimistic metrics should be displayed
+    await waitFor(() => {
+      expect(screen.getByText(/94\.2%/i)).toBeInTheDocument();
+    });
+  });
 });
